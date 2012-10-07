@@ -28,8 +28,11 @@ object Reporter {
     }
   }
 
-  def formatInfo(module: ModuleID, updates: Set[SemVersion]) =
-    Seq(module.organization + ":" + module.name, module.revision, updates.max.toString)
+  def formatInfo(module: ModuleID, updates: Set[SemVersion]) = Seq(
+    module.organization + ":" + module.name + module.configurations.map(":" + _).getOrElse(""),
+    module.revision,
+    updates.max.toString
+  )
 
   def pad(s: String, w: Int) = s.padTo(w, ' ')
 
