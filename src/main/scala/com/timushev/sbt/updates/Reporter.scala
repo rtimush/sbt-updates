@@ -15,6 +15,7 @@ object Reporter {
     val result = (dependencies zip updates toMap)
       .filterNot(_._2.isEmpty)
       .map((formatInfo _).tupled)
+      .toSeq.sortBy(_.head)
     if (result.isEmpty) out.log.info("No dependency updates found for %s" format (project.name))
     else {
       val columns = result.transpose.map(_.map(_.length).max)
