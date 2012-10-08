@@ -7,7 +7,7 @@ Installation
 Currently the plugin is not published anywhere so you have to checkout the sources and run `sbt publish-local` to use it.
 After that add the following line to your `project/plugins.sbt` or `~/.sbt/plugins/build.sbt` file:
 ```
-addSbtPlugin("com.timushev.sbt" % "sbt-updates-plugin" % "0.1-SNAPSHOT")
+addSbtPlugin("com.timushev.sbt" % "sbt-updates-plugin" % "0.1.0-SNAPSHOT")
 ```
 
 Tasks

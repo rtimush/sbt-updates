@@ -4,7 +4,7 @@ name := "sbt-updates-plugin"
 
 organization := "com.timushev.sbt"
 
-version := "0.1-SNAPSHOT"
+version := "0.1.0-SNAPSHOT"
 
 scalacOptions := Seq("-deprecation", "-unchecked")
 
