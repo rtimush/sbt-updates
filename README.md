@@ -2,11 +2,16 @@ sbt-updates-plugin
 ==================
 Display your project's dependency updates.
 
+Requirements
+==============
+SBT 0.11.2, 0.11.3 or 0.12
+
 Installation
 ============
-Currently the plugin is not published anywhere so you have to checkout the sources and run `sbt publish-local` to use it.
-After that add the following line to your `project/plugins.sbt` or `~/.sbt/plugins/build.sbt` file:
+The plugin is in it's early stage, so only snapshot version is available. Add the following lines to your `project/plugins.sbt` or `~/.sbt/plugins/build.sbt` file:
 ```
+resolvers += Resolver.url("sbt-plugin-snapshots", new URL("http://scalasbt.artifactoryonline.com/scalasbt/sbt-plugin-snapshots"))(Resolver.ivyStylePatterns)
+
 addSbtPlugin("com.timushev.sbt" % "sbt-updates-plugin" % "0.1.0-SNAPSHOT")
 ```
 
