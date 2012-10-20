@@ -1,6 +1,6 @@
 sbtPlugin := true
 
-name := "sbt-updates-plugin"
+name := "sbt-updates"
 
 organization := "com.timushev.sbt"
 
