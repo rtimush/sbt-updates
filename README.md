@@ -12,7 +12,7 @@ The plugin is in it's early stage, so only snapshot version is available. Add th
 ```
 resolvers += Resolver.url("sbt-plugin-snapshots", new URL("http://scalasbt.artifactoryonline.com/scalasbt/sbt-plugin-snapshots"))(Resolver.ivyStylePatterns)
 
-addSbtPlugin("com.timushev.sbt" % "sbt-updates-plugin" % "0.1.0-SNAPSHOT")
+addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.1.0-SNAPSHOT")
 ```
 
 Tasks
@@ -23,7 +23,7 @@ Example:
 ```
 > dependency-updates
 [info] Found 3 dependency updates for test-project
-[info]   org.scala-lang:scala-library   : 2.9.2 -> 2.10.0-M7
-[info]   ch.qos.logback:logback-classic : 1.0.6 -> 1.0.7
-[info]   org.slf4j:slf4j-api            : 1.6.6 -> 1.7.1
+[info]   ch.qos.logback:logback-classic : 0.8    -> 0.8.1 -> 0.9.30     -> 1.0.7
+[info]   org.scala-lang:scala-library   : 2.9.1  -> 2.9.2 -> 2.10.0-RC1         
+[info]   org.slf4j:slf4j-api            : 1.6.4  -> 1.6.6 -> 1.7.2
 ```
