@@ -1,15 +1,16 @@
 package com.timushev.sbt.updates
 
-import sbt.ModuleID
-import semverfi.{PreReleaseVersion, Version, SemVersion}
 import dispatch.Promise
+import sbt.ModuleID
+import scala.collection.immutable.SortedSet
+import semverfi.{PreReleaseVersion, Version, SemVersion}
 
 object UpdatesFinder {
 
-  def findUpdates(loaders: Seq[MetadataLoader])(module: ModuleID): Promise[Set[SemVersion]] = {
+  def findUpdates(loaders: Seq[MetadataLoader])(module: ModuleID): Promise[SortedSet[SemVersion]] = {
     val current = Version(module.revision)
     val versionSets = loaders map (_ getVersions module recover withEmpty)
-    val versions = Promise all versionSets map (_.flatten.toSet)
+    val versions = Promise all versionSets map (v => SortedSet(v.flatten.toSeq: _*))
     versions map (_ filter isUpdate(current) filterNot lessStable(current))
   }
 
