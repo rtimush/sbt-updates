@@ -12,7 +12,7 @@ libraryDependencies ++= Seq(
     "me.lessis" %% "semverfi" % "0.1.2",
     "net.databinder.dispatch" %% "dispatch-core" % "0.9.2",
     "org.slf4j" % "slf4j-nop" % "1.6.6",
-    "org.scalatest" % "scalatest_2.9.2" % "2.0.M4")
+    "org.scalatest" % "scalatest_2.9.2" % "2.0.M4" % "test")
 
 CrossBuilding.scriptedSettings
 
