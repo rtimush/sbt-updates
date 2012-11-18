@@ -14,7 +14,7 @@ class UpdatesFinderSpec extends FreeSpec with ShouldMatchers {
   val available = Seq(
     "0.9.9-SNAPSHOT", "0.9.9",
     "1.0.0-SNAPSHOT", "1.0.0",
-    "1.0.1 -SNAPSHOT", " 1.0.1 "
+    "1.0.1-SNAPSHOT", "1.0.1"
   )
 
   "An updates finder" - {

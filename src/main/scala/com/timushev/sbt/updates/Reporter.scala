@@ -2,7 +2,7 @@ package com.timushev.sbt.updates
 
 import sbt._
 import sbt.std.TaskStreams
-import semverfi.{Version, SemVersion}
+import versions.Version
 import scala.collection.immutable.SortedSet
 
 object Reporter {
@@ -13,14 +13,14 @@ object Reporter {
                             dependencies: Seq[ModuleID],
                             resolvers: Seq[Resolver],
                             scalaFullVersion: String,
-                            scalaBinaryVersion: String): Map[ModuleID, SortedSet[SemVersion]] = {
+                            scalaBinaryVersion: String): Map[ModuleID, SortedSet[Version]] = {
     val crossDependencies = dependencies.map(CrossVersion(scalaFullVersion, scalaBinaryVersion))
     val loaders = resolvers collect MetadataLoader.factory
     val updates = crossDependencies map findUpdates(loaders) map (_.apply())
     (dependencies zip updates toMap).filterNot(_._2.isEmpty).toMap
   }
 
-  def displayDependencyUpdates(project: ModuleID, dependencyUpdates: Map[ModuleID, SortedSet[SemVersion]], out: TaskStreams[_]) {
+  def displayDependencyUpdates(project: ModuleID, dependencyUpdates: Map[ModuleID, SortedSet[Version]], out: TaskStreams[_]) {
     if (dependencyUpdates.isEmpty) out.log.info("No dependency updates found for %s" format (project.name))
     else {
       val table = dependencyUpdates.map {
@@ -51,13 +51,13 @@ object Reporter {
   def formatModule(module: ModuleID) =
     module.organization + ":" + module.name + module.configurations.map(":" + _).getOrElse("")
 
-  def patchUpdate(c: SemVersion, updates: SortedSet[SemVersion]) =
+  def patchUpdate(c: Version, updates: SortedSet[Version]) =
     updates.filter { v => v.major == c.major && v.minor == c.minor }.lastOption
 
-  def minorUpdate(c: SemVersion, updates: SortedSet[SemVersion]) =
+  def minorUpdate(c: Version, updates: SortedSet[Version]) =
     updates.filter { v => v.major == c.major && v.minor > c.minor }.lastOption
 
-  def majorUpdate(c: SemVersion, updates: SortedSet[SemVersion]) =
+  def majorUpdate(c: Version, updates: SortedSet[Version]) =
     updates.filter { v => v.major > c.major }.lastOption
 
   def pad(s: String, w: Int) = s.padTo(w, ' ')

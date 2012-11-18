@@ -2,9 +2,9 @@ package com.timushev.sbt.updates
 
 import sbt.ModuleID
 import dispatch.Promise
-import semverfi.{Version, SemVersion}
+import versions.Version
 
 class FixedMetadataLoader(available: Seq[String]) extends MetadataLoader {
-  def getVersions(module: ModuleID): Promise[Seq[SemVersion]] =
+  def getVersions(module: ModuleID): Promise[Seq[Version]] =
     Promise(available.map(Version.apply))
 }
