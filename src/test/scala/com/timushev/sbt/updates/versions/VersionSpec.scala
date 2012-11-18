@@ -62,6 +62,16 @@ class VersionSpec extends FreeSpec with ShouldMatchers {
         case _ => fail()
       }
     }
+    "should handle versions like 1.0.3m correctly" in {
+      Version("1.0.3m") match {
+        case PreReleaseVersion(1 :: 0 :: Nil, "3m" :: Nil) =>
+        case _ => fail()
+      }
+      Version("1.0.3m.4") match {
+        case PreReleaseVersion(1 :: 0 :: Nil, "3m" :: "4" :: Nil) =>
+        case _ => fail()
+      }
+    }
   }
 
 }
