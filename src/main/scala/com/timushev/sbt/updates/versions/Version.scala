@@ -3,12 +3,12 @@ package com.timushev.sbt.updates.versions
 import util.parsing.combinator.RegexParsers
 
 sealed trait Version {
-  def major: Int
-  def minor: Int
-  def patch: Int
+  def major: Long
+  def minor: Long
+  def patch: Long
 }
 
-case class ValidVersion(text: String, releasePart: List[Int], preReleasePart: List[String], buildPart: List[String])
+case class ValidVersion(text: String, releasePart: List[Long], preReleasePart: List[String], buildPart: List[String])
   extends Version {
   def major = releasePart.headOption getOrElse 0
   def minor = releasePart.drop(1).headOption getOrElse 1
@@ -62,13 +62,13 @@ object Version {
 
 object VersionParser extends RegexParsers {
 
-  private val number = """\d+""".r ^^ {_.toInt}
+  private val number = """\d{1,18}""".r ^^ {_.toLong}
   private val token = """[^-+.]+""".r
 
-  private val numericPart: Parser[List[Int]] = number ~ (("." ~> number) *) ^^ {case h ~ t => h :: t}
+  private val numericPart: Parser[List[Long]] = number ~ (("." ~> number) *) ^^ {case h ~ t => h :: t}
   private val part: Parser[List[String]] = token ~ (("." ~> token) *) ^^ {case h ~ t => h :: t}
 
-  private val version: Parser[(List[Int], List[String], List[String])] =
+  private val version: Parser[(List[Long], List[String], List[String])] =
     numericPart ~ ((("." | "-") ~> part) ?) ~ (("+" ~> part) ?) ^^ {case a ~ b ~ c => (a, b.getOrElse(Nil), c.getOrElse(Nil))}
 
   def parse(text: String) = parseAll(version, text)

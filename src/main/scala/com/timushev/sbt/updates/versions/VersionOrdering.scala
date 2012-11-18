@@ -22,10 +22,10 @@ class VersionOrdering extends Ordering[Version] {
     })
   }
 
-  private def compareIntParts(a: List[Int], b: List[Int]): Option[Int] = (a, b) match {
-    case (ah :: at, bh :: bt) => toOpt(ah compareTo bh) orElse compareIntParts(at, bt)
-    case (ah :: at, Nil) => toOpt(ah compareTo 0) orElse compareIntParts(at, Nil)
-    case (Nil, bh :: bt) => toOpt(0 compareTo bh) orElse compareIntParts(Nil, bt)
+  private def compareNumericParts(a: List[Long], b: List[Long]): Option[Int] = (a, b) match {
+    case (ah :: at, bh :: bt) => toOpt(ah compareTo bh) orElse compareNumericParts(at, bt)
+    case (ah :: at, Nil) => toOpt(ah compareTo 0L) orElse compareNumericParts(at, Nil)
+    case (Nil, bh :: bt) => toOpt(0L compareTo bh) orElse compareNumericParts(Nil, bt)
     case (Nil, Nil) => None
   }
 
@@ -40,22 +40,22 @@ class VersionOrdering extends Ordering[Version] {
     case (InvalidVersion(a), InvalidVersion(b)) => a compareTo b
     case (InvalidVersion(_), _) => -1
     case (_, InvalidVersion(_)) => 1
-    case (ReleaseVersion(r1), ReleaseVersion(r2)) => compareIntParts(r1, r2) getOrElse 0
-    case (ReleaseVersion(r1), PreReleaseVersion(r2, p2)) => compareIntParts(r1, r2) getOrElse 1
-    case (ReleaseVersion(r1), PreReleaseBuildVersion(r2, p2, b2)) => compareIntParts(r1, r2) getOrElse 1
-    case (ReleaseVersion(r1), BuildVersion(r2, b2)) => compareIntParts(r1, r2) getOrElse -1
-    case (PreReleaseVersion(r1, p1), ReleaseVersion(r2)) => compareIntParts(r1, r2) getOrElse -1
-    case (PreReleaseVersion(r1, p1), PreReleaseVersion(r2, p2)) => compareIntParts(r1, r2) orElse compareParts(p1, p2) getOrElse 0
-    case (PreReleaseVersion(r1, p1), PreReleaseBuildVersion(r2, p2, b2)) => compareIntParts(r1, r2) orElse compareParts(p1, p2) getOrElse -1
-    case (PreReleaseVersion(r1, p1), BuildVersion(r2, b2)) => compareIntParts(r1, r2) getOrElse -1
-    case (PreReleaseBuildVersion(r1, p1, b1), ReleaseVersion(r2)) => compareIntParts(r1, r2) getOrElse -1
-    case (PreReleaseBuildVersion(r1, p1, b1), PreReleaseVersion(r2, p2)) => compareIntParts(r1, r2) orElse compareParts(p1, p2) getOrElse 1
-    case (PreReleaseBuildVersion(r1, p1, b1), PreReleaseBuildVersion(r2, p2, b2)) => compareIntParts(r1, r2) orElse compareParts(p1, p2) orElse compareParts(b1, b2) getOrElse 0
-    case (PreReleaseBuildVersion(r1, p1, b1), BuildVersion(r2, b2)) => compareIntParts(r1, r2) getOrElse -1
-    case (BuildVersion(r1, b1), ReleaseVersion(r2)) => compareIntParts(r1, r2) getOrElse 1
-    case (BuildVersion(r1, b1), PreReleaseVersion(r2, p2)) => compareIntParts(r1, r2) getOrElse 1
-    case (BuildVersion(r1, b1), PreReleaseBuildVersion(r2, p2, b2)) => compareIntParts(r1, r2) getOrElse 1
-    case (BuildVersion(r1, b1), BuildVersion(r2, b2)) => compareIntParts(r1, r2) orElse compareParts(b1, b2) getOrElse 0
+    case (ReleaseVersion(r1), ReleaseVersion(r2)) => compareNumericParts(r1, r2) getOrElse 0
+    case (ReleaseVersion(r1), PreReleaseVersion(r2, p2)) => compareNumericParts(r1, r2) getOrElse 1
+    case (ReleaseVersion(r1), PreReleaseBuildVersion(r2, p2, b2)) => compareNumericParts(r1, r2) getOrElse 1
+    case (ReleaseVersion(r1), BuildVersion(r2, b2)) => compareNumericParts(r1, r2) getOrElse -1
+    case (PreReleaseVersion(r1, p1), ReleaseVersion(r2)) => compareNumericParts(r1, r2) getOrElse -1
+    case (PreReleaseVersion(r1, p1), PreReleaseVersion(r2, p2)) => compareNumericParts(r1, r2) orElse compareParts(p1, p2) getOrElse 0
+    case (PreReleaseVersion(r1, p1), PreReleaseBuildVersion(r2, p2, b2)) => compareNumericParts(r1, r2) orElse compareParts(p1, p2) getOrElse -1
+    case (PreReleaseVersion(r1, p1), BuildVersion(r2, b2)) => compareNumericParts(r1, r2) getOrElse -1
+    case (PreReleaseBuildVersion(r1, p1, b1), ReleaseVersion(r2)) => compareNumericParts(r1, r2) getOrElse -1
+    case (PreReleaseBuildVersion(r1, p1, b1), PreReleaseVersion(r2, p2)) => compareNumericParts(r1, r2) orElse compareParts(p1, p2) getOrElse 1
+    case (PreReleaseBuildVersion(r1, p1, b1), PreReleaseBuildVersion(r2, p2, b2)) => compareNumericParts(r1, r2) orElse compareParts(p1, p2) orElse compareParts(b1, b2) getOrElse 0
+    case (PreReleaseBuildVersion(r1, p1, b1), BuildVersion(r2, b2)) => compareNumericParts(r1, r2) getOrElse -1
+    case (BuildVersion(r1, b1), ReleaseVersion(r2)) => compareNumericParts(r1, r2) getOrElse 1
+    case (BuildVersion(r1, b1), PreReleaseVersion(r2, p2)) => compareNumericParts(r1, r2) getOrElse 1
+    case (BuildVersion(r1, b1), PreReleaseBuildVersion(r2, p2, b2)) => compareNumericParts(r1, r2) getOrElse 1
+    case (BuildVersion(r1, b1), BuildVersion(r2, b2)) => compareNumericParts(r1, r2) orElse compareParts(b1, b2) getOrElse 0
   }
 
 }
