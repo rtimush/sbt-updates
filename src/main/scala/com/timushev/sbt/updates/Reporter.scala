@@ -34,12 +34,13 @@ object Reporter {
             majorUpdate(c, vs).map(_.toString())
           )
       }.toSeq.sortBy(_.head)
-      val widths = table.transpose.map { c => c.foldLeft(0) { _ max _.map(_.length).getOrElse(0) } }
+      val widths = table.transpose.map {c => c.foldLeft(0) {_ max _.map(_.length).getOrElse(0)}}
       val separator = Seq("\n  ", " : ", " -> ", " -> ", " -> ")
       val info = StringBuilder.newBuilder
       info.append("Found %s dependency updates for %s" format(table.size, project.name))
       for (row <- table) {
         (separator zip row zip widths) map {
+          case (_, 0) => ""
           case ((s, Some(v)), w) => s + pad(v, w)
           case ((s, None), w) => " " * (s.length + w)
         } foreach (info.append)
@@ -52,13 +53,13 @@ object Reporter {
     module.organization + ":" + module.name + module.configurations.map(":" + _).getOrElse("")
 
   def patchUpdate(c: Version, updates: SortedSet[Version]) =
-    updates.filter { v => v.major == c.major && v.minor == c.minor }.lastOption
+    updates.filter {v => v.major == c.major && v.minor == c.minor}.lastOption
 
   def minorUpdate(c: Version, updates: SortedSet[Version]) =
-    updates.filter { v => v.major == c.major && v.minor > c.minor }.lastOption
+    updates.filter {v => v.major == c.major && v.minor > c.minor}.lastOption
 
   def majorUpdate(c: Version, updates: SortedSet[Version]) =
-    updates.filter { v => v.major > c.major }.lastOption
+    updates.filter {v => v.major > c.major}.lastOption
 
   def pad(s: String, w: Int) = s.padTo(w, ' ')
 
