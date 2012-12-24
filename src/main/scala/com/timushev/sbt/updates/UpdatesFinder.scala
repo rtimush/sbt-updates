@@ -1,6 +1,6 @@
 package com.timushev.sbt.updates
 
-import dispatch.Promise
+import dispatch.{Promise, Http}
 import sbt.ModuleID
 import scala.collection.immutable.SortedSet
 import versions.{PreReleaseBuildVersion, PreReleaseVersion, Version}
@@ -12,7 +12,7 @@ object UpdatesFinder {
   def findUpdates(loaders: Seq[MetadataLoader])(module: ModuleID): Promise[SortedSet[Version]] = {
     val current = Version(module.revision)
     val versionSets = loaders map (_ getVersions module recover withEmpty)
-    val versions = Promise all versionSets map (v => SortedSet(v.flatten.toSeq: _*))
+    val versions = Http.promise all versionSets map (v => SortedSet(v.flatten.toSeq: _*))
     versions map (_ filter isUpdate(current) filterNot lessStable(current))
   }
 
