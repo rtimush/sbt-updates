@@ -56,20 +56,28 @@ class VersionSpec extends FreeSpec with ShouldMatchers {
           b should be > (a)
       }
     }
-    "should handle versions like 1.0.M3 correctly" in {
-      Version("1.0.M3") match {
-        case PreReleaseVersion(1 :: 0 :: Nil, "M3" :: Nil) =>
-        case _ => fail()
+    "parser" - {
+      "should parse versions like 1.0.M3" in {
+        VersionParser.parse("1.0.M3") match {
+          case VersionParser.Success((1 :: 0 :: Nil, "M3" :: Nil, Nil), _) =>
+          case other => fail(other.toString)
+        }
       }
-    }
-    "should handle versions like 1.0.3m correctly" in {
-      Version("1.0.3m") match {
-        case PreReleaseVersion(1 :: 0 :: Nil, "3m" :: Nil) =>
-        case _ => fail()
+      "should parse versions like 1.0.3m" in {
+        VersionParser.parse("1.0.3m") match {
+          case VersionParser.Success((1 :: 0 :: Nil, "3m" :: Nil, Nil), _) =>
+          case other => fail(other.toString)
+        }
+        VersionParser.parse("1.0.3m.4") match {
+          case VersionParser.Success((1 :: 0 :: Nil, "3m" :: "4" :: Nil, Nil), _) =>
+          case other => fail(other.toString)
+        }
       }
-      Version("1.0.3m.4") match {
-        case PreReleaseVersion(1 :: 0 :: Nil, "3m" :: "4" :: Nil) =>
-        case _ => fail()
+      "should parse versions like 9.1-901-1.jdbc4" in {
+        VersionParser.parse("9.1-901-1.jdbc4") match {
+          case VersionParser.Success((9 :: 1 :: Nil, "901" :: "1" :: "jdbc4" :: Nil, Nil), _) =>
+          case other => fail(other.toString)
+        }
       }
     }
   }

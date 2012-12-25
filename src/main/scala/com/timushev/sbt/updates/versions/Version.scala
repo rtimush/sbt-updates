@@ -66,7 +66,7 @@ object VersionParser extends RegexParsers {
   private val number = """\d{1,18}(?=[-+.]|$)""".r ^^ {_.toLong}
 
   private val numericPart: Parser[List[Long]] = number ~ (("." ~> number) *) ^^ {case h ~ t => h :: t}
-  private val part: Parser[List[String]] = token ~ (("." ~> token) *) ^^ {case h ~ t => h :: t}
+  private val part: Parser[List[String]] = token ~ ((("." | "-") ~> token) *) ^^ {case h ~ t => h :: t}
 
   private val version: Parser[(List[Long], List[String], List[String])] =
     numericPart ~ ((("." | "-") ~> part) ?) ~ (("+" ~> part) ?) ^^ {case a ~ b ~ c => (a, b.getOrElse(Nil), c.getOrElse(Nil))}
