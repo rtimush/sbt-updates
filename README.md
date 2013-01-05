@@ -19,7 +19,7 @@ Add the following lines to your `project/plugins.sbt` or `~/.sbt/plugins/build.s
 ```
 resolvers += Resolver.url("sbt-plugin-snapshots", new URL("http://scalasbt.artifactoryonline.com/scalasbt/sbt-plugin-snapshots"))(Resolver.ivyStylePatterns)
 
-addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.1.0-SNAPSHOT")
+addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.1.1-SNAPSHOT")
 ```
 
 Tasks
