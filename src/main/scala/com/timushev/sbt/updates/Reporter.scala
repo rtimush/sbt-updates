@@ -41,7 +41,7 @@ object Reporter {
       }
       val separator = Seq("\n  ", " : ", " -> ", " -> ", " -> ")
       val info = StringBuilder.newBuilder
-      info.append("Found %s dependency updates for %s" format(table.size, project.name))
+      info.append("Found %s dependency update%s for %s" format(table.size, if (table.size > 1) "s" else "", project.name))
       for (row <- table) {
         (separator zip row zip widths) map {
           case (_, 0) => ""
