@@ -8,7 +8,7 @@ class UpdatesFinderSpec extends FreeSpec with ShouldMatchers {
 
   def updates(current: String, available: Seq[String]): Set[String] =
     UpdatesFinder.findUpdates(Seq(new FixedMetadataLoader(available)))(ModuleID("a", "b", current))
-      .apply()
+      .run
       .map(_.toString())
 
   val available = Seq(

@@ -1,8 +1,10 @@
 package com.timushev.sbt.updates
 
 import sbt.{Resolver, MavenRepository, ModuleID}
-import dispatch._
 import versions.Version
+import scalaz.concurrent._
+import java.net.URL
+import scala.xml.XML
 
 object MetadataLoader {
   val factory: PartialFunction[Resolver, MetadataLoader] = {
@@ -11,19 +13,19 @@ object MetadataLoader {
 }
 
 trait MetadataLoader {
-  def getVersions(module: ModuleID): Promise[Seq[Version]]
+  def getVersions(module: ModuleID): Task[Seq[Version]]
 }
 
 class MavenMetadataLoader(repo: MavenRepository) extends MetadataLoader {
 
-  def getVersions(module: ModuleID): Promise[Seq[Version]] =
-    Http(metadataUrl(module) OK as.xml.Elem) map extractVersions
+  def getVersions(module: ModuleID): Task[Seq[Version]] =
+    Task(XML.load(new URL(metadataUrl(module)))).map(extractVersions)
 
   def metadataUrl(module: ModuleID) =
-    artifactUrl(module) / "maven-metadata.xml"
+    artifactUrl(module) + "/maven-metadata.xml"
 
   def artifactUrl(module: ModuleID) =
-    (module.organization.split('.') :+ module.name foldLeft url(repo.root))(_ / _)
+    (module.organization.split('.') :+ module.name foldLeft repo.root)(_ + '/' + _)
 
   def extractVersions(metadata: xml.Elem): Seq[Version] =
     metadata \ "versioning" \ "versions" \ "version" map (_.text) map Version.apply

@@ -1,18 +1,21 @@
 package com.timushev.sbt.updates
 
-import dispatch.{Promise, Http}
 import sbt.ModuleID
 import scala.collection.immutable.SortedSet
 import versions.{PreReleaseBuildVersion, PreReleaseVersion, Version}
+import scalaz.concurrent._
+import scalaz.syntax.traverse._
+import scalaz.std.list._
+
 
 object UpdatesFinder {
 
   import Ordered._
 
-  def findUpdates(loaders: Seq[MetadataLoader])(module: ModuleID): Promise[SortedSet[Version]] = {
+  def findUpdates(loaders: Seq[MetadataLoader])(module: ModuleID): Task[SortedSet[Version]] = {
     val current = Version(module.revision)
-    val versionSets = loaders map (_ getVersions module recover withEmpty)
-    val versions = Http.promise all versionSets map (v => SortedSet(v.flatten.toSeq: _*))
+    val versionSets = loaders map (_ getVersions module handle withEmpty)
+    val versions = versionSets.toList.sequence[Task, Seq[Version]] map (v => SortedSet(v.flatten.toSeq: _*))
     versions map (_ filter isUpdate(current) filterNot lessStable(current))
   }
 
@@ -28,8 +31,8 @@ object UpdatesFinder {
 
   private def isUpdate(current: Version) = current < _
 
-  private val withEmpty: PartialFunction[Throwable, Set[Version]] = {
-    case _ => Set.empty
+  private val withEmpty: PartialFunction[Throwable, Seq[Version]] = {
+    case _ => Seq.empty
   }
 
 }
