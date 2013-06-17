@@ -15,7 +15,7 @@ object Reporter {
                             scalaFullVersion: String,
                             scalaBinaryVersion: String): Map[ModuleID, SortedSet[Version]] = {
     val crossDependencies = dependencies.map(CrossVersion(scalaFullVersion, scalaBinaryVersion))
-    val loaders = resolvers collect MetadataLoader.factory
+    val loaders = resolvers collect MetadataLoaderFactory.loader
     val updates = crossDependencies map findUpdates(loaders) map (_.run)
     (dependencies zip updates toMap).filterNot(_._2.isEmpty).toMap
   }
