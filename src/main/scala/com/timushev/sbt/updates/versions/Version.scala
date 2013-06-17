@@ -52,7 +52,7 @@ object BuildVersion {
 }
 
 object Version {
-  def apply(text: String): Version = {
+  def apply(text: String): Version = synchronized {
     VersionParser.parse(text)
       .map {case (a, b, c) => new ValidVersion(text, a, b, c)}
       .getOrElse {new InvalidVersion(text)}
