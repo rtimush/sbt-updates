@@ -15,4 +15,4 @@ libraryDependencies ++= Seq(
 
 CrossBuilding.scriptedSettings
 
-CrossBuilding.crossSbtVersions := Seq("0.12", "0.11.3", "0.11.2")
+CrossBuilding.crossSbtVersions := Seq("0.12")
