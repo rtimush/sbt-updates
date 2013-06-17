@@ -1,0 +1,22 @@
+{
+  "organization" : "com.timushev.sbt",
+  "name" : "sbt-updates",
+  "version" : "0.1.1",
+  "description" : "Display your project's dependency updates.",
+  "site" : "",
+  "tags" : [ "sbt", "dependencies" ],
+  "docs" : "",
+  "resolvers" : [ "https://oss.sonatype.org/content/repositories/releases" ],
+  "dependencies" : [{
+    "organization" : "org.scala-sbt",
+    "name" : "scripted-sbt",
+    "version" : "0.12.1"
+  }, {
+    "organization" : "org.scala-sbt",
+    "name" : "sbt-launch",
+    "version" : "0.12.1"
+  } ],
+  "scalas" : [ "2.9.2" ],
+  "licenses" : [ ],
+  "sbt" : true
+}
