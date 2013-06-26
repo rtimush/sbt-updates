@@ -44,7 +44,10 @@ class VersionSpec extends FreeSpec with ShouldMatchers {
         "1.0.0+0.3.7",
         "1.33.7+build",
         "1.33.7+build.2.b8f12d7",
-        "1.33.7+build.11.e0f985a"
+        "1.33.7+build.11.e0f985a",
+        "2.0.M5b",
+        "2.0.M6-SNAP9",
+        "2.0.M6-SNAP23"
       ).map(Version.apply)
       val pairs = v.tails.flatMap {
         case h :: t => t.map((h, _))
