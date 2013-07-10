@@ -1,25 +1,29 @@
 package com.timushev.sbt.updates.versions
 
-import java.text.{ParsePosition, NumberFormat}
+import scala.util.matching.Regex.Groups
 
 class VersionOrdering extends Ordering[Version] {
 
-  private def parsePart(s: String): Either[Int, String] = {
-    val nf = NumberFormat.getIntegerInstance
-    val pp = new ParsePosition(0)
-    val d = nf.parse(s, pp)
-    if (pp.getErrorIndex == -1) Left(d.intValue()) else Right(s)
+  private val subParts = "(\\d+)?(\\D+)?".r
+
+  private def parsePart(s:String) = {
+    subParts.findAllIn(s).matchData
+      .flatMap { case Groups(num, str) => Seq(
+        Option(num).map(_.toInt).map(Left.apply),
+        Option(str).map(Right.apply))
+      }.flatten
   }
 
   private def toOpt(x: Int): Option[Int] = if (x == 0) None else Some(x)
 
   private def comparePart(a: String, b: String) = {
-    toOpt((parsePart(a), parsePart(b)) match {
+    if(a == b) None
+    else (parsePart(a) zip parsePart(b)) map {
       case (Left(x), Left(y)) => x compareTo y
       case (Left(_), Right(_)) => -1
       case (Right(_), Left(_)) => 1
       case (Right(x), Right(y)) => x compareTo y
-    })
+    } find (0 !=) orElse Some(a compareTo b)
   }
 
   private def compareNumericParts(a: List[Long], b: List[Long]): Option[Int] = (a, b) match {
