@@ -1,7 +1,7 @@
 package com.timushev.sbt.updates
 
 import sbt.Keys._
-import UpdatesKeys._
+import com.timushev.sbt.updates.UpdatesKeys._
 
 trait UpdatesPluginTasks {
 
