@@ -1,0 +1,12 @@
+sbt-updates 0.1.2 has been released:
+
+ * Version ordering imporvements
+ * SBT 0.13 compatibility
+
+Example:
+
+    > dependency-updates
+    [info] Found 3 dependency updates for test-project
+    [info]   ch.qos.logback:logback-classic : 0.8    -> 0.8.1 -> 0.9.30     -> 1.0.7
+    [info]   org.scala-lang:scala-library   : 2.9.1  -> 2.9.2 -> 2.10.0-RC1
+    [info]   org.slf4j:slf4j-api            : 1.6.4  -> 1.6.6 -> 1.7.2

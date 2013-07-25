@@ -4,16 +4,16 @@ Display your SBT project's dependency updates.
 
 Requirements
 ==============
-SBT 0.12
+SBT 0.12, 0.13
 
 Note: use version 0.1.0 for SBT 0.11.* series
 
 Installation
 ============
 ### Stable version
-Add the following linesto your `project/plugins.sbt` or `~/.sbt/plugins/build.sbt` file:
+Add the following lines to your `project/plugins.sbt` or `~/.sbt/plugins/build.sbt` file:
 ```
-addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.1.1")
+addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.1.2")
 ```
 
 ### Snapshot version
@@ -21,12 +21,14 @@ Add the following lines to your `project/plugins.sbt` or `~/.sbt/plugins/build.s
 ```
 resolvers += Resolver.url("sbt-plugin-snapshots", new URL("http://scalasbt.artifactoryonline.com/scalasbt/sbt-plugin-snapshots"))(Resolver.ivyStylePatterns)
 
-addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.1.2-SNAPSHOT")
+addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.1.3-SNAPSHOT")
 ```
 
 Tasks
 =====
 * `dependency-updates`: show a list of project dependencies that can be updated.
+
+Note: for SBT 0.13 use a camel-case task name `dependencyUpdates`
 
 Example:
 ```
