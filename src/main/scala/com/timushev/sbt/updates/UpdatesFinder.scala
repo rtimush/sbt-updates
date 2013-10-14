@@ -2,11 +2,10 @@ package com.timushev.sbt.updates
 
 import sbt.ModuleID
 import scala.collection.immutable.SortedSet
-import versions.{PreReleaseBuildVersion, PreReleaseVersion, Version}
+import com.timushev.sbt.updates.versions._
 import scalaz.concurrent._
 import scalaz.syntax.traverse._
 import scalaz.std.list._
-
 
 object UpdatesFinder {
 
@@ -19,14 +18,12 @@ object UpdatesFinder {
     versions map (_ filter isUpdate(current) filterNot lessStable(current))
   }
 
-  private def lessStable(current: Version): Version => Boolean = {
-    if (isSnapshot(current)) (_ => false) else isSnapshot
-  }
-
-  private val isSnapshot: Version => Boolean = {
-    case PreReleaseVersion(_, preReleasePart) if preReleasePart.lastOption == Some("SNAPSHOT") => true
-    case PreReleaseBuildVersion(_, preReleasePart, _) if preReleasePart.lastOption == Some("SNAPSHOT") => true
-    case _ => false
+  private def lessStable(current: Version)(another: Version): Boolean = (current, another) match {
+    case (ReleaseVersion(_), ReleaseVersion(_)) => false
+    case (ReleaseVersion(_), _) => true
+    case (SnapshotVersion(_, _, _), _) => false
+    case (_, SnapshotVersion(_, _, _)) => true
+    case (_, _) => false
   }
 
   private def isUpdate(current: Version) = current < _

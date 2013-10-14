@@ -36,10 +36,16 @@ object PreReleaseVersion {
   }
 }
 
-
 object PreReleaseBuildVersion {
   def unapply(v: Version) = v match {
     case ValidVersion(_, releasePart, preReleasePart, buildPart) if !preReleasePart.isEmpty && !buildPart.isEmpty => Some(releasePart, preReleasePart, buildPart)
+    case _ => None
+  }
+}
+
+object SnapshotVersion {
+  def unapply(v: Version) = v match {
+    case ValidVersion(_, releasePart, preReleasePart, buildPart) if preReleasePart.lastOption == Some("SNAPSHOT") => Some(releasePart, preReleasePart, buildPart)
     case _ => None
   }
 }
