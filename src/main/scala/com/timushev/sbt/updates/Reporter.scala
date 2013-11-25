@@ -20,8 +20,8 @@ object Reporter {
     (dependencies zip updates toMap).filterNot(_._2.isEmpty).toMap
   }
 
-  def displayDependencyUpdates(project: ModuleID, dependencyUpdates: Map[ModuleID, SortedSet[Version]], out: TaskStreams[_]) {
-    if (dependencyUpdates.isEmpty) out.log.info("No dependency updates found for %s" format (project.name))
+  def gatherDependencyUpdates(dependencyUpdates: Map[ModuleID, SortedSet[Version]]): Seq[String] = {
+    if (dependencyUpdates.isEmpty) Seq.empty
     else {
       val table = dependencyUpdates.map {
         case (m, vs) =>
@@ -29,9 +29,9 @@ object Reporter {
           Seq(
             Some(formatModule(m)),
             Some(m.revision),
-            patchUpdate(c, vs).map(_.toString()),
-            minorUpdate(c, vs).map(_.toString()),
-            majorUpdate(c, vs).map(_.toString())
+            patchUpdate(c, vs).map(_.toString),
+            minorUpdate(c, vs).map(_.toString),
+            majorUpdate(c, vs).map(_.toString)
           )
       }.toSeq.sortBy(_.head)
       val widths = table.transpose.map {
@@ -39,18 +39,34 @@ object Reporter {
           _ max _.map(_.length).getOrElse(0)
         }
       }
-      val separator = Seq("\n  ", " : ", " -> ", " -> ", " -> ")
-      val info = StringBuilder.newBuilder
-      info.append("Found %s dependency update%s for %s" format(table.size, if (table.size > 1) "s" else "", project.name))
-      for (row <- table) {
+      val separator = Seq("", " : ", " -> ", " -> ", " -> ")
+      for (row <- table) yield {
         (separator zip row zip widths) map {
           case (_, 0) => ""
           case ((s, Some(v)), w) => s + pad(v, w)
           case ((s, None), w) => " " * (s.length + w)
-        } foreach (info.append)
+        } mkString ""
       }
-      out.log.info(info.toString())
     }
+  }
+
+  def dependencyUpdatesReport(project: ModuleID, dependencyUpdates: Map[ModuleID, SortedSet[Version]]): String = {
+    val updates = gatherDependencyUpdates(dependencyUpdates)
+    if (updates.isEmpty) "No dependency updates found for %s" format (project.name)
+    else {
+      val info = StringBuilder.newBuilder
+      info.append("Found %s dependency update%s for %s" format(updates.size, if (updates.size > 1) "s" else "", project.name))
+      updates.foreach {
+        u =>
+          info.append("\n  ")
+          info.append(u)
+      }
+      info.toString()
+    }
+  }
+
+  def displayDependencyUpdates(project: ModuleID, dependencyUpdates: Map[ModuleID, SortedSet[Version]], out: TaskStreams[_]): Unit = {
+    out.log.info(dependencyUpdatesReport(project, dependencyUpdates))
   }
 
   def formatModule(module: ModuleID) =
