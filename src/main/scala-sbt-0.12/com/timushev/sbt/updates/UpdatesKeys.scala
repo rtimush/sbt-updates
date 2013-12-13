@@ -6,5 +6,5 @@ import versions.Version
 
 object UpdatesKeys {
   val dependencyUpdatesData = TaskKey[Map[ModuleID, SortedSet[Version]]]("dependency-updates-data")
-  val dependencyUpdates = TaskKey[Unit]("dependency-updates")
+  val dependencyUpdates = TaskKey[Unit]("dependency-updates", "Shows a list of project dependencies that can be updated.")
 }
