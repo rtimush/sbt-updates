@@ -8,10 +8,16 @@ version := "0.1.3-SNAPSHOT"
 
 scalacOptions := Seq("-deprecation", "-unchecked")
 
-libraryDependencies ++= Seq(
-    "org.scalaz" %% "scalaz-concurrent" % "7.0.2" % "embedded",
-    "org.scalatest" %% "scalatest" % "2.0.M5b" % "test"
-)
+libraryDependencies <++= (sbtVersion in sbtPlugin) {
+  case "0.12" =>
+    Seq(
+      "org.scalaz" %% "scalaz-concurrent" % "7.0.5" % "embedded",
+      "org.scalatest" %% "scalatest" % "2.0.M6-SNAP3" % "test")
+  case "0.13" =>
+    Seq(
+      "org.scalaz" %% "scalaz-concurrent" % "7.1.0-M4" % "embedded",
+      "org.scalatest" %% "scalatest" % "2.0.1-SNAP3" % "test")
+}
 
 CrossBuilding.settings
 
