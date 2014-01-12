@@ -69,6 +69,12 @@ object Reporter {
     out.log.info(dependencyUpdatesReport(project, dependencyUpdates))
   }
 
+  def writeDependencyUpdatesReport(project: ModuleID, dependencyUpdates: Map[ModuleID, SortedSet[Version]], file: File, out: TaskStreams[_]): File = {
+    IO.write(file, dependencyUpdatesReport(project, dependencyUpdates) + "\n")
+    out.log.info("Dependency update report written to %s" format file)
+    file
+  }
+
   def formatModule(module: ModuleID) =
     module.organization + ":" + module.name + module.configurations.map(":" + _).getOrElse("")
 
