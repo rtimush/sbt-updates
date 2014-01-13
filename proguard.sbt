@@ -1,18 +1,6 @@
-ProguardPlugin.proguardSettings
+proguardSettings
 
-proguardLibraryJars <++= (dependencyClasspath in Compile, dependencyClasspath in Embedded) map {
-    (ccp, rcp) => ccp.files filterNot rcp.files.toSet
-}
-
-proguardInJars <++= (dependencyClasspath in Embedded) map (_.files)
-
-proguardLibraryJars <++= (scalaInstance) map { (si) => Seq(si.libraryJar) }
-
-proguardInJars := Seq()
-
-proguardDefaultArgs := Seq()
-
-proguardOptions ++= Seq(
+ProguardKeys.options in Proguard ++= Seq(
     "-dontwarn",
     "-dontnote",
     "-dontoptimize",
@@ -21,7 +9,15 @@ proguardOptions ++= Seq(
     "-repackageclasses 'com.timushev.sbt.updates.libs'"
 )
 
-SbtUpdatesBuild.publishMinJar <<= (proguard, minJarPath) map { (_, jar) => jar }
+ProguardKeys.libraries in Proguard <++= (dependencyClasspath in Compile, dependencyClasspath in Embedded) map {
+    (ccp, rcp) => ccp.files filterNot rcp.files.toSet
+}
+
+ProguardKeys.inputs in Proguard <++= (dependencyClasspath in Embedded, scalaInstance) map {
+    (dcp, si) => dcp.files filterNot (_ == si.libraryJar)
+}
+
+SbtUpdatesBuild.publishMinJar <<= (ProguardKeys.proguard in Proguard) map (_.head)
 
 packagedArtifact in (Compile, packageBin) <<= (packagedArtifact in (Compile, packageBin), SbtUpdatesBuild.publishMinJar) map {
     case ((art, _), jar) => (art, jar)

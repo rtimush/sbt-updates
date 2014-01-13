@@ -8,4 +8,4 @@ addSbtPlugin("me.lessis" % "ls-sbt" % "0.1.2")
 
 resolvers += Resolver.sbtPluginRepo("releases")
 
-addSbtPlugin("org.scala-sbt" % "xsbt-proguard-plugin" % "0.1.3")
+addSbtPlugin("com.typesafe.sbt" % "sbt-proguard" % "0.2.2")
