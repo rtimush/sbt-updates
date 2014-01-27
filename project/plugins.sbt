@@ -4,7 +4,7 @@ resolvers ++= Seq(
 
 addSbtPlugin("net.virtual-void" % "sbt-cross-building" % "0.8.1")
 
-addSbtPlugin("me.lessis" % "ls-sbt" % "0.1.2")
+addSbtPlugin("me.lessis" % "ls-sbt" % "0.1.3")
 
 resolvers += Resolver.sbtPluginRepo("releases")
 
