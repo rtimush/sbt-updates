@@ -11,13 +11,21 @@ Note: use version 0.1.0 for SBT 0.11.* series
 Installation
 ============
 ### Stable version
-Add the following lines to your `project/sbt-updates.sbt` or `~/.sbt/plugins/sbt-updates.sbt` file:
+Add the following line to one of these files:
+- The project-specific file at `project/sbt-updates.sbt`
+- Your global file (for sbt version 0.13._x_) at `~/.sbt/0.13/plugins/sbt-updates.sbt`
+- Your global file (for sbt versions earlier than 0.13) at `~/.sbt/plugins/sbt-updates.sbt`
+
 ```
 addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.1.3")
 ```
 
 ### Snapshot version
-Add the following lines to your `project/sbt-updates.sbt` or `~/.sbt/plugins/sbt-updates.sbt` file:
+Add the following lines to one of these files:
+- The project-specific file at `project/sbt-updates.sbt`
+- Your global file (for sbt version 0.13._x_) at `~/.sbt/0.13/plugins/sbt-updates.sbt`
+- Your global file (for sbt versions earlier than 0.13) at `~/.sbt/plugins/sbt-updates.sbt`
+
 ```
 resolvers += Resolver.url("sbt-plugin-snapshots", url("http://scalasbt.artifactoryonline.com/scalasbt/sbt-plugin-snapshots"))(Resolver.ivyStylePatterns)
 
