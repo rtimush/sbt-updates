@@ -5,7 +5,7 @@ ProguardKeys.options in Proguard ++= Seq(
     "-dontnote",
     "-dontoptimize",
     "-keep class com.timushev.sbt.updates.**",
-    "-keepclassmembers class * { ** MODULE$; }",
+    "-keepclassmembers class ** { *; }",
     "-repackageclasses 'com.timushev.sbt.updates.libs'"
 )
 
