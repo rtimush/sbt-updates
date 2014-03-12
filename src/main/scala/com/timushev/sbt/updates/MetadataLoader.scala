@@ -29,7 +29,7 @@ class MavenMetadataLoader(repo: MavenRepository, download: String => Task[xml.El
     artifactUrl(module) + "/maven-metadata.xml"
 
   def artifactUrl(module: ModuleID) =
-    (module.organization.split('.') :+ module.name foldLeft repo.root)(_ + '/' + _)
+    (module.organization.split('.') :+ module.name foldLeft repo.root.stripSuffix("/"))(_ + '/' + _)
 
   def extractVersions(metadata: xml.Elem): Seq[Version] =
     metadata \ "versioning" \ "versions" \ "version" map (_.text) map Version.apply
