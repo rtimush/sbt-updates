@@ -34,6 +34,7 @@ class VersionSpec extends FreeSpec with ShouldMatchers {
     "should be ordered according to the semantic versioning spec" in {
       val v = List(
         "invalid",
+        "1.0.0-20131213005945",
         "1.0.0-alpha",
         "1.0.0-alpha.1",
         "1.0.0-beta.2",
