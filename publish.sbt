@@ -1,9 +1,10 @@
 publishMavenStyle := false
 
-publishTo <<= (version) { version: String =>
+publishTo := {
   val scalasbt = "http://scalasbt.artifactoryonline.com/scalasbt/"
+  val snapshot = isSnapshot.value
   val (name, url) =
-    if (version.contains("-SNAPSHOT"))
+    if (snapshot)
       ("sbt-plugin-snapshots-publish", scalasbt + "sbt-plugin-snapshots")
     else
       ("sbt-plugin-releases-publish", scalasbt + "sbt-plugin-releases")
