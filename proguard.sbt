@@ -1,6 +1,8 @@
+import ProguardKeys._
+
 proguardSettings
 
-ProguardKeys.options in Proguard ++= Seq(
+options in Proguard ++= Seq(
     "-dontwarn",
     "-dontnote",
     "-dontoptimize",
@@ -9,20 +11,28 @@ ProguardKeys.options in Proguard ++= Seq(
     "-repackageclasses 'com.timushev.sbt.updates.libs'"
 )
 
-ProguardKeys.libraries in Proguard <++= (dependencyClasspath in Compile, dependencyClasspath in Embedded) map {
-    (ccp, rcp) => ccp.files filterNot rcp.files.toSet
+ProguardKeys.libraries in Proguard ++= {
+  val ccp = (dependencyClasspath in Compile).value
+  val rcp = (dependencyClasspath in Embedded).value
+  ccp.files filterNot rcp.files.toSet
 }
 
-ProguardKeys.inputs in Proguard <++= (dependencyClasspath in Embedded, scalaInstance) map {
-    (dcp, si) => dcp.files filterNot (_ == si.libraryJar)
+inputs in Proguard ++= {
+  val dcp = (dependencyClasspath in Embedded).value
+  val si = scalaInstance.value
+	dcp.files filterNot (_ == si.libraryJar)
 }
 
-SbtUpdatesBuild.publishMinJar <<= (ProguardKeys.proguard in Proguard) map (_.head)
+lazy val publishMinJar = taskKey[java.io.File]("publish-min-jar")
 
-packagedArtifact in (Compile, packageBin) <<= (packagedArtifact in (Compile, packageBin), SbtUpdatesBuild.publishMinJar) map {
-    case ((art, _), jar) => (art, jar)
+publishMinJar := (proguard in Proguard).value.head
+
+packagedArtifact in (Compile, packageBin) := {
+  val (art, _) = (packagedArtifact in (Compile, packageBin)).value
+  val jar = publishMinJar.value
+  (art, jar)
 }
 
-dependencyClasspath in Compile <++= dependencyClasspath in Embedded
+dependencyClasspath in Compile ++= (dependencyClasspath in Embedded).value
 
-dependencyClasspath in Test <++= dependencyClasspath in Embedded
+dependencyClasspath in Test ++= (dependencyClasspath in Embedded).value
