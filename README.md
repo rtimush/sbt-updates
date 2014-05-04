@@ -17,7 +17,7 @@ Add the following line to one of these files:
 - Your global file (for sbt versions earlier than 0.13) at `~/.sbt/plugins/sbt-updates.sbt`
 
 ```
-addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.1.5")
+addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.1.6")
 ```
 
 ### Snapshot version
@@ -29,7 +29,7 @@ Add the following lines to one of these files:
 ```
 resolvers += Resolver.url("sbt-plugin-snapshots", url("http://scalasbt.artifactoryonline.com/scalasbt/sbt-plugin-snapshots"))(Resolver.ivyStylePatterns)
 
-addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.1.6-SNAPSHOT")
+addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.1.7-SNAPSHOT")
 ```
 
 Tasks
