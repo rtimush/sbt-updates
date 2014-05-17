@@ -5,16 +5,30 @@ import com.timushev.sbt.updates.UpdatesKeys._
 
 trait UpdatesPluginTasks {
 
-  def dependencyUpdatesDataTask =
-    (projectID, libraryDependencies, externalResolvers, scalaVersion, scalaBinaryVersion)
-      .map(Reporter.dependencyUpdatesData)
+  lazy val dependencyUpdatesDataTask = dependencyUpdatesData := {
+    Reporter.dependencyUpdatesData(
+    	projectID.value,
+    	libraryDependencies.value,
+    	externalResolvers.value,
+    	scalaVersion.value,
+    	scalaBinaryVersion.value
+    )
+  }
 
-  def dependencyUpdatesTask =
-    (projectID, dependencyUpdatesData, streams)
-      .map(Reporter.displayDependencyUpdates)
+  lazy val dependencyUpdatesTask = dependencyUpdates := {
+    Reporter.displayDependencyUpdates(
+    	projectID.value,
+    	dependencyUpdatesData.value,
+    	streams.value
+    )
+  }
 
-  def writeDependencyUpdatesReportTask =
-    (projectID, dependencyUpdatesData, dependencyUpdatesReportFile, streams)
-      .map(Reporter.writeDependencyUpdatesReport)
-
+  lazy val dependencyUpdatesReportTask = dependencyUpdatesReport := {
+  	Reporter.writeDependencyUpdatesReport(
+  		projectID.value,
+  		dependencyUpdatesData.value,
+  		dependencyUpdatesReportFile.value,
+  		streams.value
+  	)
+  }
 }
