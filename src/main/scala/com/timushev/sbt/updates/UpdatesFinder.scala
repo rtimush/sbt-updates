@@ -1,20 +1,20 @@
 package com.timushev.sbt.updates
 
-import sbt.ModuleID
-import scala.collection.immutable.SortedSet
 import com.timushev.sbt.updates.versions._
-import scalaz.concurrent._
-import scalaz.syntax.traverse._
-import scalaz.std.list._
+import sbt.ModuleID
+
+import scala.collection.immutable.SortedSet
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 object UpdatesFinder {
 
-  import Ordered._
+  import scala.Ordered._
 
-  def findUpdates(loaders: Seq[MetadataLoader])(module: ModuleID): Task[SortedSet[Version]] = {
+  def findUpdates(loaders: Seq[MetadataLoader])(module: ModuleID): Future[SortedSet[Version]] = {
     val current = Version(module.revision)
-    val versionSets = loaders map (_ getVersions module handle withEmpty)
-    val versions = versionSets.toList.sequence[Task, Seq[Version]] map (v => SortedSet(v.flatten.toSeq: _*))
+    val versionSets = loaders map (_ getVersions module recover withEmpty)
+    val versions = Future.sequence(versionSets) map (v => SortedSet(v.flatten.toSeq: _*))
     versions map (_ filter isUpdate(current) filterNot lessStable(current))
   }
 

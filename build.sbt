@@ -14,8 +14,9 @@ libraryDependencies <++= (sbtVersion in sbtPlugin) { version =>
     case V013() => ("7.1.0", "2.2.2")
   }
   Seq(
-    "org.scalaz"    %% "scalaz-concurrent" % scalaz    % "embedded",
-    "org.scalatest" %% "scalatest"         % scalatest % "test")
+    "org.scalaz"    %% "scalaz-core" % scalaz    % "embedded",
+    "org.scalatest" %% "scalatest"   % scalatest % "test"
+  )
 }
 
 CrossBuilding.settings

@@ -1,11 +1,14 @@
 package com.timushev.sbt.updates
 
-import sbt.{Resolver, MavenRepository, ModuleID}
-import versions.Version
-import scala.xml.XML
-import scalaz.concurrent._
-import scalaz.Memo._
 import java.net.URL
+
+import com.timushev.sbt.updates.versions.Version
+import sbt.{MavenRepository, ModuleID, Resolver}
+
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
+import scala.xml.XML
+import scalaz.Memo._
 
 object MetadataLoaderFactory {
   val loader: PartialFunction[Resolver, MetadataLoader] = {
@@ -13,16 +16,16 @@ object MetadataLoaderFactory {
   }
 
   def download(url: String) = synchronized(doDownload(url))
-  private val doDownload = immutableHashMapMemo((url: String) => Task(XML.load(new URL(url))))
+  private val doDownload = immutableHashMapMemo((url: String) => Future(XML.load(new URL(url))))
 }
 
 trait MetadataLoader {
-  def getVersions(module: ModuleID): Task[Seq[Version]]
+  def getVersions(module: ModuleID): Future[Seq[Version]]
 }
 
-class MavenMetadataLoader(repo: MavenRepository, download: String => Task[xml.Elem]) extends MetadataLoader {
+class MavenMetadataLoader(repo: MavenRepository, download: String => Future[xml.Elem]) extends MetadataLoader {
 
-  def getVersions(module: ModuleID): Task[Seq[Version]] =
+  def getVersions(module: ModuleID): Future[Seq[Version]] =
     download(metadataUrl(module)).map(extractVersions)
 
   def metadataUrl(module: ModuleID) =

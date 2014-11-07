@@ -1,13 +1,17 @@
 package com.timushev.sbt.updates
 
+import com.timushev.sbt.updates.versions.Version
 import sbt._
 import sbt.std.TaskStreams
-import versions.Version
+
 import scala.collection.immutable.SortedSet
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.duration._
+import scala.concurrent.{Await, Future}
 
 object Reporter {
 
-  import UpdatesFinder._
+  import com.timushev.sbt.updates.UpdatesFinder._
 
   def dependencyUpdatesData(project: ModuleID,
                             dependencies: Seq[ModuleID],
@@ -16,7 +20,8 @@ object Reporter {
                             scalaBinaryVersion: String): Map[ModuleID, SortedSet[Version]] = {
     val crossDependencies = dependencies.map(CrossVersion(scalaFullVersion, scalaBinaryVersion))
     val loaders = resolvers collect MetadataLoaderFactory.loader
-    val updates = crossDependencies map findUpdates(loaders) map (_.run)
+    val updatesFuture = Future.sequence(crossDependencies map findUpdates(loaders))
+    val updates = Await.result(updatesFuture, 1.hour)
     (dependencies zip updates toMap).filterNot(_._2.isEmpty).toMap
   }
 

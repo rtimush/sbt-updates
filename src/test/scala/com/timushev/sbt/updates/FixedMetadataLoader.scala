@@ -1,10 +1,10 @@
 package com.timushev.sbt.updates
 
+import com.timushev.sbt.updates.versions.Version
 import sbt.ModuleID
-import versions.Version
-import scalaz.concurrent._
+
+import scala.concurrent._
 
 class FixedMetadataLoader(available: Seq[String]) extends MetadataLoader {
-  def getVersions(module: ModuleID): Task[Seq[Version]] =
-    Task.now(available.map(Version.apply))
+  def getVersions(module: ModuleID): Future[Seq[Version]] = Future.successful(available map Version.apply)
 }

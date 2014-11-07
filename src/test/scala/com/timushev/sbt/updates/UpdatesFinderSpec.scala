@@ -1,14 +1,16 @@
 package com.timushev.sbt.updates
 
 import org.scalatest.FreeSpec
-import sbt._
 import org.scalatest.matchers.ShouldMatchers
+import sbt._
+
+import scala.concurrent.Await
+import scala.concurrent.duration._
 
 class UpdatesFinderSpec extends FreeSpec with ShouldMatchers {
 
   def updates(current: String, available: Seq[String]): Set[String] =
-    UpdatesFinder.findUpdates(Seq(new FixedMetadataLoader(available)))(ModuleID("a", "b", current))
-      .run
+    Await.result(UpdatesFinder.findUpdates(Seq(new FixedMetadataLoader(available)))(ModuleID("a", "b", current)), 1.minute)
       .map(_.toString())
 
   val available = Seq(
