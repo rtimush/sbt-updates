@@ -70,8 +70,9 @@ object Reporter {
     }
   }
 
-  def displayDependencyUpdates(project: ModuleID, dependencyUpdates: Map[ModuleID, SortedSet[Version]], out: TaskStreams[_]): Unit = {
+  def displayDependencyUpdates(project: ModuleID, dependencyUpdates: Map[ModuleID, SortedSet[Version]], failBuild: Boolean, out: TaskStreams[_]): Unit = {
     out.log.info(dependencyUpdatesReport(project, dependencyUpdates))
+    if (failBuild && dependencyUpdates.nonEmpty) sys.error("Dependency updates found")
   }
 
   def writeDependencyUpdatesReport(project: ModuleID, dependencyUpdates: Map[ModuleID, SortedSet[Version]], file: File, out: TaskStreams[_]): File = {
