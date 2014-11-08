@@ -8,16 +8,10 @@ version := "0.1.7-SNAPSHOT"
 
 scalacOptions := Seq("-deprecation", "-unchecked")
 
-libraryDependencies <++= (sbtVersion in sbtPlugin) { version =>
-  val V013 = """0\.13(?:\..*|)""".r
-  val (scalaz, scalatest) = version match {
-    case V013() => ("7.1.0", "2.2.2")
-  }
-  Seq(
-    "org.scalaz"    %% "scalaz-core" % scalaz    % "embedded",
-    "org.scalatest" %% "scalatest"   % scalatest % "test"
-  )
-}
+libraryDependencies ++= Seq(
+  "org.scalaz"    %% "scalaz-core" % "7.1.0" % "embedded",
+  "org.scalatest" %% "scalatest"   % "2.2.2" % "test"
+)
 
 CrossBuilding.settings
 
