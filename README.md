@@ -38,6 +38,7 @@ Tasks
 Settings
 ========
 * `dependencyUpdatesReportFile`: report file location, `target/dependency-updates.txt` by default.
+* `dependencyUpdatesFailBuild`: `dependencyUpdates` task will fail a build if updates found.
 
 Example:
 ```
