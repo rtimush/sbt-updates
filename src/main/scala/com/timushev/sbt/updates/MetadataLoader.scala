@@ -5,18 +5,21 @@ import java.net.URL
 import com.timushev.sbt.updates.versions.Version
 import sbt.{MavenRepository, ModuleID, Resolver}
 
+import scala.collection.mutable
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import scala.xml.XML
-import scalaz.Memo._
+import scala.xml.{Elem, XML}
 
 object MetadataLoaderFactory {
   val loader: PartialFunction[Resolver, MetadataLoader] = {
     case repo: MavenRepository => new MavenMetadataLoader(repo, download)
   }
 
-  def download(url: String) = synchronized(doDownload(url))
-  private val doDownload = immutableHashMapMemo((url: String) => Future(XML.load(new URL(url))))
+  private val cache = mutable.Map[String, Future[Elem]]()
+
+  def download(url: String) = synchronized {
+    cache.getOrElseUpdate(url, Future(XML.load(new URL(url))))
+  }
 }
 
 trait MetadataLoader {
