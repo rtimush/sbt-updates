@@ -3,7 +3,7 @@ package com.timushev.sbt.updates
 import java.net.URL
 
 import com.timushev.sbt.updates.versions.Version
-import sbt.{MavenRepository, ModuleID, Resolver}
+import sbt.{Logger, MavenRepository, ModuleID, Resolver}
 
 import scala.collection.mutable
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -11,14 +11,17 @@ import scala.concurrent.Future
 import scala.xml.{Elem, XML}
 
 object MetadataLoaderFactory {
-  val loader: PartialFunction[Resolver, MetadataLoader] = {
-    case repo: MavenRepository => new MavenMetadataLoader(repo, download)
+  def loader(logger: Logger): PartialFunction[Resolver, MetadataLoader] = {
+    case repo: MavenRepository => new MavenMetadataLoader(repo, download(logger))
   }
 
   private val cache = mutable.Map[String, Future[Elem]]()
 
-  def download(url: String) = synchronized {
-    cache.getOrElseUpdate(url, Future(XML.load(new URL(url))))
+  def download(logger: Logger)(url: String) = synchronized {
+    cache.getOrElseUpdate(url, Future {
+      logger.debug(s"Downloading $url")
+      XML.load(new URL(url))
+    })
   }
 }
 
