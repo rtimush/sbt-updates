@@ -4,7 +4,11 @@ import sbt._
 import sbt.Keys._
 import com.timushev.sbt.updates.UpdatesKeys._
 
-object UpdatesPlugin extends Plugin with UpdatesPluginTasks with UpdatesKeys {
+object UpdatesPlugin extends AutoPlugin with UpdatesPluginTasks {
+
+  object autoImport extends UpdatesKeys
+
+  override val trigger = allRequirements
 
   override val projectSettings = Seq(
     dependencyUpdatesReportFile := target.value / "dependency-updates.txt",
