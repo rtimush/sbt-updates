@@ -12,6 +12,7 @@ object UpdatesPlugin extends AutoPlugin with UpdatesPluginTasks {
 
   override val projectSettings = Seq(
     dependencyUpdatesReportFile := target.value / "dependency-updates.txt",
+    dependencyUpdatesExclusions := DependencyFilter.fnToModuleFilter(_ => false),
     dependencyUpdatesFailBuild := false,
     dependencyUpdatesData <<= dependencyUpdatesDataTask,
     dependencyUpdates <<= dependencyUpdatesTask,

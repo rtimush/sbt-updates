@@ -7,6 +7,7 @@ import scala.collection.immutable.SortedSet
 
 trait UpdatesKeys {
   lazy val dependencyUpdatesReportFile = settingKey[File]("Dependency updates report file")
+  lazy val dependencyUpdatesExclusions = settingKey[ModuleFilter]("Dependencies that are excluded from update reporting")
   lazy val dependencyUpdatesFailBuild = settingKey[Boolean]("Fail a build if updates found")
   lazy val dependencyUpdatesData = taskKey[Map[ModuleID, SortedSet[Version]]]("")
   lazy val dependencyUpdates = taskKey[Unit]("Shows a list of project dependencies that can be updated.")

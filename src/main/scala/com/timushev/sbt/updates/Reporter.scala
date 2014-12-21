@@ -71,13 +71,15 @@ object Reporter {
     }
   }
 
-  def displayDependencyUpdates(project: ModuleID, dependencyUpdates: Map[ModuleID, SortedSet[Version]], failBuild: Boolean, out: TaskStreams[_]): Unit = {
-    out.log.info(dependencyUpdatesReport(project, dependencyUpdates))
-    if (failBuild && dependencyUpdates.nonEmpty) sys.error("Dependency updates found")
+  def displayDependencyUpdates(project: ModuleID, dependencyUpdates: Map[ModuleID, SortedSet[Version]], excluded: ModuleFilter, failBuild: Boolean, out: TaskStreams[_]): Unit = {
+    val nonExcluded = dependencyUpdates.filterKeys(moduleId => !excluded(moduleId))
+    out.log.info(dependencyUpdatesReport(project, nonExcluded))
+    if (failBuild && nonExcluded.nonEmpty) sys.error("Dependency updates found")
   }
 
-  def writeDependencyUpdatesReport(project: ModuleID, dependencyUpdates: Map[ModuleID, SortedSet[Version]], file: File, out: TaskStreams[_]): File = {
-    IO.write(file, dependencyUpdatesReport(project, dependencyUpdates) + "\n")
+  def writeDependencyUpdatesReport(project: ModuleID, dependencyUpdates: Map[ModuleID, SortedSet[Version]], excluded: ModuleFilter, file: File, out: TaskStreams[_]): File = {
+    val nonExcluded = dependencyUpdates.filterKeys(moduleId => !excluded(moduleId))
+    IO.write(file, dependencyUpdatesReport(project, nonExcluded) + "\n")
     out.log.info("Dependency update report written to %s" format file)
     file
   }
