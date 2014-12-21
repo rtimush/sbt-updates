@@ -71,16 +71,28 @@ object Reporter {
     }
   }
 
-  def displayDependencyUpdates(project: ModuleID, dependencyUpdates: Map[ModuleID, SortedSet[Version]], failBuild: Boolean, out: TaskStreams[_]): Unit = {
-    out.log.info(dependencyUpdatesReport(project, dependencyUpdates))
-    if (failBuild && dependencyUpdates.nonEmpty) sys.error("Dependency updates found")
+  def displayDependencyUpdates(project: ModuleID, dependencyUpdates: Map[ModuleID, SortedSet[Version]], excluded: Set[ModuleID], failBuild: Boolean, out: TaskStreams[_]): Unit = {
+    val nonExcluded = removeExcluded(dependencyUpdates, excluded)
+    out.log.info(dependencyUpdatesReport(project, nonExcluded))
+    if (failBuild && nonExcluded.nonEmpty) sys.error("Dependency updates found")
   }
 
-  def writeDependencyUpdatesReport(project: ModuleID, dependencyUpdates: Map[ModuleID, SortedSet[Version]], file: File, out: TaskStreams[_]): File = {
-    IO.write(file, dependencyUpdatesReport(project, dependencyUpdates) + "\n")
+  def writeDependencyUpdatesReport(project: ModuleID, dependencyUpdates: Map[ModuleID, SortedSet[Version]], excluded: Set[ModuleID], file: File, out: TaskStreams[_]): File = {
+    val nonExcluded = removeExcluded(dependencyUpdates, excluded)
+    IO.write(file, dependencyUpdatesReport(project, nonExcluded) + "\n")
     out.log.info("Dependency update report written to %s" format file)
     file
   }
+
+  private def removeExcluded(dependencyUpdates: Map[ModuleID, SortedSet[Version]], excluded: Set[ModuleID]):  Map[ModuleID, SortedSet[Version]] =
+    dependencyUpdates.filterKeys {
+      moduleId => !excluded.exists(
+        excludedModuleId =>
+          excludedModuleId.organization == moduleId.organization &&
+          excludedModuleId.name == moduleId.name &&
+          excludedModuleId.revision == moduleId.revision
+      )
+    }
 
   def formatModule(module: ModuleID) =
     module.organization + ":" + module.name + module.configurations.map(":" + _).getOrElse("")
