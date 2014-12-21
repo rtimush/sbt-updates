@@ -10,11 +10,11 @@ trait UpdatesPluginTasks {
       .map(Reporter.dependencyUpdatesData)
 
   def dependencyUpdatesTask =
-    (projectID, dependencyUpdatesData, dependencyUpdatesFailBuild, streams)
+    (projectID, dependencyUpdatesData, dependencyUpdatesExclusions, dependencyUpdatesFailBuild, streams)
       .map(Reporter.displayDependencyUpdates)
 
   def writeDependencyUpdatesReportTask =
-    (projectID, dependencyUpdatesData, dependencyUpdatesReportFile, streams)
+    (projectID, dependencyUpdatesData, dependencyUpdatesExclusions, dependencyUpdatesReportFile, streams)
       .map(Reporter.writeDependencyUpdatesReport)
 
 }
