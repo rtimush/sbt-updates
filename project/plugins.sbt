@@ -3,6 +3,6 @@ resolvers ++= Seq(
   "coda" at "http://repo.codahale.com"
 )
 
-addSbtPlugin("net.virtual-void" % "sbt-cross-building" % "0.8.1")
+libraryDependencies += "org.scala-sbt" % "scripted-plugin" % sbtVersion.value
 
 addSbtPlugin("me.lessis" % "ls-sbt" % "0.1.3")

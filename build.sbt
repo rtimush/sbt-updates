@@ -12,9 +12,5 @@ libraryDependencies ++= Seq(
   "org.scalatest" %% "scalatest"   % "2.2.2" % "test"
 )
 
-CrossBuilding.settings
-
-CrossBuilding.scriptedSettings
-
-CrossBuilding.crossSbtVersions := Seq("0.13")
+scriptedSettings
 
