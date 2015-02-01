@@ -1,0 +1,9 @@
+language: scala
+scala:
+- 2.10.4
+jdk:
+- oraclejdk8
+- oraclejdk7
+script:
+- sbt test
+- sbt scripted
