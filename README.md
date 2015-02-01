@@ -41,7 +41,15 @@ Settings
 * `dependencyUpdatesExclusions`: filter matching dependencies that should be excluded from update reporting.
 * `dependencyUpdatesFailBuild`: `dependencyUpdates` task will fail a build if updates found.
 
-Example:
+Exclusions
+==========
+You can exclude some modules from update checking:
+```
+dependencyUpdatesExclusions := moduleFilter(organization = "org.scala-lang")
+```
+
+Example
+=======
 ```
 > dependencyUpdates
 [info] Found 3 dependency updates for test-project
