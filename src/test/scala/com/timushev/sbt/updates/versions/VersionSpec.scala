@@ -1,9 +1,8 @@
 package com.timushev.sbt.updates.versions
 
-import org.scalatest.matchers.ShouldMatchers
-import org.scalatest.FreeSpec
+import org.scalatest.{FreeSpec, Matchers}
 
-class VersionSpec extends FreeSpec with ShouldMatchers {
+class VersionSpec extends FreeSpec with Matchers {
 
   "Versions" - {
     "should be classified correctly" in {

@@ -23,7 +23,7 @@ object Reporter {
     val loaders = resolvers collect MetadataLoaderFactory.loader(out.log)
     val updatesFuture = Future.sequence(crossDependencies map findUpdates(loaders))
     val updates = Await.result(updatesFuture, 1.hour)
-    (dependencies zip updates toMap).filterNot(_._2.isEmpty).toMap
+    (dependencies zip updates).filterNot(_._2.isEmpty).toMap
   }
 
   def gatherDependencyUpdates(dependencyUpdates: Map[ModuleID, SortedSet[Version]]): Seq[String] = {
@@ -58,7 +58,7 @@ object Reporter {
 
   def dependencyUpdatesReport(project: ModuleID, dependencyUpdates: Map[ModuleID, SortedSet[Version]]): String = {
     val updates = gatherDependencyUpdates(dependencyUpdates)
-    if (updates.isEmpty) "No dependency updates found for %s" format (project.name)
+    if (updates.isEmpty) "No dependency updates found for %s" format project.name
     else {
       val info = StringBuilder.newBuilder
       info.append("Found %s dependency update%s for %s" format(updates.size, if (updates.size > 1) "s" else "", project.name))

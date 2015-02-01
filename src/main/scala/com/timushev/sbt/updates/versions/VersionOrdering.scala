@@ -25,7 +25,7 @@ class VersionOrdering extends Ordering[Version] {
       case (Left(_), Right(_)) => -1
       case (Right(_), Left(_)) => 1
       case (Right(x), Right(y)) => x compareTo y
-    } find (0 !=) orElse Some(a compareTo b)
+    } find (0 != _) orElse Some(a compareTo b)
   }
 
   private def compareNumericParts(a: List[Long], b: List[Long]): Option[Int] = (a, b) match {

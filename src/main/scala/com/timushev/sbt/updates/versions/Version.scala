@@ -1,6 +1,6 @@
 package com.timushev.sbt.updates.versions
 
-import util.parsing.combinator.RegexParsers
+import scala.util.parsing.combinator.RegexParsers
 
 sealed trait Version {
   def major: Long
@@ -31,14 +31,14 @@ object ReleaseVersion {
 
 object PreReleaseVersion {
   def unapply(v: Version) = v match {
-    case ValidVersion(_, releasePart, preReleasePart, Nil) if !preReleasePart.isEmpty => Some(releasePart, preReleasePart)
+    case ValidVersion(_, releasePart, preReleasePart, Nil) if preReleasePart.nonEmpty => Some(releasePart, preReleasePart)
     case _ => None
   }
 }
 
 object PreReleaseBuildVersion {
   def unapply(v: Version) = v match {
-    case ValidVersion(_, releasePart, preReleasePart, buildPart) if !preReleasePart.isEmpty && !buildPart.isEmpty => Some(releasePart, preReleasePart, buildPart)
+    case ValidVersion(_, releasePart, preReleasePart, buildPart) if preReleasePart.nonEmpty && buildPart.nonEmpty => Some(releasePart, preReleasePart, buildPart)
     case _ => None
   }
 }
@@ -52,7 +52,7 @@ object SnapshotVersion {
 
 object BuildVersion {
   def unapply(v: Version) = v match {
-    case ValidVersion(_, releasePart, Nil, buildPart) if !buildPart.isEmpty => Some(releasePart, buildPart)
+    case ValidVersion(_, releasePart, Nil, buildPart) if buildPart.nonEmpty => Some(releasePart, buildPart)
     case _ => None
   }
 }
@@ -69,13 +69,13 @@ object Version {
 object VersionParser extends RegexParsers {
 
   private val token = """[^-+.]+""".r
-  private val number = """\d{1,18}(?=[-+.]|$)""".r ^^ {_.toLong}
+  private val number = """\d{1,18}(?=[-+.]|$)""".r ^^ (_.toLong)
 
-  private val numericPart: Parser[List[Long]] = number ~ (("." ~> number) *) ^^ {case h ~ t => h :: t}
-  private val part: Parser[List[String]] = token ~ ((("." | "-") ~> token) *) ^^ {case h ~ t => h :: t}
+  private val numericPart: Parser[List[Long]] = number ~ ("." ~> number).* ^^ {case h ~ t => h :: t}
+  private val part: Parser[List[String]] = token ~ (("." | "-") ~> token).* ^^ {case h ~ t => h :: t}
 
   private val version: Parser[(List[Long], List[String], List[String])] =
-    numericPart ~ ((("." | "-") ~> part) ?) ~ (("+" ~> part) ?) ^^ {case a ~ b ~ c => (a, b.getOrElse(Nil), c.getOrElse(Nil))}
+    numericPart ~ (("." | "-") ~> part).? ~ ("+" ~> part).? ^^ {case a ~ b ~ c => (a, b.getOrElse(Nil), c.getOrElse(Nil))}
 
   def parse(text: String) = parseAll(version, text)
 
