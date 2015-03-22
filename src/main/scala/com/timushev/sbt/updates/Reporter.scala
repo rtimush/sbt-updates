@@ -18,12 +18,16 @@ object Reporter {
                             resolvers: Seq[Resolver],
                             scalaFullVersion: String,
                             scalaBinaryVersion: String,
+                            excluded: ModuleFilter,
                             out: TaskStreams[_]): Map[ModuleID, SortedSet[Version]] = {
     val crossDependencies = dependencies.map(CrossVersion(scalaFullVersion, scalaBinaryVersion))
     val loaders = resolvers collect MetadataLoaderFactory.loader(out.log)
     val updatesFuture = Future.sequence(crossDependencies map findUpdates(loaders))
     val updates = Await.result(updatesFuture, 1.hour)
-    (dependencies zip updates).filterNot(_._2.isEmpty).toMap
+    (dependencies zip updates)
+      .toMap
+      .transform(exclude(excluded))
+      .filterNot(_._2.isEmpty)
   }
 
   def gatherDependencyUpdates(dependencyUpdates: Map[ModuleID, SortedSet[Version]]): Seq[String] = {
@@ -71,15 +75,13 @@ object Reporter {
     }
   }
 
-  def displayDependencyUpdates(project: ModuleID, dependencyUpdates: Map[ModuleID, SortedSet[Version]], excluded: ModuleFilter, failBuild: Boolean, out: TaskStreams[_]): Unit = {
-    val nonExcluded = dependencyUpdates.filterKeys(moduleId => !excluded(moduleId))
-    out.log.info(dependencyUpdatesReport(project, nonExcluded))
-    if (failBuild && nonExcluded.nonEmpty) sys.error("Dependency updates found")
+  def displayDependencyUpdates(project: ModuleID, dependencyUpdates: Map[ModuleID, SortedSet[Version]], failBuild: Boolean, out: TaskStreams[_]): Unit = {
+    out.log.info(dependencyUpdatesReport(project, dependencyUpdates))
+    if (failBuild && dependencyUpdates.nonEmpty) sys.error("Dependency updates found")
   }
 
-  def writeDependencyUpdatesReport(project: ModuleID, dependencyUpdates: Map[ModuleID, SortedSet[Version]], excluded: ModuleFilter, file: File, out: TaskStreams[_]): File = {
-    val nonExcluded = dependencyUpdates.filterKeys(moduleId => !excluded(moduleId))
-    IO.write(file, dependencyUpdatesReport(project, nonExcluded) + "\n")
+  def writeDependencyUpdatesReport(project: ModuleID, dependencyUpdates: Map[ModuleID, SortedSet[Version]], file: File, out: TaskStreams[_]): File = {
+    IO.write(file, dependencyUpdatesReport(project, dependencyUpdates) + "\n")
     out.log.info("Dependency update report written to %s" format file)
     file
   }
@@ -103,5 +105,9 @@ object Reporter {
     }.lastOption
 
   def pad(s: String, w: Int) = s.padTo(w, ' ')
+
+  def exclude(excluded: ModuleFilter)(module: ModuleID, versions: SortedSet[Version]): SortedSet[Version] = {
+    versions.filterNot { version => excluded.apply(module.copy(revision = version.toString)) }
+  }
 
 }
