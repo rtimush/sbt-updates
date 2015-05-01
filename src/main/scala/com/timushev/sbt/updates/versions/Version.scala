@@ -23,8 +23,10 @@ case class InvalidVersion(text: String) extends Version {
 }
 
 object ReleaseVersion {
+  val releaseKeyword = "(?i)final|release".r
   def unapply(v: Version) = v match {
     case ValidVersion(_, releasePart, Nil, Nil) => Some(releasePart)
+    case ValidVersion(_, releasePart, releaseKeyword() :: Nil, Nil) => Some(releasePart)
     case _ => None
   }
 }

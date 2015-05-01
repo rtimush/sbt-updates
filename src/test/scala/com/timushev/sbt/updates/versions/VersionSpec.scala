@@ -6,9 +6,11 @@ class VersionSpec extends FreeSpec with Matchers {
 
   "Versions" - {
     "should be classified correctly" in {
-      Version("1.0.0") match {
-        case ReleaseVersion(r) => r should equal(1 :: 0 :: 0 :: Nil)
-        case _ => fail("not a release version")
+      List("1.0.0", "1.0.0.Final", "1.0.0-FINAL", "1.0.0.RELEASE") foreach { rel =>
+        Version(rel) match {
+          case ReleaseVersion(r) => r should equal(1 :: 0 :: 0 :: Nil)
+          case _ => fail(s"$rel is not a release version")
+        }
       }
       Version("1.0.0-alpha.1") match {
         case PreReleaseVersion(r, p) =>
