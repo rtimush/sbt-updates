@@ -6,7 +6,7 @@ import com.timushev.sbt.updates.UpdatesKeys._
 trait UpdatesPluginTasks {
 
   def dependencyUpdatesDataTask =
-    (projectID, libraryDependencies, externalResolvers, scalaVersion, scalaBinaryVersion, dependencyUpdatesExclusions, streams)
+    (projectID, libraryDependencies, externalResolvers, scalaVersion, scalaBinaryVersion, dependencyUpdatesExclusions, dependencyAllowPreRelease, streams)
       .map(Reporter.dependencyUpdatesData)
 
   def dependencyUpdatesTask =

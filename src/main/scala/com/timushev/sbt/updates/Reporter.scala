@@ -19,10 +19,11 @@ object Reporter {
                             scalaFullVersion: String,
                             scalaBinaryVersion: String,
                             excluded: ModuleFilter,
+                            allowPreRelease: Boolean,
                             out: TaskStreams[_]): Map[ModuleID, SortedSet[Version]] = {
     val crossDependencies = dependencies.map(CrossVersion(scalaFullVersion, scalaBinaryVersion))
     val loaders = resolvers collect MetadataLoaderFactory.loader(out.log)
-    val updatesFuture = Future.sequence(crossDependencies map findUpdates(loaders))
+    val updatesFuture = Future.sequence(crossDependencies map findUpdates(loaders, allowPreRelease))
     val updates = Await.result(updatesFuture, 1.hour)
     (dependencies zip updates)
       .toMap
