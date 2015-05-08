@@ -14,6 +14,7 @@ object UpdatesPlugin extends AutoPlugin with UpdatesPluginTasks {
     dependencyUpdatesReportFile := target.value / "dependency-updates.txt",
     dependencyUpdatesExclusions := DependencyFilter.fnToModuleFilter(_ => false),
     dependencyUpdatesFailBuild := false,
+    dependencyAllowPreRelease := false,
     dependencyUpdatesData <<= dependencyUpdatesDataTask,
     dependencyUpdates <<= dependencyUpdatesTask,
     dependencyUpdatesReport <<= writeDependencyUpdatesReportTask
