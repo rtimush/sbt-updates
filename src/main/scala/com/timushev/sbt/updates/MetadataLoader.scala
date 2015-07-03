@@ -8,6 +8,8 @@ import sbt.{Logger, MavenRepository, ModuleID, Resolver}
 import scala.collection.mutable
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import scala.util.control.NonFatal
+import scala.util.{Failure, Try}
 import scala.xml.{Elem, XML}
 
 object MetadataLoaderFactory {
@@ -15,12 +17,18 @@ object MetadataLoaderFactory {
     case repo: MavenRepository => new MavenMetadataLoader(repo, download(logger))
   }
 
-  private val cache = mutable.Map[String, Future[Elem]]()
+  private val cache = mutable.Map[String, Future[Option[Elem]]]()
 
   def download(logger: Logger)(url: String) = synchronized {
     cache.getOrElseUpdate(url, Future {
       logger.debug(s"Downloading $url")
-      XML.load(new URL(url))
+      Try {
+        XML.load(new URL(url))
+      }.recoverWith {
+        case NonFatal(e) =>
+          logger.warn(s"Could not download $url: ${e.getMessage}")
+          Failure(e)
+      }.toOption
     })
   }
 }
@@ -29,7 +37,7 @@ trait MetadataLoader {
   def getVersions(module: ModuleID): Future[Seq[Version]]
 }
 
-class MavenMetadataLoader(repo: MavenRepository, download: String => Future[xml.Elem]) extends MetadataLoader {
+class MavenMetadataLoader(repo: MavenRepository, download: String => Future[Option[xml.Elem]]) extends MetadataLoader {
 
   def getVersions(module: ModuleID): Future[Seq[Version]] =
     download(metadataUrl(module)).map(extractVersions)
@@ -40,7 +48,7 @@ class MavenMetadataLoader(repo: MavenRepository, download: String => Future[xml.
   def artifactUrl(module: ModuleID) =
     (module.organization.split('.') :+ module.name foldLeft repo.root.stripSuffix("/"))(_ + '/' + _)
 
-  def extractVersions(metadata: xml.Elem): Seq[Version] =
-    metadata \ "versioning" \ "versions" \ "version" map (_.text) map Version.apply
-
+  def extractVersions(metadata: Option[xml.Elem]): Seq[Version] = metadata.toSeq.flatMap(
+    _ \ "versioning" \ "versions" \ "version" map (_.text) map Version.apply
+  )
 }
