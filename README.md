@@ -20,15 +20,18 @@ addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.1.9")
 ```
 
 ### Snapshot version
+Choose one of versions available on [BinTray](https://bintray.com/rtimush/sbt-plugin-snapshots/sbt-updates/view)
+or the [latest](https://bintray.com/rtimush/sbt-plugin-snapshots/sbt-updates/_latestVersion) one.
 Add the following lines to one of these files:
 - The project-specific file at `project/sbt-updates.sbt`
 - Your global file at `~/.sbt/0.13/plugins/sbt-updates.sbt`
 
 ```
-resolvers += Resolver.url("sbt-plugin-snapshots", url("http://scalasbt.artifactoryonline.com/scalasbt/sbt-plugin-snapshots"))(Resolver.ivyStylePatterns)
-
-addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.1.10-SNAPSHOT")
+resolvers += Resolver.url("rtimush/sbt-plugin-snapshots", new URL("https://dl.bintray.com/rtimush/sbt-plugin-snapshots/"))(Resolver.ivyStylePatterns)
+addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.1.9-6-g5a7705c")
 ```
+
+Note, that snapshots are not updated automatically.
 
 Tasks
 =====
