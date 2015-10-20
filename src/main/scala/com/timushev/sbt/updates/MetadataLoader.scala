@@ -1,8 +1,8 @@
 package com.timushev.sbt.updates
 
 import java.net.URL
+import javax.xml.bind.DatatypeConverter
 
-import com.github.marklister.base64.Base64
 import com.timushev.sbt.updates.versions.Version
 import sbt._
 
@@ -24,7 +24,7 @@ object MetadataLoaderFactory {
     cache.getOrElseUpdate(url, Future {
       credentials match {
         case Some(c) =>
-          val auth = Base64.Encoder(s"${c.userName}:${c.passwd}".getBytes).toBase64
+          val auth = DatatypeConverter.printBase64Binary(s"${c.userName}:${c.passwd}".getBytes)
           val connection = new URL(url).openConnection()
           connection.setRequestProperty("Authorization", s"Basic $auth")
           logger.debug(s"Downloading $url as ${c.userName}")
