@@ -1,10 +1,7 @@
 sbtPlugin := true
 
 name := "sbt-updates"
-
 organization := "com.timushev.sbt"
-
-version := "0.1.9"
 
 scalacOptions := Seq("-deprecation", "-unchecked", "-feature")
 
@@ -14,3 +11,5 @@ libraryDependencies ++= Seq(
 
 scriptedSettings
 
+enablePlugins(GitVersioning)
+git.useGitDescribe := true
