@@ -16,7 +16,7 @@ Add the following line to one of these files:
 - Your global file at `~/.sbt/0.13/plugins/sbt-updates.sbt`
 
 ```
-addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.1.9")
+addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.1.10")
 ```
 
 ### Snapshot version
