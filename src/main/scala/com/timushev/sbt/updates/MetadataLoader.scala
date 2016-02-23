@@ -12,10 +12,20 @@ import scala.concurrent.Future
 import scala.xml.{Elem, XML}
 
 object MetadataLoaderFactory {
-  def loader(logger: Logger, credentials: Seq[Credentials]): PartialFunction[Resolver, MetadataLoader] = {
+
+  val KnownProtocol = "(?i)^https?$".r
+
+  def loader(logger: Logger, credentials: Seq[Credentials]): PartialFunction[Resolver, MetadataLoader] = Function.unlift {
     case repo: MavenRepository =>
-      val repoCredentials = Credentials.forHost(credentials, new URL(repo.root).getHost)
-      new MavenMetadataLoader(repo, download(logger, repoCredentials))
+      val url = new URL(repo.root)
+      url.getProtocol match {
+        case KnownProtocol() =>
+          val repoCredentials = Credentials.forHost(credentials, url.getHost)
+          Some(new MavenMetadataLoader(repo, download(logger, repoCredentials)))
+        case _ => None
+      }
+    case _ =>
+      None
   }
 
   private val cache = mutable.Map[String, Future[Elem]]()
@@ -50,7 +60,7 @@ class MavenMetadataLoader(repo: MavenRepository, download: String => Future[xml.
     artifactUrl(module) + "/maven-metadata.xml"
 
   def artifactUrl(module: ModuleID) =
-    (module.organization.split('.') :+ module.name foldLeft repo.root.stripSuffix("/"))(_ + '/' + _)
+    (module.organization.split('.') :+ module.name foldLeft repo.root.stripSuffix("/")) (_ + '/' + _)
 
   def extractVersions(metadata: xml.Elem): Seq[Version] =
     metadata \ "versioning" \ "versions" \ "version" map (_.text) map Version.apply
