@@ -6,7 +6,7 @@ organization := "com.timushev.sbt"
 scalacOptions := Seq("-deprecation", "-unchecked", "-feature")
 
 libraryDependencies ++= Seq(
-  "org.scalatest" %% "scalatest"   % "2.2.2" % "test"
+  "org.scalatest" %% "scalatest"   % "2.2.6" % "test"
 )
 
 scriptedSettings
