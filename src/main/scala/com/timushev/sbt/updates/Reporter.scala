@@ -17,14 +17,20 @@ object Reporter {
                             dependencies: Seq[ModuleID],
                             resolvers: Seq[Resolver],
                             credentials: Seq[Credentials],
-                            scalaFullVersion: String,
-                            scalaBinaryVersion: String,
+                            scalaVersions: Seq[String],
                             excluded: ModuleFilter,
                             allowPreRelease: Boolean,
                             out: TaskStreams[_]): Map[ModuleID, SortedSet[Version]] = {
-    val crossDependencies = dependencies.map(CrossVersion(scalaFullVersion, scalaBinaryVersion))
     val loaders = resolvers collect MetadataLoaderFactory.loader(out.log, credentials)
-    val updatesFuture = Future.sequence(crossDependencies map findUpdates(loaders, allowPreRelease))
+    val updatesFuture = Future.sequence(scalaVersions map { scalaVersion =>
+      val crossVersion = CrossVersion(scalaVersion, CrossVersion.binaryScalaVersion(scalaVersion))
+      val crossDependencies = dependencies map crossVersion
+      Future.sequence(crossDependencies map findUpdates(loaders, allowPreRelease))
+    }) map { crossUpdates =>
+      crossUpdates.transpose map { updates =>
+        updates reduce (_ intersect _)
+      }
+    }
     val updates = Await.result(updatesFuture, 1.hour)
     (dependencies zip updates)
       .toMap

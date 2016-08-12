@@ -2,6 +2,11 @@ sbt-updates [![Build Status](https://travis-ci.org/rtimush/sbt-updates.svg?branc
 ==================
 Display your SBT project's dependency updates.
 
+Update information is obtained from the maven metadata, so no updates for dependencies in Ivy repositories
+will be found.
+ 
+If your project uses `crossScalaVersions` you will be presented only with updates available for all scala versions. 
+
 Requirements
 ==============
 SBT 0.13.5 and later
@@ -16,7 +21,7 @@ Add the following line to one of these files:
 - Your global file at `~/.sbt/0.13/plugins/sbt-updates.sbt`
 
 ```
-addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.1.10")
+addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.2.0")
 ```
 
 ### Snapshot version
