@@ -52,6 +52,12 @@ You can exclude some modules from update checking:
 dependencyUpdatesExclusions := moduleFilter(organization = "org.scala-lang")
 ```
 
+Publishing
+==========
+`sbt-updates` relies on the repository Maven metadata. If you want to get update notifications
+ for artifacts published by other SBT projects, you should ensure that metadata is updated
+ correctly. One possible way to achieve this is to use [sbt-aether-deploy](https://github.com/arktekk/sbt-aether-deploy).
+
 Example
 =======
 ```
