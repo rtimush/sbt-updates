@@ -1,23 +1,29 @@
 package com.timushev.sbt.updates
 
-import sbt._
-import sbt.Keys._
 import com.timushev.sbt.updates.UpdatesKeys._
+import sbt.Keys._
+import sbt._
 
-object UpdatesPlugin extends AutoPlugin with UpdatesPluginTasks {
+object UpdatesPlugin extends AutoPlugin {
 
   object autoImport extends UpdatesKeys
 
-  override val trigger = allRequirements
+  override val trigger: PluginTrigger = allRequirements
 
   override val projectSettings = Seq(
     dependencyUpdatesReportFile := target.value / "dependency-updates.txt",
     dependencyUpdatesExclusions := DependencyFilter.fnToModuleFilter(_ => false),
     dependencyUpdatesFailBuild := false,
     dependencyAllowPreRelease := false,
-    dependencyUpdatesData <<= dependencyUpdatesDataTask,
-    dependencyUpdates <<= dependencyUpdatesTask,
-    dependencyUpdatesReport <<= writeDependencyUpdatesReportTask
+    dependencyUpdatesData := {
+      Reporter.dependencyUpdatesData(projectID.value, libraryDependencies.value, externalResolvers.value, credentials.value, crossScalaVersions.value, dependencyUpdatesExclusions.value, dependencyAllowPreRelease.value, streams.value)
+    },
+    dependencyUpdates := {
+      Reporter.displayDependencyUpdates(projectID.value, dependencyUpdatesData.value, dependencyUpdatesFailBuild.value, streams.value)
+    },
+    dependencyUpdatesReport := {
+      Reporter.writeDependencyUpdatesReport(projectID.value, dependencyUpdatesData.value, dependencyUpdatesReportFile.value, streams.value)
+    }
   )
 
 }
