@@ -1,7 +1,7 @@
 package com.timushev.sbt.updates
 
 import org.scalatest.{FreeSpec, Matchers}
-import sbt._
+import sbt.{globFilter => _, _}
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
