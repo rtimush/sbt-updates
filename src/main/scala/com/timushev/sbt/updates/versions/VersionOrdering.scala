@@ -6,7 +6,7 @@ class VersionOrdering extends Ordering[Version] {
 
   private val subParts = "(\\d+)?(\\D+)?".r
 
-  private def parsePart(s:String): Seq[Either[Int, String]] = try {
+  private def parsePart(s: String): Seq[Either[Int, String]] = try {
     subParts.findAllIn(s).matchData
       .flatMap { case Groups(num, str) => Seq(
         Option(num).map(_.toInt).map(Left.apply),
@@ -19,7 +19,7 @@ class VersionOrdering extends Ordering[Version] {
   private def toOpt(x: Int): Option[Int] = if (x == 0) None else Some(x)
 
   private def comparePart(a: String, b: String) = {
-    if(a == b) None
+    if (a == b) None
     else (parsePart(a) zip parsePart(b)) map {
       case (Left(x), Left(y)) => x compareTo y
       case (Left(_), Right(_)) => -1

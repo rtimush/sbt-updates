@@ -1,4 +1,4 @@
-package com.timushev.sbt.updates
+package com.timushev.sbt.updates.metadata
 
 import java.net.URL
 

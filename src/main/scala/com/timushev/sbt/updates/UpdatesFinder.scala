@@ -1,5 +1,6 @@
 package com.timushev.sbt.updates
 
+import com.timushev.sbt.updates.metadata.MetadataLoader
 import com.timushev.sbt.updates.versions._
 import sbt.ModuleID
 

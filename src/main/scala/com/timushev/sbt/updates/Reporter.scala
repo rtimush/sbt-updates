@@ -1,5 +1,6 @@
 package com.timushev.sbt.updates
 
+import com.timushev.sbt.updates.metadata.MetadataLoaderFactory
 import com.timushev.sbt.updates.versions.Version
 import sbt._
 import sbt.std.TaskStreams
@@ -53,9 +54,10 @@ object Reporter {
           )
       }.toSeq.sortBy(_.head)
       val widths = table.transpose.map {
-        c => c.foldLeft(0) {
-          _ max _.map(_.length).getOrElse(0)
-        }
+        c =>
+          c.foldLeft(0) {
+            _ max _.map(_.length).getOrElse(0)
+          }
       }
       val separator = Seq("", " : ", " -> ", " -> ", " -> ")
       for (row <- table) yield {

@@ -1,4 +1,4 @@
-package com.timushev.sbt.updates
+package com.timushev.sbt.updates.metadata
 
 import com.timushev.sbt.updates.versions.Version
 import sbt.ModuleID

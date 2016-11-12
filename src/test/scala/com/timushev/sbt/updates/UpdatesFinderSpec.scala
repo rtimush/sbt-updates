@@ -1,5 +1,6 @@
 package com.timushev.sbt.updates
 
+import com.timushev.sbt.updates.metadata.FixedMetadataLoader
 import org.scalatest.{FreeSpec, Matchers}
 import sbt.{globFilter => _, _}
 
