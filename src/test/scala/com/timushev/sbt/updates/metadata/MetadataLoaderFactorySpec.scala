@@ -10,9 +10,9 @@ class MetadataLoaderFactorySpec extends FreeSpec with Matchers {
   val logger = ConsoleLogger()
 
   "A MetadataLoader factory" - {
-    "should return a MavenMetadataLoader for maven repositories" in {
+    "should return a CachingMetadataLoader for maven repositories" in {
       MetadataLoaderFactory.loader(logger, Nil) apply Resolver.jcenterRepo should have(
-        'class (classOf[MavenMetadataLoader])
+        'class (classOf[CachingMetadataLoader])
       )
     }
     "should ignore unknown protocols" in {
