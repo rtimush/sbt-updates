@@ -16,7 +16,7 @@ object UpdatesPlugin extends AutoPlugin {
     dependencyUpdatesFailBuild := false,
     dependencyAllowPreRelease := false,
     dependencyUpdatesData := {
-      Reporter.dependencyUpdatesData(projectID.value, libraryDependencies.value, externalResolvers.value, credentials.value, crossScalaVersions.value, dependencyUpdatesExclusions.value, dependencyAllowPreRelease.value, streams.value)
+      Reporter.dependencyUpdatesData(projectID.value, libraryDependencies.value, fullResolvers.value, credentials.value, crossScalaVersions.value, dependencyUpdatesExclusions.value, dependencyAllowPreRelease.value, streams.value)
     },
     dependencyUpdates := {
       Reporter.displayDependencyUpdates(projectID.value, dependencyUpdatesData.value, dependencyUpdatesFailBuild.value, streams.value)
