@@ -27,7 +27,10 @@ object MetadataLoaderFactory {
         case KnownProtocol() => Some(new MavenMetadataLoader(repo, downloader))
         case _ => None
       }
-    case _ =>
+    case repo: URLRepository =>
+      val downloader = new Downloader(credentials, logger)
+      Some(new IvyMetadataLoader(repo, downloader))
+    case repo =>
       None
   }
 
