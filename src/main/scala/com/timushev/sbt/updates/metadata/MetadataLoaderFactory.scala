@@ -12,6 +12,7 @@ import scala.concurrent.Future
 object MetadataLoaderFactory {
 
   val KnownProtocol = "(?i)^https?$".r
+  val KnownProtocolUrl = "(?i)^https?://".r
 
   def loader(logger: Logger, credentials: Seq[Credentials]): PartialFunction[Resolver, MetadataLoader] = {
     Function.unlift { resolver =>
@@ -28,9 +29,13 @@ object MetadataLoaderFactory {
         case _ => None
       }
     case repo: URLRepository =>
-      val downloader = new Downloader(credentials, logger)
-      Some(new IvyMetadataLoader(repo, downloader))
-    case repo =>
+      if (repo.patterns.artifactPatterns.forall(KnownProtocolUrl.findFirstIn(_).nonEmpty)) {
+        val downloader = new Downloader(credentials, logger)
+        Some(new IvyMetadataLoader(repo, downloader))
+      } else {
+        None
+      }
+    case _ =>
       None
   }
 

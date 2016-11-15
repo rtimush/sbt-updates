@@ -15,6 +15,11 @@ class MetadataLoaderFactorySpec extends FreeSpec with Matchers {
         'class (classOf[CachingMetadataLoader])
       )
     }
+    "should return a CachingMetadataLoader for ivy repositories" in {
+      MetadataLoaderFactory.loader(logger, Nil) apply Resolver.sbtPluginRepo("releases") should have(
+        'class (classOf[CachingMetadataLoader])
+      )
+    }
     "should ignore unknown protocols" in {
       val ftpResolver = Resolver.url("ftp", new URL("ftp://localhost/"))
       MetadataLoaderFactory.loader(logger, Nil) isDefinedAt ftpResolver shouldBe false
