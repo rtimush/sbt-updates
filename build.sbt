@@ -13,3 +13,8 @@ scriptedSettings
 
 enablePlugins(GitVersioning)
 git.useGitDescribe := true
+git.gitTagToVersionNumber := {
+  case VersionNumber(Seq(x, y, z), Seq(), Seq()) => Some(s"$x.$y.$z")
+  case VersionNumber(Seq(x, y, z), Seq(since, commit), Seq()) => Some(s"$x.$y.${z + 1}-$since+$commit")
+  case _ => None
+}
