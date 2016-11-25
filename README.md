@@ -33,7 +33,7 @@ Add the following lines to one of these files:
 
 ```
 resolvers += Resolver.url("rtimush/sbt-plugin-snapshots", new URL("https://dl.bintray.com/rtimush/sbt-plugin-snapshots/"))(Resolver.ivyStylePatterns)
-addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.1.9-6-g5a7705c")
+addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.2.1-12+gf85c84a")
 ```
 
 Note, that snapshots are not updated automatically.
@@ -56,6 +56,20 @@ You can exclude some modules from update checking:
 ```
 dependencyUpdatesExclusions := moduleFilter(organization = "org.scala-lang")
 ```
+
+SBT plugin updates
+=============
+You can get updates for SBT plugin by using `reload plugins` command:
+```
+> reload plugins
+...
+> dependencyUpdates
+[info] Found 2 dependency updates for project
+[info]   com.timushev.sbt:sbt-updates          : 0.3.0  -> 0.3.1
+[info]   org.scala-lang:scala-library:provided : 2.10.6          -> 2.12.0
+> reload return
+```
+Only plugins defined in a project are checked, there is currently no way to check updates for global plugins.
 
 Publishing
 ==========
