@@ -79,6 +79,9 @@ Publishing
 
 Example
 =======
+
+In order from left, the result shows current version, patch update version, minor update version and major update version.
+
 ```
 > dependencyUpdates
 [info] Found 3 dependency updates for test-project
