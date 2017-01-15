@@ -12,6 +12,7 @@ object UpdatesPlugin extends AutoPlugin {
 
   override val projectSettings = Seq(
     dependencyUpdatesReportFile := target.value / "dependency-updates.txt",
+    dependencyUpgradeBuildFile := baseDirectory.value / "build.sbt",
     dependencyUpdatesExclusions := DependencyFilter.fnToModuleFilter(_ => false),
     dependencyUpdatesFailBuild := false,
     dependencyAllowPreRelease := false,
@@ -23,6 +24,9 @@ object UpdatesPlugin extends AutoPlugin {
     },
     dependencyUpdatesReport := {
       Reporter.writeDependencyUpdatesReport(projectID.value, dependencyUpdatesData.value, dependencyUpdatesReportFile.value, streams.value)
+    },
+    upgradeBuildFile := {
+      Reporter.upgradeDependencyUpdates(projectID.value, dependencyUpdatesData.value, dependencyUpgradeBuildFile.value, streams.value)
     }
   )
 
