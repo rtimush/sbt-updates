@@ -42,10 +42,12 @@ Tasks
 =====
 * `dependencyUpdates`: show a list of project dependencies that can be updated,
 * `dependencyUpdatesReport`: writes a list of project dependencies to a file.
+* `upgradeBuildFile`: upgrade build file.
 
 Settings
 ========
 * `dependencyUpdatesReportFile`: report file location, `target/dependency-updates.txt` by default.
+* `dependencyUpgradeBuildFile`: build file location, `build.sbt` by default.
 * `dependencyUpdatesExclusions`: filter matching dependencies that should be excluded from update reporting.
 * `dependencyUpdatesFailBuild`: `dependencyUpdates` task will fail a build if updates found.
 * `dependencyAllowPreRelease`: when enabled, pre-release dependencies will be reported as well.
