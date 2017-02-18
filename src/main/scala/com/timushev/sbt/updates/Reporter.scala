@@ -1,5 +1,7 @@
 package com.timushev.sbt.updates
 
+import java.io.PrintWriter
+
 import com.timushev.sbt.updates.metadata.MetadataLoaderFactory
 import com.timushev.sbt.updates.versions.Version
 import sbt._
@@ -37,6 +39,30 @@ object Reporter {
       .toMap
       .transform(exclude(excluded))
       .filterNot(_._2.isEmpty)
+  }
+
+  def updateBuildFile(project: ModuleID, dependencyUpdates: Map[ModuleID, SortedSet[Version]], file: java.io.File): Option[File] = {
+    if (dependencyUpdates.isEmpty) None
+    else {
+      val tmpFile = "tmp-build-file"
+      val writer = new PrintWriter(tmpFile)
+      scala.io.Source.fromFile(file).getLines.map { line =>
+        replaceDependencyVersion(dependencyUpdates, line).getOrElse(line)
+      }.foreach(line => writer.println(line))
+      writer.close()
+      new java.io.File(tmpFile).renameTo(file)
+      Option(file)
+    }
+  }
+
+  def replaceDependencyVersion(dependencyUpdates: Map[ModuleID, SortedSet[Version]], line: String): Option[String] = {
+    dependencyUpdates.collectFirst {
+      case (m, vs) if m.name.contains("scala-library") &&
+        line.contains("scalaVersion") && line.contains(m.revision) =>
+        line.replaceAll(m.revision, vs.last.toString)
+      case (m, vs) if line.contains(m.name) && line.contains(m.revision) =>
+        line.replaceAll(m.revision, vs.last.toString)
+    }
   }
 
   def gatherDependencyUpdates(dependencyUpdates: Map[ModuleID, SortedSet[Version]]): Seq[String] = {
@@ -88,6 +114,12 @@ object Reporter {
   def displayDependencyUpdates(project: ModuleID, dependencyUpdates: Map[ModuleID, SortedSet[Version]], failBuild: Boolean, out: TaskStreams[_]): Unit = {
     out.log.info(dependencyUpdatesReport(project, dependencyUpdates))
     if (failBuild && dependencyUpdates.nonEmpty) sys.error("Dependency updates found")
+  }
+
+  def upgradeDependencyUpdates(project: ModuleID, dependencyUpdates: Map[ModuleID, SortedSet[Version]], file: File, out: TaskStreams[_]): File = {
+    updateBuildFile(project, dependencyUpdates, file)
+    out.log.info("Upgrade build file: %s" format file)
+    file
   }
 
   def writeDependencyUpdatesReport(project: ModuleID, dependencyUpdates: Map[ModuleID, SortedSet[Version]], file: File, out: TaskStreams[_]): File = {
