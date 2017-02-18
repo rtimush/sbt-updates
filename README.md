@@ -2,8 +2,8 @@ sbt-updates [![Build Status](https://travis-ci.org/rtimush/sbt-updates.svg?branc
 ==================
 Display your SBT project's dependency updates.
 
-Update information is obtained from the maven metadata, so no updates for dependencies in Ivy repositories
-will be found.
+Update information is obtained from the maven metadata.
+There is also a limited support for Ivy repositories hosted on BinTray.
  
 If your project uses `crossScalaVersions` you will be presented only with updates available for all scala versions. 
 
