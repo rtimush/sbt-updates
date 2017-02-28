@@ -12,6 +12,7 @@ libraryDependencies ++= Seq(
 scriptedSettings
 
 enablePlugins(GitVersioning)
+git.versionProperty := "version"
 git.useGitDescribe := true
 git.gitTagToVersionNumber := {
   case VersionNumber(Seq(x, y, z), Seq(), Seq()) => Some(s"$x.$y.$z")
