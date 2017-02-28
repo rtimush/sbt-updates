@@ -20,6 +20,7 @@ object Reporter {
                             credentials: Seq[Credentials],
                             scalaVersions: Seq[String],
                             excluded: ModuleFilter,
+                            included: ModuleFilter,
                             allowPreRelease: Boolean,
                             out: TaskStreams[_]): Map[ModuleID, SortedSet[Version]] = {
     val loaders = resolvers collect MetadataLoaderFactory.loader(out.log, credentials)
@@ -35,6 +36,7 @@ object Reporter {
     val updates = Await.result(updatesFuture, 1.hour)
     (dependencies zip updates)
       .toMap
+      .transform(include(included))
       .transform(exclude(excluded))
       .filterNot(_._2.isEmpty)
   }
@@ -115,6 +117,10 @@ object Reporter {
     }.lastOption
 
   def pad(s: String, w: Int) = s.padTo(w, ' ')
+
+  def include(included: ModuleFilter)(module: ModuleID, versions: SortedSet[Version]): SortedSet[Version] = {
+    versions.filter { version => included.apply(module.copy(revision = version.toString)) }
+  }
 
   def exclude(excluded: ModuleFilter)(module: ModuleID, versions: SortedSet[Version]): SortedSet[Version] = {
     versions.filterNot { version => excluded.apply(module.copy(revision = version.toString)) }
