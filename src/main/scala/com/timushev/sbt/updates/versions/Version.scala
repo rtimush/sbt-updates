@@ -41,28 +41,28 @@ object ReleaseVersion {
 
 object PreReleaseVersion {
   def unapply(v: Version) = v match {
-    case ValidVersion(_, releasePart, preReleasePart, Nil) if preReleasePart.nonEmpty => Some(releasePart, preReleasePart)
+    case ValidVersion(_, releasePart, preReleasePart, Nil) if preReleasePart.nonEmpty => Some((releasePart, preReleasePart))
     case _ => None
   }
 }
 
 object PreReleaseBuildVersion {
   def unapply(v: Version) = v match {
-    case ValidVersion(_, releasePart, preReleasePart, buildPart) if preReleasePart.nonEmpty && buildPart.nonEmpty => Some(releasePart, preReleasePart, buildPart)
+    case ValidVersion(_, releasePart, preReleasePart, buildPart) if preReleasePart.nonEmpty && buildPart.nonEmpty => Some((releasePart, preReleasePart, buildPart))
     case _ => None
   }
 }
 
 object SnapshotVersion {
   def unapply(v: Version) = v match {
-    case ValidVersion(_, releasePart, preReleasePart, buildPart) if preReleasePart.lastOption == Some("SNAPSHOT") => Some(releasePart, preReleasePart, buildPart)
+    case ValidVersion(_, releasePart, preReleasePart, buildPart) if preReleasePart.lastOption == Some("SNAPSHOT") => Some((releasePart, preReleasePart, buildPart))
     case _ => None
   }
 }
 
 object BuildVersion {
   def unapply(v: Version) = v match {
-    case ValidVersion(_, releasePart, Nil, buildPart) if buildPart.nonEmpty => Some(releasePart, buildPart)
+    case ValidVersion(_, releasePart, Nil, buildPart) if buildPart.nonEmpty => Some((releasePart, buildPart))
     case _ => None
   }
 }
