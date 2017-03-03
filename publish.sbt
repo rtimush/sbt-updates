@@ -1,3 +1,7 @@
+lazy val revision = System.getProperty("revision", "SNAPSHOT")
+
+version := s"1.0-$revision"
+
 publishMavenStyle := true
 
 publishTo := {
@@ -14,6 +18,6 @@ showVersion := {
   println(version.value)
 }
 
-addCommandAlias("build", "; test; compile")
+addCommandAlias("build", "; compile; scripted")
 
 licenses += (("BSD 3-Clause", url("https://github.com/rtimush/sbt-updates/blob/master/LICENSE")))
