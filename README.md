@@ -46,9 +46,12 @@ Tasks
 Settings
 ========
 * `dependencyUpdatesReportFile`: report file location, `target/dependency-updates.txt` by default.
-* `dependencyUpdatesExclusions`: filter matching dependencies that should be excluded from update reporting.
+* `dependencyUpdatesFilter`: filter matching dependencies that should be included from update reporting
 * `dependencyUpdatesFailBuild`: `dependencyUpdates` task will fail a build if updates found.
 * `dependencyAllowPreRelease`: when enabled, pre-release dependencies will be reported as well.
+
+#### Deprecated Settings
+* `dependencyUpdatesExclusions`: filter matching dependencies that should be excluded from update reporting.
 
 Exclusions
 ==========

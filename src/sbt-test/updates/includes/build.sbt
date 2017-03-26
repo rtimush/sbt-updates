@@ -6,7 +6,7 @@ libraryDependencies ++= Seq(
   "org.scala-lang" % "scala-reflect" % scalaVersion.value
 )
 
-dependencyUpdatesInclusions := moduleFilter(organization = "org.scala-lang", name = "scala-reflect", revision = "2.10.5")
+dependencyUpdatesFilter := moduleFilter(organization = "org.scala-lang", name = "scala-reflect", revision = "2.10.5")
 
 TaskKey[Unit]("check") := {
   val updates = dependencyUpdatesData.value
