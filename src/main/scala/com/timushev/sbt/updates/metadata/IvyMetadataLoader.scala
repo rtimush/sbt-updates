@@ -2,7 +2,6 @@ package com.timushev.sbt.updates.metadata
 
 import java.io.FileNotFoundException
 import java.net.URL
-import java.nio.charset.StandardCharsets
 import java.util
 
 import com.timushev.sbt.updates.Downloader
@@ -48,7 +47,7 @@ class IvyMetadataLoader(repo: URLRepository, downloader: Downloader) extends Met
     Future {
       catching(classOf[FileNotFoundException]).opt {
         val is = downloader.startDownload(new URL(url))
-        try IO.readStream(is, StandardCharsets.UTF_8) finally is.close()
+        try IO.readStream(is) finally is.close()
       }
     }
   }
@@ -60,6 +59,5 @@ class IvyMetadataLoader(repo: URLRepository, downloader: Downloader) extends Met
   private def removeE(s: String): String = {
     if (s.startsWith("e:")) s.substring(2) else s
   }
-
 
 }
