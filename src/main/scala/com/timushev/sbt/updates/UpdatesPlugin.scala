@@ -6,7 +6,7 @@ import sbt._
 
 object UpdatesPlugin extends AutoPlugin {
 
-  object autoImport extends UpdatesKeys
+  object autoImport extends UpdatesKeys with Implicits
 
   override val trigger: PluginTrigger = allRequirements
 

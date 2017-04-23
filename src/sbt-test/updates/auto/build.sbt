@@ -2,7 +2,7 @@ import com.timushev.sbt.updates.versions.Version
 
 scalaVersion := "2.10.4"
 
-dependencyUpdatesExclusions := moduleFilter(organization = "org.scala-lang", revision = "2.10.5")
+dependencyUpdatesFilter -= moduleFilter(organization = "org.scala-lang", revision = "2.10.5")
 
 TaskKey[Unit]("check") := {
   val updates = dependencyUpdatesData.value

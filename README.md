@@ -46,7 +46,7 @@ Tasks
 Settings
 ========
 * `dependencyUpdatesReportFile`: report file location, `target/dependency-updates.txt` by default.
-* `dependencyUpdatesFilter`: filter matching dependencies that should be included from update reporting
+* `dependencyUpdatesFilter`: filter matching dependencies that should be included to update reporting.
 * `dependencyUpdatesFailBuild`: `dependencyUpdates` task will fail a build if updates found.
 * `dependencyAllowPreRelease`: when enabled, pre-release dependencies will be reported as well.
 
@@ -57,7 +57,7 @@ Exclusions
 ==========
 You can exclude some modules from update checking:
 ```
-dependencyUpdatesExclusions := moduleFilter(organization = "org.scala-lang")
+dependencyUpdatesFilter -= moduleFilter(organization = "org.scala-lang")
 ```
 
 SBT plugin updates
