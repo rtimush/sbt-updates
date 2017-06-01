@@ -3,6 +3,7 @@ package com.timushev.sbt.updates
 import com.timushev.sbt.updates.UpdatesKeys._
 import sbt.Keys._
 import sbt._
+import com.timushev.sbt.updates.Compat._
 
 object UpdatesPlugin extends AutoPlugin {
 
