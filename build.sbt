@@ -10,6 +10,7 @@ libraryDependencies ++= Seq(
 )
 
 scriptedSettings
+scriptedLaunchOpts += s"-Dsbt.updates.version=${version.value}"
 
 enablePlugins(GitVersioning)
 git.useGitDescribe := true

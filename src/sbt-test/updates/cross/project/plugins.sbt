@@ -1,1 +1,1 @@
-addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "latest.integration")
+addSbtPlugin("com.timushev.sbt" % "sbt-updates" % System.getProperty("sbt.updates.version"))
