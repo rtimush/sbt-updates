@@ -1,5 +1,6 @@
 package com.timushev.sbt.updates
 
+import com.timushev.sbt.updates.Compat._
 import com.timushev.sbt.updates.metadata.MetadataLoaderFactory
 import com.timushev.sbt.updates.versions.Version
 import sbt._
@@ -119,11 +120,11 @@ object Reporter {
   def pad(s: String, w: Int) = s.padTo(w, ' ')
 
   def include(included: ModuleFilter)(module: ModuleID, versions: SortedSet[Version]): SortedSet[Version] = {
-    versions.filter { version => included.apply(module.copy(revision = version.toString)) }
+    versions.filter { version => included.apply(module.withRevision(version.toString)) }
   }
 
   def exclude(excluded: ModuleFilter)(module: ModuleID, versions: SortedSet[Version]): SortedSet[Version] = {
-    versions.filterNot { version => excluded.apply(module.copy(revision = version.toString)) }
+    versions.filterNot { version => excluded.apply(module.withRevision(version.toString)) }
   }
 
 }
