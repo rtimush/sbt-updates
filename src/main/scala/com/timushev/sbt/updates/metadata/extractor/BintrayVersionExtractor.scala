@@ -6,13 +6,13 @@ import com.timushev.sbt.updates.versions.Version
 import scala.util.matching.Regex
 
 object BintrayVersionExtractor {
-  val Pattern: Regex = "<a onclick=\"navi\\(event\\)\" href=\":([^/]*)/\" rel=\"nofollow\">\\1/</a>".r
+  val Pattern: Regex = "<a(?:onclick=\"navi\\(event\\)\")? href=\":?([^/]*)/\"(?: rel=\"nofollow\")?>\\1/</a>".r
 }
 
 class BintrayVersionExtractor extends VersionExtractor {
 
   override def isDefinedAt(data: String): Boolean = {
-    data.contains("function navi(e)")
+    Pattern.findAllIn(data).nonEmpty
   }
 
   override def apply(data: String): Seq[Version] = {
