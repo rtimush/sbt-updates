@@ -62,7 +62,7 @@ dependencyUpdatesFilter -= moduleFilter(organization = "org.scala-lang")
 
 SBT plugin updates
 =============
-You can get updates for SBT plugin by using `reload plugins` command:
+If `sbt-updates` is installed in your global file you can get updates for SBT plugins by using the `reload plugins` command:
 ```
 > reload plugins
 ...
