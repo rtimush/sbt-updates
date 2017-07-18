@@ -1,3 +1,5 @@
+import sbt.CrossVersion.binarySbtVersion
+
 sbtPlugin := true
 
 name := "sbt-updates"
@@ -9,10 +11,26 @@ libraryDependencies ++= Seq(
   "org.scalatest" %% "scalatest" % "3.0.1" % "test"
 )
 
-scriptedSettings
+// patched code from sbt 0.13.16-M1 to support sbt binary version 1.0
+scriptedSettings.filterNot(_.key.key == libraryDependencies.key)
+libraryDependencies ++= {
+  binarySbtVersion(scriptedSbt.value) match {
+    case "0.13" =>
+      Seq(
+        "org.scala-sbt" % "scripted-sbt" % scriptedSbt.value % scriptedConf.toString,
+        "org.scala-sbt" % "sbt-launch" % scriptedSbt.value % scriptedLaunchConf.toString
+      )
+    case sv if sv startsWith "1.0" =>
+      Seq(
+        "org.scala-sbt" %% "scripted-sbt" % scriptedSbt.value % scriptedConf.toString,
+        "org.scala-sbt" % "sbt-launch" % scriptedSbt.value % scriptedLaunchConf.toString
+      )
+  }
+}
+
 scriptedLaunchOpts += s"-Dsbt.updates.version=${version.value}"
 
-crossSbtVersions := Seq("0.13.15", "1.0.0-M5", "1.0.0-M6")
+crossSbtVersions := Seq("0.13.15", "1.0.0-M5", "1.0.0-M6", "1.0.0-RC2")
 
 enablePlugins(GitVersioning)
 git.useGitDescribe := true
@@ -24,13 +42,13 @@ git.gitTagToVersionNumber := {
 
 // https://github.com/sbt/sbt/issues/3245
 ScriptedPlugin.scripted := Def.inputTask {
-  val args = ScriptedPlugin.asInstanceOf[{
+  val args = ScriptedPlugin.asInstanceOf[ {
     def scriptedParser(f: File): complete.Parser[Seq[String]]
   }].scriptedParser(sbtTestDirectory.value).parsed
   val prereq: Unit = scriptedDependencies.value
   try {
-    if((sbtVersion in pluginCrossBuild).value == "1.0.0-M6") {
-      ScriptedPlugin.scriptedTests.value.asInstanceOf[{
+    if ((sbtVersion in pluginCrossBuild).value == "1.0.0-M6") {
+      ScriptedPlugin.scriptedTests.value.asInstanceOf[ {
         def run(
                  x1: File,
                  x2: Boolean,
@@ -48,7 +66,7 @@ ScriptedPlugin.scripted := Def.inputTask {
         new java.util.ArrayList()
       )
     } else {
-      ScriptedPlugin.scriptedTests.value.asInstanceOf[{
+      ScriptedPlugin.scriptedTests.value.asInstanceOf[ {
         def run(
                  x1: File,
                  x2: Boolean,
@@ -64,5 +82,7 @@ ScriptedPlugin.scripted := Def.inputTask {
         scriptedLaunchOpts.value.toArray
       )
     }
-  } catch { case e: java.lang.reflect.InvocationTargetException => throw e.getCause }
+  } catch {
+    case e: java.lang.reflect.InvocationTargetException => throw e.getCause
+  }
 }.evaluated
