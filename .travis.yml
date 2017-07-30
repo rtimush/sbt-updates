@@ -6,20 +6,15 @@ jdk:
   - openjdk6
 
 env:
-  - SBT_VERSION=0.13.15
-  - SBT_VERSION=1.0.0-M5
-  - SBT_VERSION=1.0.0-M6
+  - SBT_VERSION=0.13.16
+  - SBT_VERSION=1.0.0-RC3
 
 matrix:
   exclude:
   - jdk: openjdk6
-    env: SBT_VERSION=1.0.0-M5
+    env: SBT_VERSION=1.0.0-RC3
   - jdk: oraclejdk7
-    env: SBT_VERSION=1.0.0-M5
-  - jdk: openjdk6
-    env: SBT_VERSION=1.0.0-M6
-  - jdk: oraclejdk7
-    env: SBT_VERSION=1.0.0-M6
+    env: SBT_VERSION=1.0.0-RC3
 
 script:
   - sbt ^^$SBT_VERSION test scripted
