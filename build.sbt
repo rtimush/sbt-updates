@@ -11,6 +11,7 @@ libraryDependencies ++= Seq(
   "org.scalatest" %% "scalatest" % "3.0.1" % "test"
 )
 
+scriptedSettings
 scriptedLaunchOpts += s"-Dsbt.updates.version=${version.value}"
 
 crossSbtVersions := Seq("0.13.16", "1.0.0-RC3")
