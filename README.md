@@ -18,7 +18,7 @@ Installation
 ### Stable version
 Add the following line to one of these files:
 - The project-specific file at `project/sbt-updates.sbt`
-- Your global file at `~/.sbt/0.13/plugins/sbt-updates.sbt`
+- Your global file at `~/.sbt/0.13/plugins/sbt-updates.sbt` (for SBT 0.13 series) or at `~/.sbt/1.0/plugins/sbt-updates.sbt` (for SBT 1.0 series)
 
 ```
 addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.3.1")
