@@ -24,6 +24,12 @@ Add the following line to one of these files:
 addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.3.1")
 ```
 
+- You may need add this plugin's repository:
+
+```
+resolvers += Resolver.bintrayIvyRepo("rtimush","sbt-plugins")
+```
+
 ### Snapshot version
 Choose one of versions available on [BinTray](https://bintray.com/rtimush/sbt-plugin-snapshots/sbt-updates/view)
 or the [latest](https://bintray.com/rtimush/sbt-plugin-snapshots/sbt-updates/_latestVersion) one.
