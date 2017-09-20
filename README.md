@@ -9,7 +9,7 @@ If your project uses `crossScalaVersions` you will be presented only with update
 
 Requirements
 ==============
-SBT 0.13.5 and later. For SBT 1.0.0-M5, 1.0.0-M6, and 1.0.0-RC3 use sbt-updates 0.3.1.
+SBT 0.13.5 and later. SBT 1.0 is supported since version 0.3.1.
 
 Note: use version 0.1.0 for SBT 0.11.x, version 0.1.6 for SBT 0.12.x, version 0.1.7 for SBT 0.13.0-0.13.2.
 
