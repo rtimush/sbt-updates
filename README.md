@@ -18,10 +18,11 @@ Installation
 ### Stable version
 Add the following line to one of these files:
 - The project-specific file at `project/sbt-updates.sbt`
-- Your global file at `~/.sbt/0.13/plugins/sbt-updates.sbt` (for SBT 0.13 series) or at `~/.sbt/1.0/plugins/sbt-updates.sbt` (for SBT 1.0 series)
+- Your global file at `~/.sbt/0.13/plugins/sbt-updates.sbt` (for SBT 0.13 series)
+  or at `~/.sbt/1.0/plugins/sbt-updates.sbt` (for SBT 1.0 series)
 
 ```
-addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.3.1")
+addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.3.2")
 ```
 
 ### Snapshot version
@@ -29,11 +30,12 @@ Choose one of versions available on [BinTray](https://bintray.com/rtimush/sbt-pl
 or the [latest](https://bintray.com/rtimush/sbt-plugin-snapshots/sbt-updates/_latestVersion) one.
 Add the following lines to one of these files:
 - The project-specific file at `project/sbt-updates.sbt`
-- Your global file at `~/.sbt/0.13/plugins/sbt-updates.sbt`
+- Your global file at `~/.sbt/0.13/plugins/sbt-updates.sbt`  (for SBT 0.13 series)
+  or at `~/.sbt/1.0/plugins/sbt-updates.sbt` (for SBT 1.0 series)
 
 ```
-resolvers += Resolver.url("rtimush/sbt-plugin-snapshots", new URL("https://dl.bintray.com/rtimush/sbt-plugin-snapshots/"))(Resolver.ivyStylePatterns)
-addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.2.1-12+gf85c84a")
+resolvers += Resolver.bintrayIvyRepo("rtimush", "sbt-plugin-snapshots")
+addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "x.x.x-y+gzzzzzzz")
 ```
 
 Note, that snapshots are not updated automatically.
@@ -68,8 +70,8 @@ If `sbt-updates` is installed in your global file you can get updates for SBT pl
 ...
 > dependencyUpdates
 [info] Found 2 dependency updates for project
-[info]   com.timushev.sbt:sbt-updates          : 0.3.0  -> 0.3.1
-[info]   org.scala-lang:scala-library:provided : 2.10.6          -> 2.12.0
+[info]   com.timushev.sbt:sbt-updates          : 0.3.0  -> 0.3.2
+[info]   org.scala-lang:scala-library:provided : 2.10.6          -> 2.12.3
 > reload return
 ```
 Only plugins defined in a project are checked, there is currently no way to check updates for global plugins.
