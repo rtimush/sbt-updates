@@ -14,7 +14,7 @@ libraryDependencies ++= Seq(
 scriptedSettings
 scriptedLaunchOpts += s"-Dsbt.updates.version=${version.value}"
 
-crossSbtVersions := Seq("0.13.16", "1.0.0-RC3")
+crossSbtVersions := Seq("0.13.16", "1.0.2")
 
 enablePlugins(GitVersioning)
 git.useGitDescribe := true
