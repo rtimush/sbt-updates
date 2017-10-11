@@ -120,11 +120,11 @@ object Reporter {
   def pad(s: String, w: Int) = s.padTo(w, ' ')
 
   def include(included: ModuleFilter)(module: ModuleID, versions: SortedSet[Version]): SortedSet[Version] = {
-    versions.filter { version => included.apply(module.withRevision(version.toString)) }
+    versions.filter { version => included.apply(module.withRevision0(version.toString)) }
   }
 
   def exclude(excluded: ModuleFilter)(module: ModuleID, versions: SortedSet[Version]): SortedSet[Version] = {
-    versions.filterNot { version => excluded.apply(module.withRevision(version.toString)) }
+    versions.filterNot { version => excluded.apply(module.withRevision0(version.toString)) }
   }
 
 }
