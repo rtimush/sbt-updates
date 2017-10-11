@@ -1,5 +1,3 @@
-import sbt.CrossVersion.binarySbtVersion
-
 sbtPlugin := true
 
 name := "sbt-updates"

@@ -15,9 +15,11 @@ matrix:
     env: SBT_VERSION=1.0.2
   - jdk: oraclejdk7
     env: SBT_VERSION=1.0.2
-
+  include:
+  - jdk: oraclejdk8
+    env: SBT_VERSION=0.13.16 SCRIPTED_SBT_VERSION=0.13.15
 script:
-  - sbt ^^$SBT_VERSION test scripted
+  - sbt "set scriptedSbt := \"${SCRIPTED_SBT_VERSION:-$SBT_VERSION}\"" ^^$SBT_VERSION test scripted
   # Tricks to avoid unnecessary cache updates
   - find $HOME/.sbt -name "*.lock" | xargs rm
   - find $HOME/.ivy2 -name "ivydata-*.properties" | xargs rm
