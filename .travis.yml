@@ -2,11 +2,17 @@ language: scala
 
 env:
   global:
+    # BINTRAY_USER
+    - secure: "GvJkp/QAYPsN/uGRDJ3+NJFF+80KmGWUPV61IrgMEqAvS47z30xMsD1xgPXWlU85E3TpJSzGlvPFbbaELLvlUvTa0vzVcT0TST98X7h/5ScSH0cGoYcGZAS04J2bgIvFgirYmDi2pSN6lwLd5hT5LL0mQITz5F5iEzTBhLohxfU="
+    # BINTRAY_PASS
+    - secure: "kclCOLRB7R33ikruTd7vtF6NnT6E27TkMV7RQA+aOgKEpkQM/jkpzSNMzuusYoOB2VStfpaDK4WL+WcrfqhYG08Y17kD3puSiW9KiGWtr3onBdIq9JtlMgmtQWnLbuUobX2oKVuBYpttTgRIwMhAU9hBnQHWSLF3QTZCGfY7wU8="
     - SBT_1_0=1.1.0
     - SBT_0_13=0.13.16
 
 stages:
   - test
+  - name: publish
+    if: (branch = master) OR (tag =~ ^\d+\.\d+\.\d+$)
 
 jobs:
   include:
@@ -23,6 +29,14 @@ jobs:
     - jdk: openjdk6
       env: SBT_SCRIPTED_VERSION=0.13.9
       script: sbt ^^$SBT_0_13 scripted
+
+    - stage: publish
+      jdk: openjdk8
+      env: SBT_VERSION=$SBT_1_0
+      script: sbt ^^$SBT_VERSION publish
+    - jdk: openjdk6
+      env: SBT_VERSION=$SBT_0_13
+      script: sbt ^^$SBT_VERSION publish
 
 # Use container-based infrastructure
 sudo: false
