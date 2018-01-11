@@ -16,7 +16,9 @@ object MetadataLoaderFactory {
 
   def loader(logger: Logger, credentials: Seq[Credentials]): PartialFunction[Resolver, MetadataLoader] = {
     Function.unlift { resolver =>
-      loaderCache.getOrElseUpdate(resolver, newLoader(logger, credentials, resolver).map(cached))
+      loaderCache.synchronized {
+        loaderCache.getOrElseUpdate(resolver, newLoader(logger, credentials, resolver).map(cached))
+      }
     }
   }
 
