@@ -9,20 +9,18 @@ If your project uses `crossScalaVersions` you will be presented only with update
 
 Requirements
 ==============
-SBT 0.13.5 and later. SBT 1.0 is supported since version 0.3.1.
-
-Note: use version 0.1.0 for SBT 0.11.x, version 0.1.6 for SBT 0.12.x, version 0.1.7 for SBT 0.13.0-0.13.2.
+SBT 0.13.9 and later. SBT 1.x is supported since version 0.3.1.
 
 Installation
 ============
 ### Stable version
 Add the following line to one of these files:
 - The project-specific file at `project/sbt-updates.sbt`
-- Your global file at `~/.sbt/0.13/plugins/sbt-updates.sbt` (for SBT 0.13 series)
-  or at `~/.sbt/1.0/plugins/sbt-updates.sbt` (for SBT 1.0 series)
+- Your global file at `~/.sbt/0.13/plugins/sbt-updates.sbt` (for SBT 0.13.x series)
+  or at `~/.sbt/1.0/plugins/sbt-updates.sbt` (for SBT 1.x series)
 
 ```
-addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.3.3")
+addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.3.4")
 ```
 
 ### Snapshot version
@@ -31,7 +29,7 @@ or the [latest](https://bintray.com/rtimush/sbt-plugin-snapshots/sbt-updates/_la
 Add the following lines to one of these files:
 - The project-specific file at `project/sbt-updates.sbt`
 - Your global file at `~/.sbt/0.13/plugins/sbt-updates.sbt`  (for SBT 0.13 series)
-  or at `~/.sbt/1.0/plugins/sbt-updates.sbt` (for SBT 1.0 series)
+  or at `~/.sbt/1.0/plugins/sbt-updates.sbt` (for SBT 1.x series)
 
 ```
 resolvers += Resolver.bintrayIvyRepo("rtimush", "sbt-plugin-snapshots")
@@ -70,8 +68,8 @@ If `sbt-updates` is installed in your global file you can get updates for SBT pl
 ...
 > dependencyUpdates
 [info] Found 2 dependency updates for project
-[info]   com.timushev.sbt:sbt-updates          : 0.3.0  -> 0.3.3
-[info]   org.scala-lang:scala-library:provided : 2.10.6          -> 2.12.3
+[info]   com.timushev.sbt:sbt-updates          : 0.3.0  -> 0.3.4
+[info]   org.scala-lang:scala-library:provided : 2.10.6          -> 2.12.4
 > reload return
 ```
 Only plugins defined in a project are checked, there is currently no way to check updates for global plugins.
