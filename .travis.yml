@@ -11,8 +11,7 @@ env:
 
 stages:
   - test
-  - name: publish
-    if: (branch = master) OR (tag =~ ^\d+\.\d+\.\d+$)
+  - publish
 
 jobs:
   include:
@@ -33,10 +32,22 @@ jobs:
     - stage: publish
       jdk: openjdk8
       env: SBT_VERSION=$SBT_1_0
-      script: sbt ^^$SBT_VERSION publish
+      script: echo "Publishing for SBT $SBT_VERSION"
+      deploy: &deploy
+        - provider: script
+          script: sbt ^^$SBT_VERSION publish
+          on:
+            tags: true
+            repo: rtimush/sbt-updates
+        - provider: script
+          script: sbt ^^$SBT_VERSION publish
+          on:
+            branch: master
+            repo: rtimush/sbt-updates
     - jdk: openjdk6
       env: SBT_VERSION=$SBT_0_13
-      script: sbt ^^$SBT_VERSION publish
+      script: echo "Publishing for SBT $SBT_VERSION"
+      deploy: *deploy
 
 # Use container-based infrastructure
 sudo: false
