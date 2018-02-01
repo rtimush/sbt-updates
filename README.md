@@ -74,6 +74,11 @@ If `sbt-updates` is installed in your global file you can get updates for SBT pl
 ```
 Only plugins defined in a project are checked, there is currently no way to check updates for global plugins.
 
+You can also check updates for dependencies and SBT plugins with:
+```
+sbt ";dependencyUpdates; reload plugins; dependencyUpdates"
+```
+
 Publishing
 ==========
 `sbt-updates` relies on the repository Maven metadata. If you want to get update notifications
