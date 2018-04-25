@@ -4,6 +4,7 @@ import com.timushev.sbt.updates.versions.Version
 import sbt._
 
 import scala.collection.immutable.SortedSet
+import scala.concurrent.duration.FiniteDuration
 import com.timushev.sbt.updates.Compat._
 
 trait UpdatesKeys {
@@ -14,6 +15,7 @@ trait UpdatesKeys {
   lazy val dependencyUpdatesFilter = settingKey[ModuleFilter]("Dependencies that are included to update reporting")
   lazy val dependencyUpdatesFailBuild = settingKey[Boolean]("Fail a build if updates found")
   lazy val dependencyAllowPreRelease = settingKey[Boolean]("If true, also take pre-release versions into consideration")
+  lazy val dependencyUpdatesTimeout = settingKey[FiniteDuration]("Timeout for checking for dependency updates (defaults to 1 hour)")
   lazy val dependencyUpdatesData = taskKey[Map[ModuleID, SortedSet[Version]]]("")
   lazy val dependencyUpdates = taskKey[Unit]("Shows a list of project dependencies that can be updated.")
   lazy val dependencyUpdatesReport = taskKey[File]("Writes a list of project dependencies that can be updated to a file.")
