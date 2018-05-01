@@ -93,7 +93,7 @@ object Reporter {
             _ max _.map(_.length).getOrElse(0)
           }
       }
-      val separator = Seq(" ", " current=", ",patch_update=", ",minor_update=", ",major_update=")
+      val separator = Seq(" ", " : current=", ",patch_update=", ",minor_update=", ",major_update=")
       for (row <- table) yield {
         (separator zip row) map {
           case ((s, Some(v))) => s + v
