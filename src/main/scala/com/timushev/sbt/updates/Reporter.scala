@@ -65,16 +65,47 @@ object Reporter {
       val separator = Seq("", " : ", " -> ", " -> ", " -> ")
       for (row <- table) yield {
         (separator zip row zip widths) map {
-          case (_, 0) => ""
           case ((s, Some(v)), w) => s + pad(v, w)
           case ((s, None), w) => " " * (s.length + w)
+          case (_, 0) => ""
         } mkString ""
       }
     }
   }
 
-  def dependencyUpdatesReport(project: ModuleID, dependencyUpdates: Map[ModuleID, SortedSet[Version]]): String = {
-    val updates = gatherDependencyUpdates(dependencyUpdates)
+   def gatherDependencyUpdatesCsvLine(dependencyUpdates: Map[ModuleID, SortedSet[Version]]): Seq[String] = {
+    if (dependencyUpdates.isEmpty) Seq.empty
+    else {
+      val table = dependencyUpdates.map {
+        case (m, vs) =>
+          val c = Version(m.revision)
+          Seq(
+            Some(formatModule(m)),
+            Some(m.revision),
+            patchUpdate(c, vs).map(_.toString),
+            minorUpdate(c, vs).map(_.toString),
+            majorUpdate(c, vs).map(_.toString)
+          )
+      }.toSeq.sortBy(_.head)
+      val widths = table.transpose.map {
+        c =>
+          c.foldLeft(0) {
+            _ max _.map(_.length).getOrElse(0)
+          }
+      }
+      val separator = Seq(" ", " current=", ",patch_update=", ",minor_update=", ",major_update=")
+      for (row <- table) yield {
+        (separator zip row) map {
+          case ((s, Some(v))) => s + v
+          case ((s, None)) => ""
+          case (_) => ""
+        } mkString ""
+      }
+    }
+  }
+
+  def dependencyUpdatesReport(project: ModuleID, dependencyUpdates: Map[ModuleID, SortedSet[Version]], machineReadable: Boolean): String = {
+    val updates = if (machineReadable) gatherDependencyUpdatesCsvLine(dependencyUpdates) else gatherDependencyUpdates(dependencyUpdates)
     if (updates.isEmpty) "No dependency updates found for %s" format project.name
     else {
       val info = StringBuilder.newBuilder
@@ -88,13 +119,13 @@ object Reporter {
     }
   }
 
-  def displayDependencyUpdates(project: ModuleID, dependencyUpdates: Map[ModuleID, SortedSet[Version]], failBuild: Boolean, out: TaskStreams[_]): Unit = {
-    out.log.info(dependencyUpdatesReport(project, dependencyUpdates))
+  def displayDependencyUpdates(project: ModuleID, dependencyUpdates: Map[ModuleID, SortedSet[Version]], failBuild: Boolean, machineReadable: Boolean, out: TaskStreams[_]): Unit = {
+    out.log.info(dependencyUpdatesReport(project, dependencyUpdates, machineReadable))
     if (failBuild && dependencyUpdates.nonEmpty) sys.error("Dependency updates found")
   }
 
-  def writeDependencyUpdatesReport(project: ModuleID, dependencyUpdates: Map[ModuleID, SortedSet[Version]], file: File, out: TaskStreams[_]): File = {
-    IO.write(file, dependencyUpdatesReport(project, dependencyUpdates) + "\n")
+  def writeDependencyUpdatesReport(project: ModuleID, dependencyUpdates: Map[ModuleID, SortedSet[Version]], file: File, machineReadable: Boolean, out: TaskStreams[_]): File = {
+    IO.write(file, dependencyUpdatesReport(project, dependencyUpdates, machineReadable) + "\n")
     out.log.info("Dependency update report written to %s" format file)
     file
   }

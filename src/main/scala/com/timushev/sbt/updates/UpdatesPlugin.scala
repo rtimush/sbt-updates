@@ -17,14 +17,15 @@ object UpdatesPlugin extends AutoPlugin {
     dependencyUpdatesFilter := DependencyFilter.fnToModuleFilter(_ => true),
     dependencyUpdatesFailBuild := false,
     dependencyAllowPreRelease := false,
+    dependencyMachineReadable := true,
     dependencyUpdatesData := {
       Reporter.dependencyUpdatesData(projectID.value, libraryDependencies.value, fullResolvers.value, credentials.value, crossScalaVersions.value, dependencyUpdatesExclusions.value, dependencyUpdatesFilter.value, dependencyAllowPreRelease.value, streams.value)
     },
     dependencyUpdates := {
-      Reporter.displayDependencyUpdates(projectID.value, dependencyUpdatesData.value, dependencyUpdatesFailBuild.value, streams.value)
+      Reporter.displayDependencyUpdates(projectID.value, dependencyUpdatesData.value, dependencyUpdatesFailBuild.value, dependencyMachineReadable.value, streams.value)
     },
     dependencyUpdatesReport := {
-      Reporter.writeDependencyUpdatesReport(projectID.value, dependencyUpdatesData.value, dependencyUpdatesReportFile.value, streams.value)
+      Reporter.writeDependencyUpdatesReport(projectID.value, dependencyUpdatesData.value, dependencyUpdatesReportFile.value, dependencyMachineReadable.value, streams.value)
     }
   )
 
