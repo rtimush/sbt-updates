@@ -1,5 +1,7 @@
 package com.timushev.sbt.updates
 
+import scala.concurrent.duration._
+
 import com.timushev.sbt.updates.UpdatesKeys._
 import sbt.Keys._
 import sbt._
@@ -17,8 +19,9 @@ object UpdatesPlugin extends AutoPlugin {
     dependencyUpdatesFilter := DependencyFilter.fnToModuleFilter(_ => true),
     dependencyUpdatesFailBuild := false,
     dependencyAllowPreRelease := false,
+    dependencyUpdatesTimeout := 1.hour,
     dependencyUpdatesData := {
-      Reporter.dependencyUpdatesData(projectID.value, libraryDependencies.value, fullResolvers.value, credentials.value, crossScalaVersions.value, dependencyUpdatesExclusions.value, dependencyUpdatesFilter.value, dependencyAllowPreRelease.value, streams.value)
+      Reporter.dependencyUpdatesData(projectID.value, libraryDependencies.value, fullResolvers.value, credentials.value, crossScalaVersions.value, dependencyUpdatesExclusions.value, dependencyUpdatesFilter.value, dependencyAllowPreRelease.value, dependencyUpdatesTimeout.value, streams.value)
     },
     dependencyUpdates := {
       Reporter.displayDependencyUpdates(projectID.value, dependencyUpdatesData.value, dependencyUpdatesFailBuild.value, streams.value)

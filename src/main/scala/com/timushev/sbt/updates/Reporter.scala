@@ -23,6 +23,7 @@ object Reporter {
                             excluded: ModuleFilter,
                             included: ModuleFilter,
                             allowPreRelease: Boolean,
+                            timeout: FiniteDuration,
                             out: TaskStreams[_]): Map[ModuleID, SortedSet[Version]] = {
     val loaders = resolvers collect MetadataLoaderFactory.loader(out.log, credentials)
     val updatesFuture = Future.sequence(scalaVersions map { scalaVersion =>
@@ -34,7 +35,7 @@ object Reporter {
         updates reduce (_ intersect _)
       }
     }
-    val updates = Await.result(updatesFuture, 1.hour)
+    val updates = Await.result(updatesFuture, timeout)
     (dependencies zip updates)
       .toMap
       .transform(include(included))
