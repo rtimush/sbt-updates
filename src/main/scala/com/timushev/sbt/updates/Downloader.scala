@@ -18,6 +18,8 @@ class Downloader(credentials: Seq[Credentials], logger: Logger) {
       case None =>
         logger.debug(s"Downloading $url anonymously")
     }
+    connection.setConnectTimeout(120000)
+    connection.setReadTimeout(120000)
     connection.getInputStream
   }
 
