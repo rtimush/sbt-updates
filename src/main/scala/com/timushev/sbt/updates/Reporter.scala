@@ -17,6 +17,7 @@ object Reporter {
 
   def dependencyUpdatesData(project: ModuleID,
                             dependencies: Seq[ModuleID],
+                            dependencyPositions: Map[ModuleID, SourcePosition],
                             resolvers: Seq[Resolver],
                             credentials: Seq[Credentials],
                             scalaVersions: Seq[String],
@@ -24,6 +25,7 @@ object Reporter {
                             included: ModuleFilter,
                             allowPreRelease: Boolean,
                             out: TaskStreams[_]): Map[ModuleID, SortedSet[Version]] = {
+    val buildDependencies = excludeDependenciesFromPlugins(dependencies, dependencyPositions)
     val loaders = resolvers collect MetadataLoaderFactory.loader(out.log, credentials)
     val updatesFuture = Future.sequence(scalaVersions map { scalaVersion =>
       val crossVersion = CrossVersion(scalaVersion, CrossVersion.binaryScalaVersion(scalaVersion))
@@ -35,7 +37,7 @@ object Reporter {
       }
     }
     val updates = Await.result(updatesFuture, 1.hour)
-    (dependencies zip updates)
+    (buildDependencies zip updates)
       .toMap
       .transform(include(included))
       .transform(exclude(excluded))
@@ -125,6 +127,16 @@ object Reporter {
 
   def exclude(excluded: ModuleFilter)(module: ModuleID, versions: SortedSet[Version]): SortedSet[Version] = {
     versions.filterNot { version => excluded.apply(module.withRevision0(version.toString)) }
+  }
+
+  def excludeDependenciesFromPlugins(dependencies: Seq[ModuleID],
+                                     dependencyPositions: Map[ModuleID, SourcePosition]): Seq[ModuleID] = {
+    dependencies.filter { moduleId =>
+      dependencyPositions.get(moduleId) match {
+        case Some(fp: FilePosition) if fp.path.startsWith("(") => false
+        case _ => true
+      }
+    }
   }
 
 }
