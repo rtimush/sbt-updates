@@ -133,6 +133,7 @@ object Reporter {
                                      dependencyPositions: Map[ModuleID, SourcePosition]): Seq[ModuleID] = {
     dependencies.filter { moduleId =>
       dependencyPositions.get(moduleId) match {
+        case Some(fp: FilePosition) if fp.path.startsWith("(sbt.Classpaths") => true
         case Some(fp: FilePosition) if fp.path.startsWith("(") => false
         case _ => true
       }
