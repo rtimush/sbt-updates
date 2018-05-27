@@ -8,11 +8,12 @@ import sbt._
 
 import scala.collection.mutable
 import scala.concurrent.Future
+import scala.util.matching.Regex
 
 object MetadataLoaderFactory {
 
-  val KnownProtocol = "(?i)^https?$".r
-  val KnownProtocolUrl = "(?i)^https?://".r
+  val KnownProtocol: Regex = "(?i)^https?$".r
+  val KnownProtocolUrl: Regex = "(?i)^https?://".r
 
   def loader(logger: Logger, credentials: Seq[Credentials]): PartialFunction[Resolver, MetadataLoader] = {
     Function.unlift { resolver =>
@@ -28,7 +29,7 @@ object MetadataLoaderFactory {
       val url = new URL(repo.root)
       url.getProtocol match {
         case KnownProtocol() => Some(new MavenMetadataLoader(repo, downloader))
-        case _ => None
+        case _               => None
       }
     case repo: URLRepository =>
       if (repo.patterns.artifactPatterns.forall(KnownProtocolUrl.findFirstIn(_).nonEmpty)) {

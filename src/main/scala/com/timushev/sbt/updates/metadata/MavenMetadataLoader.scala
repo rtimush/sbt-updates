@@ -15,14 +15,14 @@ class MavenMetadataLoader(repo: MavenRepository, downloader: Downloader) extends
   def getVersions(module: ModuleID): Future[Seq[Version]] =
     downloadXML(metadataUrl(module)).map(extractVersions)
 
-  def metadataUrl(module: ModuleID) =
+  def metadataUrl(module: ModuleID): String =
     artifactUrl(module) + "/maven-metadata.xml"
 
-  def artifactUrl(module: ModuleID) =
-    (module.organization.split('.') :+ module.name foldLeft repo.root.stripSuffix("/")) (_ + '/' + _)
+  def artifactUrl(module: ModuleID): String =
+    (module.organization.split('.') :+ module.name).foldLeft(repo.root.stripSuffix("/"))(_ + '/' + _)
 
   def extractVersions(metadata: xml.Elem): Seq[Version] =
-    metadata \ "versioning" \ "versions" \ "version" map (_.text) map Version.apply
+    (metadata \ "versioning" \ "versions" \ "version").map(_.text).map(Version.apply)
 
   private def downloadXML(url: String) = Future {
     XML.load(downloader.startDownload(new URL(url)))

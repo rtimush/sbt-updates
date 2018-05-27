@@ -6,5 +6,5 @@ import sbt.ModuleID
 import scala.concurrent._
 
 class FixedMetadataLoader(available: Seq[String]) extends MetadataLoader {
-  def getVersions(module: ModuleID): Future[Seq[Version]] = Future.successful(available map Version.apply)
+  def getVersions(module: ModuleID): Future[Seq[Version]] = Future.successful(available.map(Version.apply))
 }

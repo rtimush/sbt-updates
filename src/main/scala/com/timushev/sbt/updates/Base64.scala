@@ -12,12 +12,11 @@ object Base64 {
       java.util.Base64.getEncoder.encodeToString(bytes)
   }
 
-  private lazy val encoder: (Array[Byte]) => String = {
+  private lazy val encoder: Array[Byte] => String = {
     try {
       new Java678Encoder().apply(Array.emptyByteArray)
       new Java678Encoder
-    }
-    catch {
+    } catch {
       case _: LinkageError => new Java9Encoder
     }
   }

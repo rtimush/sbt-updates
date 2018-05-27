@@ -10,13 +10,23 @@ import scala.concurrent.duration._
 class UpdatesFinderSpec extends FreeSpec with Matchers {
 
   def updates(current: String, available: Seq[String], allowPreRelease: Boolean): Set[String] =
-    Await.result(UpdatesFinder.findUpdates(Seq(new FixedMetadataLoader(available)), allowPreRelease)(ModuleID("a", "b", current)), 1.minute)
+    Await
+      .result(UpdatesFinder.findUpdates(Seq(new FixedMetadataLoader(available)), allowPreRelease)(
+                ModuleID("a", "b", current)),
+              1.minute)
       .map(_.toString())
 
   val available = Seq(
-    "0.9.9-SNAPSHOT", "0.9.9-M3", "0.9.9",
-    "1.0.0-SNAPSHOT", "1.0.0-M2", "1.0.0-M3", "1.0.0",
-    "1.0.1-SNAPSHOT", "1.0.1-M3", "1.0.1"
+    "0.9.9-SNAPSHOT",
+    "0.9.9-M3",
+    "0.9.9",
+    "1.0.0-SNAPSHOT",
+    "1.0.0-M2",
+    "1.0.0-M3",
+    "1.0.0",
+    "1.0.1-SNAPSHOT",
+    "1.0.1-M3",
+    "1.0.1"
   )
 
   "An updates finder" - {
@@ -39,7 +49,7 @@ class UpdatesFinderSpec extends FreeSpec with Matchers {
         u should not(contain("1.0.0-SNAPSHOT"))
       }
       "should show stable updates" in {
-        u should (contain("1.0.0") and contain("1.0.1"))
+        u should contain("1.0.0").and(contain("1.0.1"))
       }
       "should show milestone updates" in {
         u should contain("1.0.1-M3")

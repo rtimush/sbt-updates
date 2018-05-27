@@ -6,10 +6,10 @@ class VersionSpec extends FreeSpec with Matchers {
 
   "Versions" - {
     "should be classified correctly" in {
-      List("1.0.0", "1.0.0.Final", "1.0.0-FINAL", "1.0.0.RELEASE") foreach { rel =>
+      List("1.0.0", "1.0.0.Final", "1.0.0-FINAL", "1.0.0.RELEASE").foreach { rel =>
         Version(rel) match {
           case ReleaseVersion(r) => r should equal(1 :: 0 :: 0 :: Nil)
-          case _ => fail(s"$rel is not a release version")
+          case _                 => fail(s"$rel is not a release version")
         }
       }
       Version("1.0.0-alpha.1") match {
@@ -54,35 +54,35 @@ class VersionSpec extends FreeSpec with Matchers {
       ).map(Version.apply)
       val pairs = v.tails.flatMap {
         case h :: t => t.map((h, _))
-        case Nil => List.empty
+        case Nil    => List.empty
       }
       pairs.foreach {
         case (a, b) =>
-          a should be < (b)
-          b should be > (a)
+          a should be < b
+          b should be > a
       }
     }
     "parser" - {
       "should parse versions like 1.0.M3" in {
         VersionParser.parse("1.0.M3") match {
           case VersionParser.Success((1 :: 0 :: Nil, "M3" :: Nil, Nil), _) =>
-          case other => fail(other.toString)
+          case other                                                       => fail(other.toString)
         }
       }
       "should parse versions like 1.0.3m" in {
         VersionParser.parse("1.0.3m") match {
           case VersionParser.Success((1 :: 0 :: Nil, "3m" :: Nil, Nil), _) =>
-          case other => fail(other.toString)
+          case other                                                       => fail(other.toString)
         }
         VersionParser.parse("1.0.3m.4") match {
           case VersionParser.Success((1 :: 0 :: Nil, "3m" :: "4" :: Nil, Nil), _) =>
-          case other => fail(other.toString)
+          case other                                                              => fail(other.toString)
         }
       }
       "should parse versions like 9.1-901-1.jdbc4" in {
         VersionParser.parse("9.1-901-1.jdbc4") match {
           case VersionParser.Success((9 :: 1 :: Nil, "901" :: "1" :: "jdbc4" :: Nil, Nil), _) =>
-          case other => fail(other.toString)
+          case other                                                                          => fail(other.toString)
         }
       }
     }

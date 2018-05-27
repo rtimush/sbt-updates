@@ -7,7 +7,7 @@ libraryDependencies += "org.specs2" %% "specs2" % "3.1"
 
 TaskKey[Unit]("check") := {
   val updates = dependencyUpdatesData.value
-  val found = updates.keys exists {
+  val found = updates.keys.exists {
     case m if m.organization == "org.scala-lang" => false
     case m if m.organization == "org.specs2" =>
       val versions = updates(m)
