@@ -42,6 +42,19 @@ object UpdatesPlugin extends AutoPlugin {
                                             dependencyUpdatesData.value,
                                             dependencyUpdatesReportFile.value,
                                             streams.value)
+    },
+    dependencyUpdatesReportFile in LocalRootProject := {
+      (target in LocalRootProject).value / "dependency-updates.txt"
+    },
+    dependencyUpdatesReport in LocalRootProject := {
+      val projectUpdates = Def.task {
+        projectID.value -> dependencyUpdatesData.value
+      }.all(ScopeFilter(inAnyProject)).value
+      Reporter.writeDependencyUpdatesReports(
+        projectUpdates,
+        (dependencyUpdatesReportFile in LocalRootProject).value,
+        streams.value
+      )
     }
   )
 

@@ -116,6 +116,18 @@ object Reporter {
     file
   }
 
+  def writeDependencyUpdatesReports(projectUpdates: Seq[(ModuleID, Map[sbt.ModuleID, SortedSet[Version]])],
+                                    file: File,
+                                    out: TaskStreams[_]): File = {
+    IO.delete(file)
+    projectUpdates.foreach {
+      case (project, dependencyUpdates) =>
+        IO.write(file, dependencyUpdatesReport(project, dependencyUpdates) + "\n", append = true)
+    }
+    out.log.info("Dependency update reports written to %s".format(file))
+    file
+  }
+
   def formatModule(module: ModuleID) =
     module.organization + ":" + module.name + module.configurations.map(":" + _).getOrElse("")
 
