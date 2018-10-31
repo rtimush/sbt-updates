@@ -21,6 +21,7 @@ object UpdatesPlugin extends AutoPlugin {
       Reporter.dependencyUpdatesData(
         projectID.value,
         libraryDependencies.value,
+        dependencyOverrides.value,
         dependencyPositions.value,
         fullResolvers.value,
         credentials.value,

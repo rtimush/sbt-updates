@@ -4,6 +4,7 @@ import com.timushev.sbt.updates.Compat._
 import com.timushev.sbt.updates.metadata.MetadataLoaderFactory
 import com.timushev.sbt.updates.versions.Version
 import sbt._
+import sbt.librarymanagement.ModuleID
 import sbt.std.TaskStreams
 
 import scala.collection.immutable.SortedSet
@@ -17,6 +18,7 @@ object Reporter {
 
   def dependencyUpdatesData(project: ModuleID,
                             dependencies: Seq[ModuleID],
+                            dependenciesOverrides: Seq[ModuleID],
                             dependencyPositions: Map[ModuleID, SourcePosition],
                             resolvers: Seq[Resolver],
                             credentials: Seq[Credentials],
@@ -25,12 +27,13 @@ object Reporter {
                             included: ModuleFilter,
                             allowPreRelease: Boolean,
                             out: TaskStreams[_]): Map[ModuleID, SortedSet[Version]] = {
-    val buildDependencies = excludeDependenciesFromPlugins(dependencies, dependencyPositions)
+    val finalDependencies = overrideDependencies(dependencies, dependenciesOverrides)
+    val buildDependencies = excludeDependenciesFromPlugins(finalDependencies, dependencyPositions)
     val loaders = resolvers.collect(MetadataLoaderFactory.loader(out.log, credentials))
     val updatesFuture = Future
       .sequence(scalaVersions.map { scalaVersion =>
         val crossVersion = CrossVersion(scalaVersion, CrossVersion.binaryScalaVersion(scalaVersion))
-        val crossDependencies = dependencies.map(crossVersion)
+        val crossDependencies = finalDependencies.map(crossVersion)
         Future.sequence(crossDependencies.map(findUpdates(loaders, allowPreRelease)))
       })
       .map { crossUpdates =>
@@ -45,6 +48,17 @@ object Reporter {
       .transform(include(included))
       .transform(exclude(excluded))
       .filterNot(_._2.isEmpty)
+  }
+
+  def overrideDependencies(dependencies: Seq[ModuleID], overrides: Seq[ModuleID]): Seq[ModuleID] = {
+    def key(id: ModuleID) = (id.organization, id.name)
+    val overridden = overrides.map(id => (key(id), id.revision)).toMap
+    dependencies.map { dep =>
+      overridden.get(key(dep)) match {
+        case Some(rev) => dep.withRevision(rev)
+        case None      => dep
+      }
+    }
   }
 
   def gatherDependencyUpdates(dependencyUpdates: Map[ModuleID, SortedSet[Version]]): Seq[String] = {
