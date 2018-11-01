@@ -33,7 +33,7 @@ class ReporterSpec extends FreeSpec with Matchers {
         "test" % "two" % "2.0.0",
         "test" % "three" % "3.0.0",
         "test" % "four" % "4.0.0",
-        "test" % "five" % "5.0.0",
+        "test" % "five" % "5.0.0"
       )
 
       "should return same dependencies when there are no dependenciesOverrides" in {
@@ -48,21 +48,21 @@ class ReporterSpec extends FreeSpec with Matchers {
           "test" % "two" % "2.0.0",
           "test" % "three" % "4.0.0",
           "test" % "four" % "4.0.0",
-          "test" % "five" % "5.0.0",
+          "test" % "five" % "5.0.0"
         )
       }
 
       "should return correct dependencies when some of dependencies are overridden" in {
         val dependenciesOverrides: Seq[sbt.ModuleID] = Seq[ModuleID](
           "test" % "three" % "4.0.0",
-          "test" % "five" % "6.0.0",
+          "test" % "five" % "6.0.0"
         )
         Reporter.overrideDependencies(dependencies, dependenciesOverrides) shouldEqual Seq(
           "test" % "one" % "1.0.0",
           "test" % "two" % "2.0.0",
           "test" % "three" % "4.0.0",
           "test" % "four" % "4.0.0",
-          "test" % "five" % "6.0.0",
+          "test" % "five" % "6.0.0"
         )
       }
     }
