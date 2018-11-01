@@ -4,7 +4,6 @@ import com.timushev.sbt.updates.Compat._
 import com.timushev.sbt.updates.metadata.MetadataLoaderFactory
 import com.timushev.sbt.updates.versions.Version
 import sbt._
-import sbt.librarymanagement.ModuleID
 import sbt.std.TaskStreams
 
 import scala.collection.immutable.SortedSet
@@ -18,7 +17,7 @@ object Reporter {
 
   def dependencyUpdatesData(project: ModuleID,
                             dependencies: Seq[ModuleID],
-                            dependenciesOverrides: Seq[ModuleID],
+                            dependenciesOverrides: Iterable[ModuleID],
                             dependencyPositions: Map[ModuleID, SourcePosition],
                             resolvers: Seq[Resolver],
                             credentials: Seq[Credentials],
@@ -50,7 +49,7 @@ object Reporter {
       .filterNot(_._2.isEmpty)
   }
 
-  def overrideDependencies(dependencies: Seq[ModuleID], overrides: Seq[ModuleID]): Seq[ModuleID] = {
+  def overrideDependencies(dependencies: Seq[ModuleID], overrides: Iterable[ModuleID]): Seq[ModuleID] = {
     def key(id: ModuleID) = (id.organization, id.name)
     val overridden = overrides.map(id => (key(id), id.revision)).toMap
     dependencies.map { dep =>
