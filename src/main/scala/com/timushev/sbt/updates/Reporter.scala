@@ -18,6 +18,7 @@ object Reporter {
   def dependencyUpdatesData(project: ModuleID,
                             dependencies: Seq[ModuleID],
                             dependenciesOverrides: Iterable[ModuleID],
+                            ivyScala: Option[IvyScala],
                             dependencyPositions: Map[ModuleID, SourcePosition],
                             resolvers: Seq[Resolver],
                             credentials: Seq[Credentials],
@@ -26,7 +27,7 @@ object Reporter {
                             included: ModuleFilter,
                             allowPreRelease: Boolean,
                             out: TaskStreams[_]): Map[ModuleID, SortedSet[Version]] = {
-    val finalDependencies = overrideDependencies(dependencies, dependenciesOverrides)
+    val finalDependencies = overrideDependencies(dependencies, dependenciesOverrides, ivyScala)
     val buildDependencies = excludeDependenciesFromPlugins(finalDependencies, dependencyPositions)
     val loaders = resolvers.collect(MetadataLoaderFactory.loader(out.log, credentials))
     val updatesFuture = Future
@@ -49,8 +50,17 @@ object Reporter {
       .filterNot(_._2.isEmpty)
   }
 
-  def overrideDependencies(dependencies: Seq[ModuleID], overrides: Iterable[ModuleID]): Seq[ModuleID] = {
-    def key(id: ModuleID) = (id.organization, id.name)
+  def overrideDependencies(dependencies: Seq[ModuleID],
+                           overrides: Iterable[ModuleID],
+                           ivyScala: Option[IvyScala]): Seq[ModuleID] = {
+    def key(id: ModuleID) = {
+      def identity(moduleName: String) = moduleName
+      val applyCrossVersion = ivyScala
+        .flatMap(m => CrossVersion.apply(id.crossVersion, m.scalaFullVersion, m.scalaBinaryVersion))
+        .getOrElse(identity _)
+      val nameWithCrossVersion = applyCrossVersion(id.name)
+      (id.organization, nameWithCrossVersion)
+    }
     val overridden = overrides.map(id => (key(id), id.revision)).toMap
     dependencies.map { dep =>
       overridden.get(key(dep)) match {
