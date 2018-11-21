@@ -22,7 +22,7 @@ object UpdatesPlugin extends AutoPlugin {
         projectID.value,
         libraryDependencies.value,
         dependencyOverrides.value,
-        UpdatesPluginIvyScala.dependencyUpdatesIvtScala.value,
+        UpdatesPluginIvyScala.dependencyUpdatesIvyScala.value,
         dependencyPositions.value,
         fullResolvers.value,
         credentials.value,

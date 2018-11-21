@@ -5,13 +5,12 @@ import sbt._
 
 object UpdatesPluginIvyScala extends AutoPlugin {
 
-
   override def trigger = allRequirements
 
-  lazy val dependencyUpdatesIvtScala =
+  lazy val dependencyUpdatesIvyScala =
     taskKey[Option[sbt.IvyScala]]("A task that maps to scalaModuleInfo in scala 2.12")
 
   override def projectSettings: Seq[Def.Setting[_]] = Seq(
-    dependencyUpdatesIvtScala := scalaModuleInfo.value
+    dependencyUpdatesIvyScala := scalaModuleInfo.value
   )
 }
