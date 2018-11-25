@@ -26,14 +26,12 @@ object Reporter {
                             included: ModuleFilter,
                             allowPreRelease: Boolean,
                             out: TaskStreams[_]): Map[ModuleID, SortedSet[Version]] = {
-    val finalDependencies = overrideDependencies(dependencies, dependenciesOverrides)
-    val buildDependencies = excludeDependenciesFromPlugins(finalDependencies, dependencyPositions)
+    val buildDependencies = excludeDependenciesFromPlugins(dependencies, dependencyPositions)
     val loaders = resolvers.collect(MetadataLoaderFactory.loader(out.log, credentials))
     val updatesFuture = Future
       .sequence(scalaVersions.map { scalaVersion =>
-        val crossVersion = CrossVersion(scalaVersion, CrossVersion.binaryScalaVersion(scalaVersion))
-        val crossDependencies = finalDependencies.map(crossVersion)
-        Future.sequence(crossDependencies.map(findUpdates(loaders, allowPreRelease)))
+        Future.sequence(finalDependencies(scalaVersion, dependencies, dependenciesOverrides)
+          .map(findUpdates(loaders, allowPreRelease)))
       })
       .map { crossUpdates =>
         crossUpdates.transpose.map { updates =>
@@ -54,10 +52,19 @@ object Reporter {
     val overridden = overrides.map(id => (key(id), id.revision)).toMap
     dependencies.map { dep =>
       overridden.get(key(dep)) match {
-        case Some(rev) => dep.withRevision(rev)
+        case Some(rev) => dep.withRevision0(rev)
         case None      => dep
       }
     }
+  }
+
+  def finalDependencies(scalaVersion: String,
+                        dependencies: Seq[ModuleID],
+                        overrides: Iterable[ModuleID]): Seq[ModuleID] = {
+    val crossVersion = CrossVersion(scalaVersion, CrossVersion.binaryScalaVersion(scalaVersion))
+    val crossDependencies = dependencies.map(crossVersion)
+    val crossOverrides = overrides.map(crossVersion)
+    overrideDependencies(crossDependencies, crossOverrides)
   }
 
   def gatherDependencyUpdates(dependencyUpdates: Map[ModuleID, SortedSet[Version]]): Seq[String] = {
