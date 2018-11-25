@@ -17,6 +17,7 @@ object Reporter {
 
   def dependencyUpdatesData(project: ModuleID,
                             dependencies: Seq[ModuleID],
+                            dependenciesOverrides: Iterable[ModuleID],
                             dependencyPositions: Map[ModuleID, SourcePosition],
                             resolvers: Seq[Resolver],
                             credentials: Seq[Credentials],
@@ -29,9 +30,8 @@ object Reporter {
     val loaders = resolvers.collect(MetadataLoaderFactory.loader(out.log, credentials))
     val updatesFuture = Future
       .sequence(scalaVersions.map { scalaVersion =>
-        val crossVersion = CrossVersion(scalaVersion, CrossVersion.binaryScalaVersion(scalaVersion))
-        val crossDependencies = dependencies.map(crossVersion)
-        Future.sequence(crossDependencies.map(findUpdates(loaders, allowPreRelease)))
+        Future.sequence(finalDependencies(scalaVersion, dependencies, dependenciesOverrides)
+          .map(findUpdates(loaders, allowPreRelease)))
       })
       .map { crossUpdates =>
         crossUpdates.transpose.map { updates =>
@@ -45,6 +45,26 @@ object Reporter {
       .transform(include(included))
       .transform(exclude(excluded))
       .filterNot(_._2.isEmpty)
+  }
+
+  def overrideDependencies(dependencies: Seq[ModuleID], overrides: Iterable[ModuleID]): Seq[ModuleID] = {
+    def key(id: ModuleID) = (id.organization, id.name)
+    val overridden = overrides.map(id => (key(id), id.revision)).toMap
+    dependencies.map { dep =>
+      overridden.get(key(dep)) match {
+        case Some(rev) => dep.withRevision0(rev)
+        case None      => dep
+      }
+    }
+  }
+
+  def finalDependencies(scalaVersion: String,
+                        dependencies: Seq[ModuleID],
+                        overrides: Iterable[ModuleID]): Seq[ModuleID] = {
+    val crossVersion = CrossVersion(scalaVersion, CrossVersion.binaryScalaVersion(scalaVersion))
+    val crossDependencies = dependencies.map(crossVersion)
+    val crossOverrides = overrides.map(crossVersion)
+    overrideDependencies(crossDependencies, crossOverrides)
   }
 
   def gatherDependencyUpdates(dependencyUpdates: Map[ModuleID, SortedSet[Version]]): Seq[String] = {
