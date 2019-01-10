@@ -20,7 +20,7 @@ Add the following line to one of these files:
   or at `~/.sbt/1.0/plugins/sbt-updates.sbt` (for SBT 1.x series)
 
 ```
-addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.3.4")
+addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.4.0")
 ```
 
 ### Snapshot version
@@ -68,7 +68,7 @@ If `sbt-updates` is installed in your global file you can get updates for SBT pl
 ...
 > dependencyUpdates
 [info] Found 2 dependency updates for project
-[info]   com.timushev.sbt:sbt-updates          : 0.3.0  -> 0.3.4
+[info]   com.timushev.sbt:sbt-updates          : 0.3.0  -> 0.3.4 -> 0.4.0
 [info]   org.scala-lang:scala-library:provided : 2.10.6          -> 2.12.4
 > reload return
 ```
