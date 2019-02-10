@@ -29,10 +29,12 @@ object Reporter {
     val buildDependencies = excludeDependenciesFromPlugins(dependencies, dependencyPositions)
     val loaders = resolvers.collect(MetadataLoaderFactory.loader(out.log, credentials))
     val updatesFuture = Future
-      .sequence(scalaVersions.map { scalaVersion =>
-        Future.sequence(finalDependencies(scalaVersion, dependencies, dependenciesOverrides)
-          .map(findUpdates(loaders, allowPreRelease)))
-      })
+      .sequence {
+        scalaVersions
+          .map(finalDependencies(_, buildDependencies, dependenciesOverrides))
+          .map(_.map(findUpdates(loaders, allowPreRelease)))
+          .map(Future.sequence(_))
+      }
       .map { crossUpdates =>
         crossUpdates.transpose.map { updates =>
           updates.reduce(_.intersect(_))
