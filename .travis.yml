@@ -1,4 +1,5 @@
 language: scala
+dist: trusty
 
 env:
   global:
@@ -10,32 +11,37 @@ env:
     - SBT_1_0_MIN=1.0.0
     - SBT_0_13=0.13.16
     - SBT_0_13_MIN=0.13.9
+    - JDK_8=zulu@1.8
 
 stages:
   - test
   - publish
 
+before_install:
+  - curl -sL https://raw.githubusercontent.com/shyiko/jabba/0.11.2/install.sh | bash && . ~/.jabba/jabba.sh
+
+install:
+  - $JABBA_HOME/bin/jabba install "$TRAVIS_JDK"
+  - export JAVA_HOME="$JABBA_HOME/jdk/$TRAVIS_JDK"
+  - export PATH="$JAVA_HOME/bin:$PATH"
+  - java -version
+
 jobs:
   include:
     - stage: test
-      jdk: openjdk8
-      env: SBT_SCRIPTED_VERSION=$SBT_1_0
+      env: TRAVIS_JDK=$JDK_8 SBT_SCRIPTED_VERSION=$SBT_1_0
       script: sbt ^^$SBT_1_0 scripted
-    - jdk: openjdk8
-      env: SBT_SCRIPTED_VERSION=$SBT_1_0_MIN
+    - env: TRAVIS_JDK=$JDK_8 SBT_SCRIPTED_VERSION=$SBT_1_0_MIN
       script: sbt ^^$SBT_1_0 scripted
-    - jdk: openjdk6
-      env: SBT_SCRIPTED_VERSION=$SBT_0_13
-      script: sbt ^^$SBT_0_13 scripted
-    - jdk: openjdk6
-      env: SBT_SCRIPTED_VERSION=$SBT_0_13_MIN
-      script: sbt ^^$SBT_0_13 scripted
+    - env: TRAVIS_JDK=$JDK_8 SBT_SCRIPTED_VERSION=$SBT_0_13
+      script: sbt -Dsbt.repository.secure=false ^^$SBT_0_13 scripted
+    - env: TRAVIS_JDK=$JDK_8 SBT_SCRIPTED_VERSION=$SBT_0_13_MIN
+      script: sbt -Dsbt.repository.secure=false ^^$SBT_0_13 scripted
 
     - stage: publish
-      jdk: openjdk8
-      env: SBT_VERSION=$SBT_1_0
+      env: TRAVIS_JDK=$JDK_8 SBT_VERSION=$SBT_1_0
       script: echo "Publishing for SBT $SBT_VERSION"
-      deploy: &deploy
+      deploy:
         - provider: script
           script: sbt ^^$SBT_VERSION publish
           on:
@@ -46,10 +52,19 @@ jobs:
           on:
             branch: master
             repo: rtimush/sbt-updates
-    - jdk: openjdk6
-      env: SBT_VERSION=$SBT_0_13
+    - env: TRAVIS_JDK=$JDK_8 SBT_VERSION=$SBT_0_13
       script: echo "Publishing for SBT $SBT_VERSION"
-      deploy: *deploy
+      deploy:
+        - provider: script
+          script: sbt ^^$SBT_VERSION publish
+          on:
+            tags: true
+            repo: rtimush/sbt-updates
+        - provider: script
+          script: sbt ^^$SBT_VERSION publish
+          on:
+            branch: master
+            repo: rtimush/sbt-updates
 
 # Use container-based infrastructure
 sudo: false
