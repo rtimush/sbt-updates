@@ -28,8 +28,10 @@ object MetadataLoaderFactory {
       val downloader = new Downloader(credentials, logger)
       val url = new URL(repo.root)
       url.getProtocol match {
-        case KnownProtocol() => Some(new MavenMetadataLoader(repo, downloader))
-        case _               => None
+        case KnownProtocol() =>
+          val resolver = Resolver.url(repo.name, url)(Resolver.mavenStylePatterns)
+          Some(new MavenMetadataLoader(resolver, downloader))
+        case _ => None
       }
     case repo: URLRepository =>
       if (repo.patterns.artifactPatterns.forall(KnownProtocolUrl.findFirstIn(_).nonEmpty)) {
