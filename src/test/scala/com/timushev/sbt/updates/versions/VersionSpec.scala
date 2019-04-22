@@ -69,6 +69,27 @@ class VersionSpec extends FreeSpec with Matchers {
           case other                                                       => fail(other.toString)
         }
       }
+      "should parse versions like 1.0.+" in {
+        VersionParser.parse("1.0.+") match {
+          case VersionParser.Success((1 :: 0 :: Long.MaxValue :: Nil, Nil, Nil), _) =>
+          case other                                                                => fail(other.toString)
+        }
+      }
+
+      "should reject versions like 1.+.+, 1.+.0, +.0.0" in {
+        VersionParser.parse("1.+.+") match {
+          case VersionParser.Failure(_, _) =>
+          case other                       => fail(other.toString)
+        }
+        VersionParser.parse("1.+.0") match {
+          case VersionParser.Failure(_, _) =>
+          case other                       => fail(other.toString)
+        }
+        VersionParser.parse("+.0.0") match {
+          case VersionParser.Failure(_, _) =>
+          case other                       => fail(other.toString)
+        }
+      }
       "should parse versions like 1.0.3m" in {
         VersionParser.parse("1.0.3m") match {
           case VersionParser.Success((1 :: 0 :: Nil, "3m" :: Nil, Nil), _) =>

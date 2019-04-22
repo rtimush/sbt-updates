@@ -27,7 +27,7 @@ class UpdatesFinderSpec extends FreeSpec with Matchers {
     "1.0.1-SNAPSHOT",
     "1.0.1-M3",
     "1.0.1",
-    "1.1.0",
+    "1.1.0"
   )
 
   "An updates finder" - {
