@@ -1,7 +1,11 @@
+import com.rallyhealth.sbt.versioning.SnapshotVersion
+
 sbtPlugin := true
 
 name := "sbt-updates"
 organization := "com.timushev.sbt"
+isSnapshot := versionFromGit.value.isInstanceOf[SnapshotVersion]
+version := version.value.replaceAll("\\-SNAPSHOT$", "")
 
 scalacOptions := Seq("-deprecation", "-unchecked", "-feature")
 
