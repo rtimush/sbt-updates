@@ -14,5 +14,3 @@ scriptedLaunchOpts += s"-Dsbt.updates.version=${version.value}"
 crossSbtVersions := Seq("0.13.16", "1.1.5")
 
 scriptedSbt := Option(System.getenv("SBT_SCRIPTED_VERSION")).getOrElse((sbtVersion in pluginCrossBuild).value)
-
-scalafmtVersion := "1.5.1"
