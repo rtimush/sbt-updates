@@ -29,7 +29,10 @@ install:
 jobs:
   include:
     - stage: test
-      env: TRAVIS_JDK=$JDK_8 SBT_SCRIPTED_VERSION=$SBT_1_0
+      env: TRAVIS_JDK=$JDK_8
+      script: sbt scalafmtCheck test:scalafmtCheck scalafmtSbtCheck test
+
+    - env: TRAVIS_JDK=$JDK_8 SBT_SCRIPTED_VERSION=$SBT_1_0
       script: sbt ^^$SBT_1_0 scripted
     - env: TRAVIS_JDK=$JDK_8 SBT_SCRIPTED_VERSION=$SBT_1_0_MIN
       script: sbt ^^$SBT_1_0 scripted
