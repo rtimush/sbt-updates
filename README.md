@@ -1,6 +1,6 @@
 sbt-updates [![Build Status](https://travis-ci.org/rtimush/sbt-updates.svg?branch=master)](https://travis-ci.org/rtimush/sbt-updates) [![Gitter](https://badges.gitter.im/rtimush/sbt-updates.svg)](https://gitter.im/rtimush/sbt-updates?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 ==================
-Display your SBT project's dependency updates.
+Display your sbt project's dependency updates.
 
 Update information is obtained from the maven metadata.
 There is also a limited support for Ivy repositories hosted on BinTray.
@@ -9,12 +9,12 @@ If your project uses `crossScalaVersions` you will be presented only with update
 
 Requirements
 ==============
-SBT 0.13.9 and later. SBT 1.x is supported since version 0.3.1.
+sbt 0.13.9 and later. sbt 1.x is supported since version 0.3.1.
 
 Installation
 ============
 ### Stable version
-Create a `~/.sbt/1.0/plugins/sbt-updates.sbt` file (for SBT 1.x series), or `~/.sbt/0.13/plugins/sbt-updates.sbt` (for SBT 0.13.x series) with the following content:
+Create a `~/.sbt/1.0/plugins/sbt-updates.sbt` file (for sbt 1.x series), or `~/.sbt/0.13/plugins/sbt-updates.sbt` (for sbt 0.13.x series) with the following content:
 
 ```
 addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.4.0")
@@ -22,7 +22,7 @@ addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.4.0")
 
 ### Snapshot version
 Choose one of versions available on [BinTray](https://bintray.com/rtimush/sbt-plugin-snapshots/sbt-updates/view)
-or the [latest](https://bintray.com/rtimush/sbt-plugin-snapshots/sbt-updates/_latestVersion) one. Then create a `~/.sbt/1.0/plugins/sbt-updates.sbt` file (for SBT 1.x series), or `~/.sbt/0.13/plugins/sbt-updates.sbt` (for SBT 0.13.x series) with the following content:
+or the [latest](https://bintray.com/rtimush/sbt-plugin-snapshots/sbt-updates/_latestVersion) one. Then create a `~/.sbt/1.0/plugins/sbt-updates.sbt` file (for sbt 1.x series), or `~/.sbt/0.13/plugins/sbt-updates.sbt` (for sbt 0.13.x series) with the following content:
 
 ```
 resolvers += Resolver.bintrayIvyRepo("rtimush", "sbt-plugin-snapshots")
@@ -53,9 +53,9 @@ You can exclude some modules from update checking:
 dependencyUpdatesFilter -= moduleFilter(organization = "org.scala-lang")
 ```
 
-SBT plugin updates
+sbt plugin updates
 =============
-If `sbt-updates` is installed in your global file you can get updates for SBT plugins by using the `reload plugins` command:
+If `sbt-updates` is installed in your global file you can get updates for sbt plugins by using the `reload plugins` command:
 ```
 > reload plugins
 ...
@@ -67,7 +67,7 @@ If `sbt-updates` is installed in your global file you can get updates for SBT pl
 ```
 Only plugins defined in a project are checked, there is currently no way to check updates for global plugins.
 
-You can also check updates for dependencies and SBT plugins with:
+You can also check updates for dependencies and sbt plugins with:
 ```
 sbt ";dependencyUpdates; reload plugins; dependencyUpdates"
 ```
@@ -75,7 +75,7 @@ sbt ";dependencyUpdates; reload plugins; dependencyUpdates"
 Publishing
 ==========
 `sbt-updates` relies on the repository Maven metadata. If you want to get update notifications
- for artifacts published by other SBT projects, you should ensure that metadata is updated
+ for artifacts published by other sbt projects, you should ensure that metadata is updated
  correctly. One possible way to achieve this is to use [sbt-aether-deploy](https://github.com/arktekk/sbt-aether-deploy).
 
 Example
