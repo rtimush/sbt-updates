@@ -1,15 +1,15 @@
 package com.timushev.sbt.updates.metadata.extractor
 
-import com.timushev.sbt.updates.metadata.extractor.BintrayVersionExtractor._
+import com.timushev.sbt.updates.metadata.extractor.HtmlVersionExtractor._
 import com.timushev.sbt.updates.versions.Version
 
 import scala.util.matching.Regex
 
-object BintrayVersionExtractor {
-  val Pattern: Regex = "<a(?:onclick=\"navi\\(event\\)\")? href=\":?([^/]*)/\"(?: rel=\"nofollow\")?>\\1/</a>".r
+object HtmlVersionExtractor {
+  val Pattern: Regex = "<a[^>]+href=\":?([^/]*)/\"[^>]*>\\1/</a>".r
 }
 
-class BintrayVersionExtractor extends VersionExtractor {
+class HtmlVersionExtractor extends VersionExtractor {
 
   override def isDefinedAt(data: String): Boolean = {
     Pattern.findAllIn(data).nonEmpty

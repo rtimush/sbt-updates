@@ -5,7 +5,7 @@ import java.net.URL
 import java.util
 
 import com.timushev.sbt.updates.Downloader
-import com.timushev.sbt.updates.metadata.extractor.BintrayVersionExtractor
+import com.timushev.sbt.updates.metadata.extractor.HtmlVersionExtractor
 import com.timushev.sbt.updates.versions.Version
 import org.apache.ivy.core.IvyPatternHelper
 import sbt.{IO, ModuleID, URLRepository}
@@ -15,7 +15,7 @@ import scala.concurrent.Future
 import scala.util.control.Exception.catching
 
 object IvyMetadataLoader {
-  val VersionExtractor = new BintrayVersionExtractor
+  val VersionExtractor = new HtmlVersionExtractor
 }
 
 class IvyMetadataLoader(repo: URLRepository, downloader: Downloader) extends MetadataLoader {
@@ -27,8 +27,11 @@ class IvyMetadataLoader(repo: URLRepository, downloader: Downloader) extends Met
 
   private def getRevisionPrefix(pattern: String, module: ModuleID): Option[String] = {
     val tokens = new util.HashMap[String, String]()
-    tokens.put(IvyPatternHelper.ORGANISATION_KEY, module.organization)
-    tokens.put(IvyPatternHelper.ORGANISATION_KEY2, module.organization)
+    val organization =
+      if (repo.patterns.isMavenCompatible) module.organization.replace('.', '/')
+      else module.organization
+    tokens.put(IvyPatternHelper.ORGANISATION_KEY, organization)
+    tokens.put(IvyPatternHelper.ORGANISATION_KEY2, organization)
     tokens.put(IvyPatternHelper.MODULE_KEY, module.name)
     module.configurations.foreach(tokens.put(IvyPatternHelper.CONF_KEY, _))
     module.extraAttributes.foreach { case (k, v) => tokens.put(removeE(k), v) }
