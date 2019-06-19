@@ -11,6 +11,7 @@ TaskKey[Unit]("check") := {
   val updates = dependencyUpdatesData.value
   val found = updates.keys.exists {
     case m if m.organization == "org.scala-lang" => false
+    case m if m.organization == "org.scoverage" => false
     case m if m.organization == "org.specs2" =>
       val versions = updates(m)
       if (versions.contains(Version("3.7")))

@@ -30,7 +30,9 @@ object MetadataLoaderFactory {
       url.getProtocol match {
         case KnownProtocol() =>
           val resolver = Resolver.url(repo.name, url)(Resolver.mavenStylePatterns)
-          Some(new MavenMetadataLoader(resolver, downloader))
+          val mavenLoader = new MavenMetadataLoader(resolver, downloader)
+          val ivyLoader = new IvyMetadataLoader(resolver, downloader)
+          Some(new CompoundMetadataLoader(Seq(mavenLoader, ivyLoader)))
         case _ => None
       }
     case repo: URLRepository =>
