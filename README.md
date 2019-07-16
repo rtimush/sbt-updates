@@ -74,8 +74,9 @@ sbt ";dependencyUpdates; reload plugins; dependencyUpdates"
 
 Usage as project plugin
 =======================
-You can also use sbt-updates as a project plugin instead of a global plugin. To do this, add the plugin definition to
-`project/sbt-updates.sbt`. However, you won't be able to check sbt plugin updates this way. In order to check both
+It is preferred to use sbt-updates as a global plugin. Nevertheless, there might be cases when you want to use sbt-updates
+as a project plugin. In that case, add the plugin definition to `project/sbt-updates.sbt`. You can then use dependencyUpdates
+target to find updates for your project. But this way you won't be able to check sbt plugin updates. In order to check both
 dependency updates and sbt plugin updates, add the plugin to both project and meta project i.e `project/sbt-updates.sbt`
  and `project/project/sbt-updates.sbt` and run:
 ```
