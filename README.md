@@ -72,6 +72,17 @@ You can also check updates for dependencies and sbt plugins with:
 sbt ";dependencyUpdates; reload plugins; dependencyUpdates"
 ```
 
+Usage as project plugin
+=======================
+It is preferred to use sbt-updates as a global plugin. Nevertheless, there might be cases when you want to use sbt-updates
+as a project plugin. In that case, add the plugin definition to `project/sbt-updates.sbt`. You can then use dependencyUpdates
+target to find updates for your project. But this way you won't be able to check sbt plugin updates. In order to check both
+dependency updates and sbt plugin updates, add the plugin to both project and meta project i.e `project/sbt-updates.sbt`
+ and `project/project/sbt-updates.sbt` and run:
+```
+sbt ";dependencyUpdates; reload plugins; dependencyUpdates; reload return"
+```
+
 Publishing
 ==========
 `sbt-updates` relies on the repository Maven metadata. If you want to get update notifications
