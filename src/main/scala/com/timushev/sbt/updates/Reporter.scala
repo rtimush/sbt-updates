@@ -10,6 +10,7 @@ import scala.collection.immutable.SortedSet
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 import scala.concurrent.{Await, Future}
+import scala.util.matching.Regex
 
 object Reporter {
 
@@ -25,8 +26,9 @@ object Reporter {
                             excluded: ModuleFilter,
                             included: ModuleFilter,
                             allowPreRelease: Boolean,
+                            buildRoot: File,
                             out: TaskStreams[_]): Map[ModuleID, SortedSet[Version]] = {
-    val buildDependencies = excludeDependenciesFromPlugins(dependencies, dependencyPositions)
+    val buildDependencies = excludeDependenciesFromPlugins(dependencies, dependencyPositions, buildRoot)
     val loaders = resolvers.collect(MetadataLoaderFactory.loader(out.log, credentials))
     val updatesFuture = Future
       .sequence {
@@ -171,14 +173,25 @@ object Reporter {
   }
 
   def excludeDependenciesFromPlugins(dependencies: Seq[ModuleID],
-                                     dependencyPositions: Map[ModuleID, SourcePosition]): Seq[ModuleID] = {
+                                     dependencyPositions: Map[ModuleID, SourcePosition],
+                                     buildRoot: File): Seq[ModuleID] = {
     dependencies.filter { moduleId =>
       dependencyPositions.get(moduleId) match {
         case Some(fp: FilePosition) if fp.path.startsWith("(sbt.Classpaths") => true
-        case Some(fp: FilePosition) if fp.path.startsWith("(")               => false
-        case _                                                               => true
+        case Some(fp: FilePosition) if fp.path.startsWith("(") =>
+          extractFileName(fp.path).exists(fileExists(buildRoot, _))
+        case _ => true
       }
     }
   }
+
+  val FileNamePattern: Regex = "^\\([^\\)]+\\) (.*)$".r
+  def extractFileName(path: String): Option[String] = path match {
+    case FileNamePattern(fileName) => Some(fileName)
+    case _                         => None
+  }
+
+  def fileExists(buildRoot: File, file: String): Boolean =
+    (buildRoot / "project" / file).exists()
 
 }
