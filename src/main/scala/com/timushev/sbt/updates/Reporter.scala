@@ -16,18 +16,20 @@ object Reporter {
 
   import com.timushev.sbt.updates.UpdatesFinder._
 
-  def dependencyUpdatesData(project: ModuleID,
-                            dependencies: Seq[ModuleID],
-                            dependenciesOverrides: Iterable[ModuleID],
-                            dependencyPositions: Map[ModuleID, SourcePosition],
-                            resolvers: Seq[Resolver],
-                            credentials: Seq[Credentials],
-                            scalaVersions: Seq[String],
-                            excluded: ModuleFilter,
-                            included: ModuleFilter,
-                            allowPreRelease: Boolean,
-                            buildRoot: File,
-                            out: TaskStreams[_]): Map[ModuleID, SortedSet[Version]] = {
+  def dependencyUpdatesData(
+      project: ModuleID,
+      dependencies: Seq[ModuleID],
+      dependenciesOverrides: Iterable[ModuleID],
+      dependencyPositions: Map[ModuleID, SourcePosition],
+      resolvers: Seq[Resolver],
+      credentials: Seq[Credentials],
+      scalaVersions: Seq[String],
+      excluded: ModuleFilter,
+      included: ModuleFilter,
+      allowPreRelease: Boolean,
+      buildRoot: File,
+      out: TaskStreams[_]
+  ): Map[ModuleID, SortedSet[Version]] = {
     val buildDependencies = excludeDependenciesFromPlugins(dependencies, dependencyPositions, buildRoot)
     val loaders = resolvers.collect(MetadataLoaderFactory.loader(out.log, credentials))
     val updatesFuture = Future
@@ -62,9 +64,11 @@ object Reporter {
     }
   }
 
-  def finalDependencies(scalaVersion: String,
-                        dependencies: Seq[ModuleID],
-                        overrides: Iterable[ModuleID]): Seq[ModuleID] = {
+  def finalDependencies(
+      scalaVersion: String,
+      dependencies: Seq[ModuleID],
+      overrides: Iterable[ModuleID]
+  ): Seq[ModuleID] = {
     val crossVersion = CrossVersion(scalaVersion, CrossVersion.binaryScalaVersion(scalaVersion))
     val crossDependencies = dependencies.map(crossVersion)
     val crossOverrides = overrides.map(crossVersion)
@@ -114,7 +118,8 @@ object Reporter {
     else {
       val info = StringBuilder.newBuilder
       info.append(
-        "Found %s dependency update%s for %s".format(updates.size, if (updates.size > 1) "s" else "", project.name))
+        "Found %s dependency update%s for %s".format(updates.size, if (updates.size > 1) "s" else "", project.name)
+      )
       updates.foreach { u =>
         info.append("\n  ")
         info.append(u)
@@ -123,18 +128,22 @@ object Reporter {
     }
   }
 
-  def displayDependencyUpdates(project: ModuleID,
-                               dependencyUpdates: Map[ModuleID, SortedSet[Version]],
-                               failBuild: Boolean,
-                               out: TaskStreams[_]): Unit = {
+  def displayDependencyUpdates(
+      project: ModuleID,
+      dependencyUpdates: Map[ModuleID, SortedSet[Version]],
+      failBuild: Boolean,
+      out: TaskStreams[_]
+  ): Unit = {
     out.log.info(dependencyUpdatesReport(project, dependencyUpdates))
     if (failBuild && dependencyUpdates.nonEmpty) sys.error("Dependency updates found")
   }
 
-  def writeDependencyUpdatesReport(project: ModuleID,
-                                   dependencyUpdates: Map[ModuleID, SortedSet[Version]],
-                                   file: File,
-                                   out: TaskStreams[_]): File = {
+  def writeDependencyUpdatesReport(
+      project: ModuleID,
+      dependencyUpdates: Map[ModuleID, SortedSet[Version]],
+      file: File,
+      out: TaskStreams[_]
+  ): File = {
     IO.write(file, dependencyUpdatesReport(project, dependencyUpdates) + "\n")
     out.log.info("Dependency update report written to %s".format(file))
     file
@@ -172,9 +181,11 @@ object Reporter {
     }
   }
 
-  def excludeDependenciesFromPlugins(dependencies: Seq[ModuleID],
-                                     dependencyPositions: Map[ModuleID, SourcePosition],
-                                     buildRoot: File): Seq[ModuleID] = {
+  def excludeDependenciesFromPlugins(
+      dependencies: Seq[ModuleID],
+      dependencyPositions: Map[ModuleID, SourcePosition],
+      buildRoot: File
+  ): Seq[ModuleID] = {
     dependencies.filter { moduleId =>
       dependencyPositions.get(moduleId) match {
         case Some(fp: FilePosition) if fp.path.startsWith("(sbt.Classpaths") => true

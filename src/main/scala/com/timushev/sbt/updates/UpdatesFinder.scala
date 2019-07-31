@@ -13,7 +13,8 @@ object UpdatesFinder {
   import scala.Ordered._
 
   def findUpdates(loaders: Seq[MetadataLoader], allowPreRelease: Boolean)(
-      module: ModuleID): Future[SortedSet[Version]] = {
+      module: ModuleID
+  ): Future[SortedSet[Version]] = {
     val current = Version(module.revision)
     val versionSets = loaders.map(_.getVersions(module).recover(withEmpty))
     val versions = Future.sequence(versionSets).map(v => SortedSet(v.flatten: _*))

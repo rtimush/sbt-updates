@@ -34,16 +34,20 @@ object UpdatesPlugin extends AutoPlugin {
       )
     },
     dependencyUpdates := {
-      Reporter.displayDependencyUpdates(projectID.value,
-                                        dependencyUpdatesData.value,
-                                        dependencyUpdatesFailBuild.value,
-                                        streams.value)
+      Reporter.displayDependencyUpdates(
+        projectID.value,
+        dependencyUpdatesData.value,
+        dependencyUpdatesFailBuild.value,
+        streams.value
+      )
     },
     dependencyUpdatesReport := {
-      Reporter.writeDependencyUpdatesReport(projectID.value,
-                                            dependencyUpdatesData.value,
-                                            dependencyUpdatesReportFile.value,
-                                            streams.value)
+      Reporter.writeDependencyUpdatesReport(
+        projectID.value,
+        dependencyUpdatesData.value,
+        dependencyUpdatesReportFile.value,
+        streams.value
+      )
     }
   )
 
