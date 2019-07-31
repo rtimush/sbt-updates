@@ -11,9 +11,11 @@ class UpdatesFinderSpec extends FreeSpec with Matchers {
 
   def updates(current: String, available: Seq[String], allowPreRelease: Boolean): Set[String] =
     Await
-      .result(UpdatesFinder.findUpdates(Seq(new FixedMetadataLoader(available)), allowPreRelease)(
-                ModuleID("a", "b", current)),
-              1.minute)
+      .result(
+        UpdatesFinder
+          .findUpdates(Seq(new FixedMetadataLoader(available)), allowPreRelease)(ModuleID("a", "b", current)),
+        1.minute
+      )
       .map(_.toString())
 
   val available = Seq(

@@ -20,7 +20,8 @@ class MavenMetadataLoader(repo: URLRepository, downloader: Downloader) extends M
         repo.patterns.artifactPatterns
           .flatMap(url(_, module))
           .map(download)
-          .map(_.map(extractVersions)))
+          .map(_.map(extractVersions))
+      )
       .map(_.flatten)
   }
 

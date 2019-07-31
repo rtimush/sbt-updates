@@ -9,8 +9,7 @@ import com.timushev.sbt.updates.Compat._
 trait UpdatesKeys {
   lazy val dependencyUpdatesReportFile = settingKey[File]("Dependency updates report file")
   @deprecated(
-    "dependencyUpdatesExclusions is deprecated in favor of dependencyUpdatesFilter, which defaults" +
-      " to a truthy check. Migrate exclusions by setting dependencyUpdatesFilter -= yourExclusions",
+    "dependencyUpdatesExclusions is deprecated in favor of dependencyUpdatesFilter, which defaults" + " to a truthy check. Migrate exclusions by setting dependencyUpdatesFilter -= yourExclusions",
     "0.4.0"
   )
   lazy val dependencyUpdatesExclusions =
