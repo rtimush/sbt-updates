@@ -20,7 +20,6 @@ class Downloader(credentials: Seq[Credentials], logger: Logger) {
         logger.debug(s"Downloading $url anonymously")
       case Left(e) =>
         logger.debug(s"Downloading $url anonymously because credentials couldn't be loaded")
-        logger.trace(e)
     }
     connection.setConnectTimeout(120000)
     connection.setReadTimeout(120000)
