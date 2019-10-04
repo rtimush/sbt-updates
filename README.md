@@ -17,7 +17,7 @@ Installation
 Create a `~/.sbt/1.0/plugins/sbt-updates.sbt` file (for sbt 1.x series), or `~/.sbt/0.13/plugins/sbt-updates.sbt` (for sbt 0.13.x series) with the following content:
 
 ```
-addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.4.2")
+addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.4.3")
 ```
 
 ### Snapshot version
@@ -61,7 +61,7 @@ If `sbt-updates` is installed in your global file you can get updates for sbt pl
 ...
 > dependencyUpdates
 [info] Found 2 dependency updates for project
-[info]   com.timushev.sbt:sbt-updates          : 0.3.0  -> 0.3.4 -> 0.4.2
+[info]   com.timushev.sbt:sbt-updates          : 0.3.0  -> 0.3.4 -> 0.4.3
 [info]   org.scala-lang:scala-library:provided : 2.10.6          -> 2.12.4
 > reload return
 ```
