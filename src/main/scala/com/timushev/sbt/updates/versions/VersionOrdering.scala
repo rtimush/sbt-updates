@@ -6,13 +6,13 @@ class VersionOrdering extends Ordering[Version] {
 
   private val subParts = "(\\d+)?(\\D+)?".r
 
-  private def parsePart(s: String): Seq[Either[Int, String]] =
+  private def parsePart(s: String): Seq[Either[BigInt, String]] =
     try {
       subParts
         .findAllIn(s)
         .matchData
         .flatMap {
-          case Groups(num, str) => Seq(Option(num).map(_.toInt).map(Left.apply), Option(str).map(Right.apply))
+          case Groups(num, str) => Seq(Option(num).map(BigInt.apply).map(Left.apply), Option(str).map(Right.apply))
         }
         .flatten
         .toList
@@ -28,13 +28,26 @@ class VersionOrdering extends Ordering[Version] {
       parsePart(a)
         .zip(parsePart(b))
         .map {
-          case (Left(x), Left(y))   => x.compareTo(y)
+          case (Left(x), Left(y))   => x.compare(y)
           case (Left(_), Right(_))  => -1
           case (Right(_), Left(_))  => 1
-          case (Right(x), Right(y)) => x.compareTo(y)
+          case (Right(x), Right(y)) => compareIdentifiers(x, y)
         }
         .find(0 != _)
         .orElse(Some(a.compareTo(b)))
+  }
+
+  private def compareIdentifiers(a: String, b: String): Int = {
+    def order(s: String): Int = s.toUpperCase match {
+      case "SNAP" | "SNAPSHOT" => -5
+      case "ALPHA"             => -4
+      case "BETA"              => -3
+      case "M"                 => -2
+      case "RC"                => -1
+      case _                   => 0
+    }
+    val (oa, ob) = (order(a), order(b))
+    if (oa < 0 || ob < 0) oa.compareTo(ob) else a.compareTo(b)
   }
 
   private def compareNumericParts(a: List[Long], b: List[Long]): Option[Int] = (a, b) match {

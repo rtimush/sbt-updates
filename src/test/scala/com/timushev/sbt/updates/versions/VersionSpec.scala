@@ -51,16 +51,23 @@ class VersionSpec extends FreeSpec with Matchers {
         "2.0.M6-SNAP9",
         "2.0.M6-SNAP23",
         "2.0.M6-SNAP23a"
-      ).map(Version.apply)
-      val pairs = v.tails.flatMap {
-        case h :: t => t.map((h, _))
-        case Nil    => List.empty
-      }
-      pairs.foreach {
-        case (a, b) =>
-          a should be < b
-          b should be > a
-      }
+      )
+      checkPairwise(v)
+    }
+    "snapshot versions are correctly ordered" in {
+      val versions = List(
+        "3.0.8",
+        "3.1.0-SNAP6",
+        "3.1.0-SNAP13",
+        "3.1.0-alpha",
+        "3.1.0-M2",
+        "3.1.0-RC",
+        "3.1.0-RC1",
+        "3.1.0-RC2",
+        "3.1.0",
+        "3.2.0-SNAPSHOT1"
+      )
+      checkPairwise(versions)
     }
     "parser" - {
       "should parse versions like 1.0.M3" in {
@@ -109,4 +116,15 @@ class VersionSpec extends FreeSpec with Matchers {
     }
   }
 
+  def checkPairwise(versions: List[String]): Unit = {
+    val pairs = versions.map(Version.apply).tails.flatMap {
+      case h :: t => t.map((h, _))
+      case Nil    => List.empty
+    }
+    pairs.foreach {
+      case (a, b) =>
+        a should be < b
+        b should be > a
+    }
+  }
 }

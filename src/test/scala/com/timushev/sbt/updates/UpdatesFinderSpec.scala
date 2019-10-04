@@ -45,11 +45,11 @@ class UpdatesFinderSpec extends FreeSpec with Matchers {
       "should not show old snapshots" in {
         u should not(contain("0.9.9-SNAPSHOT"))
       }
-      "should not show current milestones" in {
-        u should not(contain("1.0.0-M3"))
-      }
       "should not show current snapshot" in {
         u should not(contain("1.0.0-SNAPSHOT"))
+      }
+      "should show current milestones" in {
+        u should contain("1.0.0-M3")
       }
       "should show stable updates" in {
         u should contain("1.0.0").and(contain("1.0.1"))
