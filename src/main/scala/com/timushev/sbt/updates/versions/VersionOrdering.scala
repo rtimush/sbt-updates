@@ -28,7 +28,7 @@ class VersionOrdering extends Ordering[Version] {
       parsePart(a)
         .zip(parsePart(b))
         .map {
-          case (Left(x), Left(y))   => x.compareTo(y)
+          case (Left(x), Left(y))   => x.compare(y)
           case (Left(_), Right(_))  => -1
           case (Right(_), Left(_))  => 1
           case (Right(x), Right(y)) => compareIdentifiers(x, y)
