@@ -50,7 +50,7 @@ object PreReleaseBuildVersion {
 
 object SnapshotVersion {
   def unapply(v: Version): Option[(List[Long], List[String], List[String])] = v match {
-    case ValidVersion(_, releasePart, preReleasePart, buildPart) if preReleasePart.lastOption == Some("SNAPSHOT") =>
+    case ValidVersion(_, releasePart, preReleasePart, buildPart) if preReleasePart.lastOption == Some("SNAPSHOT") || buildPart.lastOption == Some("SNAPSHOT") =>
       Some(releasePart, preReleasePart, buildPart)
     case _ => None
   }
