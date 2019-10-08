@@ -31,6 +31,12 @@ class VersionSpec extends FreeSpec with Matchers {
           b should equal("build" :: "10" :: Nil)
         case _ => fail("not a build version")
       }
+
+      Version("2.0.2+9-4e5b95f4-SNAPSHOT") match { // Sbt-Dynver style snapshot version
+        case SnapshotVersion(r, p, b) =>
+          r should equal(2 :: 0 :: 2 :: Nil)
+        case _ => fail("not a snaphshot version")
+      }
     }
     "should be ordered according to the semantic versioning spec" in {
       val v = List(
