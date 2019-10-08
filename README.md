@@ -17,8 +17,10 @@ Installation
 Create a `~/.sbt/1.0/plugins/sbt-updates.sbt` file (for sbt 1.x series), or `~/.sbt/0.13/plugins/sbt-updates.sbt` (for sbt 0.13.x series) with the following content:
 
 ```
-addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.4.3")
+addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "x.x.x")
 ```
+
+The latest version is ![Bintray](https://img.shields.io/bintray/v/rtimush/sbt-plugins/sbt-updates?color=blue&label=sbt-updates&style=plastic)
 
 ### Snapshot version
 Choose one of versions available on [BinTray](https://bintray.com/rtimush/sbt-plugin-snapshots/sbt-updates/view)
