@@ -13,7 +13,6 @@ import scala.concurrent.{Await, Future}
 import scala.util.matching.Regex
 
 object Reporter {
-
   import com.timushev.sbt.updates.UpdatesFinder._
 
   def dependencyUpdatesData(
@@ -204,5 +203,4 @@ object Reporter {
 
   def fileExists(buildRoot: File, file: String): Boolean =
     (buildRoot / "project" / file).exists()
-
 }

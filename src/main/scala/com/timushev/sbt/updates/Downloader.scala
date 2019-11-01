@@ -7,7 +7,6 @@ import scala.util.control.Exception._
 import sbt.{Credentials, Logger}
 
 class Downloader(credentials: Seq[Credentials], logger: Logger) {
-
   def startDownload(url: URL): InputStream = {
     val hostCredentials = nonFatalCatch.either(Credentials.forHost(credentials, url.getHost))
     val connection = url.openConnection()
@@ -25,5 +24,4 @@ class Downloader(credentials: Seq[Credentials], logger: Logger) {
     connection.setReadTimeout(120000)
     connection.getInputStream
   }
-
 }

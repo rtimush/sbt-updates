@@ -3,7 +3,6 @@ package com.timushev.sbt.updates.versions
 import scala.util.matching.Regex.Groups
 
 class VersionOrdering extends Ordering[Version] {
-
   private val subParts = "(\\d+)?(\\D+)?".r
 
   private def parsePart(s: String): Seq[Either[BigInt, String]] =
@@ -90,5 +89,4 @@ class VersionOrdering extends Ordering[Version] {
     case (BuildVersion(r1, b1), BuildVersion(r2, b2)) =>
       compareNumericParts(r1, r2).orElse(compareParts(b1, b2)).getOrElse(0)
   }
-
 }

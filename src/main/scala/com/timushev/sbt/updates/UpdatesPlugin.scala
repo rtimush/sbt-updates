@@ -6,7 +6,6 @@ import sbt._
 import com.timushev.sbt.updates.Compat._
 
 object UpdatesPlugin extends AutoPlugin {
-
   object autoImport extends UpdatesKeys with Implicits
 
   override val trigger: PluginTrigger = allRequirements
@@ -50,5 +49,4 @@ object UpdatesPlugin extends AutoPlugin {
       )
     }
   )
-
 }

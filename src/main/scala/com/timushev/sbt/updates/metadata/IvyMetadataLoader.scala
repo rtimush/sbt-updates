@@ -19,7 +19,6 @@ object IvyMetadataLoader {
 }
 
 class IvyMetadataLoader(repo: URLRepository, downloader: Downloader) extends MetadataLoader {
-
   def getVersions(module: ModuleID): Future[Seq[Version]] = {
     val prefixes = repo.patterns.artifactPatterns.flatMap(getRevisionPrefix(_, module))
     Future.sequence(prefixes.map(download)).map(_.flatten.flatMap(extractVersions))
@@ -60,5 +59,4 @@ class IvyMetadataLoader(repo: URLRepository, downloader: Downloader) extends Met
   private def removeE(s: String): String = {
     if (s.startsWith("e:")) s.substring(2) else s
   }
-
 }

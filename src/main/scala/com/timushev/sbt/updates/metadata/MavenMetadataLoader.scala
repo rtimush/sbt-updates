@@ -13,7 +13,6 @@ import scala.concurrent.Future
 import scala.xml.XML
 
 class MavenMetadataLoader(repo: URLRepository, downloader: Downloader) extends MetadataLoader {
-
   def getVersions(module: ModuleID): Future[Seq[Version]] = {
     Future
       .sequence(
@@ -51,5 +50,4 @@ class MavenMetadataLoader(repo: URLRepository, downloader: Downloader) extends M
   private def removeE(s: String): String = {
     if (s.startsWith("e:")) s.substring(2) else s
   }
-
 }

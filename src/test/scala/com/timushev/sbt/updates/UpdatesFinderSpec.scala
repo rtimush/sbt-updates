@@ -8,7 +8,6 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 
 class UpdatesFinderSpec extends FreeSpec with Matchers {
-
   def updates(current: String, available: Seq[String], allowPreRelease: Boolean): Set[String] =
     Await
       .result(

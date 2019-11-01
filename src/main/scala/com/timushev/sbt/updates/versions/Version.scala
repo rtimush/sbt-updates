@@ -78,7 +78,6 @@ object Version {
 }
 
 object VersionParser extends RegexParsers {
-
   private val token = """[^-+.]+""".r
   private val number = """\d{1,18}(?=[-+.]|$)""".r ^^ (_.toLong)
   private val plusAsPatchValue = """\+""".r ^^ (_ => Long.MaxValue)
@@ -94,5 +93,4 @@ object VersionParser extends RegexParsers {
     }
 
   def parse(text: String): VersionParser.ParseResult[(List[Long], List[String], List[String])] = parseAll(version, text)
-
 }

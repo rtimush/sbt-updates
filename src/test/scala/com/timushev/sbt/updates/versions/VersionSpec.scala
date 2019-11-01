@@ -3,7 +3,6 @@ package com.timushev.sbt.updates.versions
 import org.scalatest.{FreeSpec, Matchers}
 
 class VersionSpec extends FreeSpec with Matchers {
-
   "Versions" - {
     "should be classified correctly" in {
       List("1.0.0", "1.0.0.Final", "1.0.0-FINAL", "1.0.0.RELEASE").foreach { rel =>
