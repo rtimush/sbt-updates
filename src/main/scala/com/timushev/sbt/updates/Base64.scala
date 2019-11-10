@@ -1,7 +1,6 @@
 package com.timushev.sbt.updates
 
 object Base64 {
-
   private class Java678Encoder extends (Array[Byte] => String) {
     override def apply(bytes: Array[Byte]): String =
       javax.xml.bind.DatatypeConverter.printBase64Binary(bytes)
@@ -22,5 +21,4 @@ object Base64 {
   }
 
   def encodeToString(bytes: Array[Byte]): String = encoder(bytes)
-
 }

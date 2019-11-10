@@ -4,11 +4,8 @@ import org.scalatest.{FreeSpec, Matchers}
 import sbt.{globFilter => _, _}
 
 class ReporterSpec extends FreeSpec with Matchers {
-
   "A Reporter object" - {
-
     "overriding dependencies" - {
-
       "with one dependency" - {
         val dependencies = Seq[ModuleID]("test" % "test" % "1.0.0")
         "should return same dependencies when there are no dependenciesOverrides" in {
@@ -68,7 +65,6 @@ class ReporterSpec extends FreeSpec with Matchers {
       }
 
       "with cross-versioning" - {
-
         "should return overridden dependencies when overriding with an explicit cross-version" in {
           val dependencies = Seq[ModuleID]("test" %% "test" % "1.0.0")
           val dependenciesOverrides = Seq[ModuleID]("test" % "test_2.12" % "2.0.0")
@@ -84,11 +80,7 @@ class ReporterSpec extends FreeSpec with Matchers {
             .finalDependencies("2.12.1", dependencies, dependenciesOverrides)
             .map(_.revision) shouldEqual Seq("1.0.0")
         }
-
       }
-
     }
-
   }
-
 }

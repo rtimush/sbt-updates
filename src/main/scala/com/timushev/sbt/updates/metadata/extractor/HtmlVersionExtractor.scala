@@ -10,7 +10,6 @@ object HtmlVersionExtractor {
 }
 
 class HtmlVersionExtractor extends VersionExtractor {
-
   override def isDefinedAt(data: String): Boolean = {
     Pattern.findAllIn(data).nonEmpty
   }
@@ -18,5 +17,4 @@ class HtmlVersionExtractor extends VersionExtractor {
   override def apply(data: String): Seq[Version] = {
     Pattern.findAllMatchIn(data).map(_.group(1)).map(Version.apply).to[Vector]
   }
-
 }

@@ -6,7 +6,6 @@ import org.scalatest.{FreeSpec, Matchers}
 import sbt.{ConsoleLogger, Resolver}
 
 class MetadataLoaderFactorySpec extends FreeSpec with Matchers {
-
   val logger = ConsoleLogger()
 
   "A MetadataLoader factory" - {
@@ -25,5 +24,4 @@ class MetadataLoaderFactorySpec extends FreeSpec with Matchers {
       MetadataLoaderFactory.loader(logger, Nil).isDefinedAt(ftpResolver) shouldBe false
     }
   }
-
 }

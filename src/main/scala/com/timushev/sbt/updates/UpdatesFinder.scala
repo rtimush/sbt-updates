@@ -9,7 +9,6 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 object UpdatesFinder {
-
   import scala.Ordered._
 
   def findUpdates(loaders: Seq[MetadataLoader], allowPreRelease: Boolean)(
@@ -37,5 +36,4 @@ object UpdatesFinder {
   private val withEmpty: PartialFunction[Throwable, Seq[Version]] = {
     case _ => Seq.empty
   }
-
 }

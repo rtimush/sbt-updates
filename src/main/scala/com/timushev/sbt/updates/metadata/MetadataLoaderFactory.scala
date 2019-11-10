@@ -11,7 +11,6 @@ import scala.concurrent.Future
 import scala.util.matching.Regex
 
 object MetadataLoaderFactory {
-
   val KnownProtocol: Regex = "(?i)^https?$".r
   val KnownProtocolUrl: Regex = "(?i)^https?://".r
 
@@ -50,5 +49,4 @@ object MetadataLoaderFactory {
   private val cache = mutable.Map[(MetadataLoader, ModuleID), Future[Seq[Version]]]()
 
   private def cached(loader: MetadataLoader) = new CachingMetadataLoader(loader, cache)
-
 }
