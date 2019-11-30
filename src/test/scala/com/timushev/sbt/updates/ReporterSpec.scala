@@ -1,9 +1,10 @@
 package com.timushev.sbt.updates
 
-import org.scalatest.{FreeSpec, Matchers}
 import sbt.{globFilter => _, _}
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers
 
-class ReporterSpec extends FreeSpec with Matchers {
+class ReporterSpec extends AnyFreeSpec with Matchers {
   "A Reporter object" - {
     "overriding dependencies" - {
       "with one dependency" - {

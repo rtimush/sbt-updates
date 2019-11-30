@@ -1,13 +1,14 @@
 package com.timushev.sbt.updates
 
 import com.timushev.sbt.updates.metadata.FixedMetadataLoader
-import org.scalatest.{FreeSpec, Matchers}
 import sbt.{globFilter => _, _}
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers
 
-class UpdatesFinderSpec extends FreeSpec with Matchers {
+class UpdatesFinderSpec extends AnyFreeSpec with Matchers {
   def updates(current: String, available: Seq[String], allowPreRelease: Boolean): Set[String] =
     Await
       .result(
