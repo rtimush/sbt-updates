@@ -2,10 +2,11 @@ package com.timushev.sbt.updates.metadata
 
 import java.net.URL
 
-import org.scalatest.{FreeSpec, Matchers}
 import sbt.{ConsoleLogger, Resolver}
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should.Matchers
 
-class MetadataLoaderFactorySpec extends FreeSpec with Matchers {
+class MetadataLoaderFactorySpec extends AnyFreeSpec with Matchers {
   val logger = ConsoleLogger()
 
   "A MetadataLoader factory" - {

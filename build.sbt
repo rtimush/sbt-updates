@@ -10,7 +10,7 @@ version := version.value.replaceAll("\\-SNAPSHOT$", "")
 scalacOptions := Seq("-deprecation", "-unchecked", "-feature")
 
 libraryDependencies ++= Seq(
-  "org.scalatest" %% "scalatest" % "3.0.8" % "test"
+  "org.scalatest" %% "scalatest" % "3.1.0" % "test"
 )
 
 scriptedLaunchOpts += s"-Dsbt.updates.version=${version.value}"
