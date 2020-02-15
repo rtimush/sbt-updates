@@ -38,11 +38,7 @@ object Reporter {
           .map(_.map(findUpdates(loaders, allowPreRelease)))
           .map(Future.sequence(_))
       }
-      .map { crossUpdates =>
-        crossUpdates.transpose.map { updates =>
-          updates.reduce(_.intersect(_))
-        }
-      }
+      .map { crossUpdates => crossUpdates.transpose.map { updates => updates.reduce(_.intersect(_)) } }
     val updates = Await.result(updatesFuture, 1.hour)
     buildDependencies
       .zip(updates)
@@ -91,11 +87,7 @@ object Reporter {
         }
         .toSeq
         .sortBy(_.head)
-      val widths = table.transpose.map { c =>
-        c.foldLeft(0) { (m, c) =>
-          m.max(c.map(_.length).getOrElse(0))
-        }
-      }
+      val widths = table.transpose.map { c => c.foldLeft(0) { (m, c) => m.max(c.map(_.length).getOrElse(0)) } }
       val separator = Seq("", " : ", " -> ", " -> ", " -> ")
       for (row <- table) yield {
         separator
@@ -152,32 +144,22 @@ object Reporter {
     module.organization + ":" + module.name + module.configurations.map(":" + _).getOrElse("")
 
   def patchUpdate(c: Version, updates: SortedSet[Version]): Option[Version] =
-    updates.filter { v =>
-      v.major == c.major && v.minor == c.minor
-    }.lastOption
+    updates.filter { v => v.major == c.major && v.minor == c.minor }.lastOption
 
   def minorUpdate(c: Version, updates: SortedSet[Version]): Option[Version] =
-    updates.filter { v =>
-      v.major == c.major && v.minor > c.minor
-    }.lastOption
+    updates.filter { v => v.major == c.major && v.minor > c.minor }.lastOption
 
   def majorUpdate(c: Version, updates: SortedSet[Version]): Option[Version] =
-    updates.filter { v =>
-      v.major > c.major
-    }.lastOption
+    updates.filter { v => v.major > c.major }.lastOption
 
   def pad(s: String, w: Int): String = s.padTo(w, ' ')
 
   def include(included: ModuleFilter)(module: ModuleID, versions: SortedSet[Version]): SortedSet[Version] = {
-    versions.filter { version =>
-      included.apply(module.withRevision0(version.toString))
-    }
+    versions.filter { version => included.apply(module.withRevision0(version.toString)) }
   }
 
   def exclude(excluded: ModuleFilter)(module: ModuleID, versions: SortedSet[Version]): SortedSet[Version] = {
-    versions.filterNot { version =>
-      excluded.apply(module.withRevision0(version.toString))
-    }
+    versions.filterNot { version => excluded.apply(module.withRevision0(version.toString)) }
   }
 
   def excludeDependenciesFromPlugins(
