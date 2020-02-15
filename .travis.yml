@@ -37,9 +37,9 @@ jobs:
     - env: TRAVIS_JDK=$JDK_8 SBT_SCRIPTED_VERSION=$SBT_1_0_MIN
       script: sbt ^^$SBT_1_0 scripted
     - env: TRAVIS_JDK=$JDK_8 SBT_SCRIPTED_VERSION=$SBT_0_13
-      script: sbt -Dsbt.repository.secure=false ^^$SBT_0_13 scripted
+      script: sbt ^^$SBT_0_13 scripted
     - env: TRAVIS_JDK=$JDK_8 SBT_SCRIPTED_VERSION=$SBT_0_13_MIN
-      script: sbt -Dsbt.repository.secure=false ^^$SBT_0_13 scripted
+      script: sbt ^^$SBT_0_13 scripted
 
     - stage: publish
       env: TRAVIS_JDK=$JDK_8 SBT_VERSION=$SBT_1_0
