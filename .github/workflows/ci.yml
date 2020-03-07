@@ -1,0 +1,95 @@
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+    tags: [ '*.*.*' ]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        sbt:
+          - { major: '0.13.x', full: '0.13.16' }
+          - { major: '1.x',    full: '1.1.5'   }
+      fail-fast: false
+    name: build (sbt ${{ matrix.sbt.major }})
+    steps:
+      - uses: actions/checkout@v2
+      - run: git fetch --prune --unshallow
+      - name: Cache SBT ivy cache
+        uses: actions/cache@v1
+        with:
+          path: ~/.ivy2/cache
+          key: ${{ runner.os }}-sbt-ivy-cache-${{ matrix.sbt.full }}-${{ hashFiles('**/*.sbt') }}
+      - uses: olafurpg/setup-scala@v5
+        with:
+          java-version: zulu@1.8
+      - run: sbt ^^${{ matrix.sbt.full }} scalafmtCheck test:scalafmtCheck scalafmtSbtCheck test publishLocal
+      - uses: actions/upload-artifact@v1
+        with:
+          name: sbt-updates-${{ matrix.sbt.major }}
+          path: /home/runner/.ivy2/local
+  test:
+    runs-on: ubuntu-latest
+    needs: build
+    strategy:
+      matrix:
+        java: [ 8, 11 ]
+        sbt: [ 0.13.9, 0.13.16, 1.0.0, 1.3.8 ]
+        exclude:
+          - { sbt: 0.13.9,  java: 11 }
+          - { sbt: 0.13.16, java: 11 }
+      fail-fast: false
+    name: test (java ${{ matrix.java }}, sbt ${{ matrix.sbt }})
+    steps:
+      - uses: actions/checkout@v2
+      - run: git fetch --prune --unshallow
+      - name: Cache SBT ivy cache
+        uses: actions/cache@v1
+        with:
+          path: ~/.ivy2/cache
+          key: ${{ runner.os }}-sbt-ivy-cache-test-${{ matrix.sbt }}-${{ hashFiles('**/*.sbt') }}
+      - uses: actions/download-artifact@v1
+        with:
+          name: sbt-updates-0.13.x
+          path: /home/runner/.ivy2/local
+      - uses: actions/download-artifact@v1
+        with:
+          name: sbt-updates-1.x
+          path: /home/runner/.ivy2/local
+      - uses: olafurpg/setup-scala@v5
+        with:
+          java-version: zulu@1.${{ matrix.java }}
+      - run: sbt ^^${{ matrix.sbt }} scripted
+        env:
+          CI: true
+          SBT_SCRIPTED_VERSION: ${{ matrix.sbt }}
+  publish:
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.repository == 'rtimush/sbt-updates' && ( github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/') )
+    strategy:
+      matrix:
+        sbt:
+          - { major: '0.13.x', full: '0.13.16' }
+          - { major: '1.x',    full: '1.1.5'   }
+      fail-fast: false
+    name: publish (sbt ${{ matrix.sbt.major }})
+    steps:
+      - uses: actions/checkout@v2
+      - run: git fetch --prune --unshallow
+      - name: Cache SBT ivy cache
+        uses: actions/cache@v1
+        with:
+          path: ~/.ivy2/cache
+          key: ${{ runner.os }}-sbt-ivy-cache-${{ matrix.sbt.full }}-${{ hashFiles('**/*.sbt') }}
+      - uses: olafurpg/setup-scala@v5
+        with:
+          java-version: zulu@1.8
+      - run: sbt ^^${{ matrix.sbt.full }} publish
+        env:
+          BINTRAY_USER: ${{ secrets.BINTRAY_USER }}
+          BINTRAY_PASS: ${{ secrets.BINTRAY_PASS }}
