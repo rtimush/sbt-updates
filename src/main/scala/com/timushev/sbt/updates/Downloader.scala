@@ -2,14 +2,18 @@ package com.timushev.sbt.updates
 
 import java.io.InputStream
 import java.net.URL
-import scala.util.control.Exception._
 
+import org.apache.ivy.Ivy
 import sbt.{Credentials, Logger}
+
+import scala.util.control.Exception._
 
 class Downloader(credentials: Seq[Credentials], logger: Logger) {
   def startDownload(url: URL): InputStream = {
     val hostCredentials = nonFatalCatch.either(Credentials.forHost(credentials, url.getHost))
     val connection = url.openConnection()
+    // Same as in org.apache.ivy.util.url.BasicURLHandler
+    connection.setRequestProperty("User-Agent", s"Apache Ivy/${Ivy.getIvyVersion}")
     hostCredentials match {
       case Right(Some(c)) =>
         logger.debug(s"Downloading $url as ${c.userName}")
