@@ -23,14 +23,14 @@ object SbtAxis {
   private val jvm: PlatformAxis = PlatformAxis("jvm", "", "jvm")
 
   implicit class RichProjectMatrix(val matrix: ProjectMatrix) extends AnyVal {
-    def sbtPluginRow(axis: SbtAxis): ProjectMatrix = matrix.customRow(
+    def sbtPluginRow(axis: SbtAxis, ss: Def.SettingsDefinition*): ProjectMatrix = matrix.customRow(
       autoScalaLibrary = false,
       axisValues = Seq(axis, jvm),
       _.settings(
         sbtPlugin := true,
         scalaVersion := axis.scalaVersion,
         pluginCrossBuild / sbtVersion := axis.fullVersion
-      )
+      ).settings(ss: _*)
     )
     def sbtScriptedRow(axis: SbtAxis, buildAxis: SbtAxis): ProjectMatrix = matrix.customRow(
       autoScalaLibrary = false,
