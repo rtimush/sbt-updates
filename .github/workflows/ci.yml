@@ -38,11 +38,14 @@ jobs:
     needs: build
     strategy:
       matrix:
-        java: [ 8, 11 ]
-        sbt: [ 0_13_9, 0_13_16, 1_0_0, 1_3_10 ]
-        exclude:
-          - { sbt: 0_13_9,  java: 11 }
-          - { sbt: 0_13_16, java: 11 }
+        include:
+          - { sbt: 0_13_9,  java: 8  }
+          - { sbt: 0_13_16, java: 8  }
+          - { sbt: 1_0_0,   java: 8  }
+          - { sbt: 1_3_10,  java: 8  }
+          - { sbt: 1_0_0,   java: 11 }
+          - { sbt: 1_3_10,  java: 11 }
+          - { sbt: 1_3_10,  java: 14 }
       fail-fast: false
     name: test (java ${{ matrix.java }}, sbt ${{ matrix.sbt }})
     steps:
