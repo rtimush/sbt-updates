@@ -11,7 +11,7 @@ import scala.util.control.Exception._
 class Downloader(credentials: Seq[Credentials], logger: Logger) {
   def startDownload(url: URL): InputStream = {
     val hostCredentials = nonFatalCatch.either(Credentials.forHost(credentials, url.getHost))
-    val connection = url.openConnection()
+    val connection      = url.openConnection()
     // Same as in org.apache.ivy.util.url.BasicURLHandler
     connection.setRequestProperty("User-Agent", s"Apache Ivy/${Ivy.getIvyVersion}")
     hostCredentials match {

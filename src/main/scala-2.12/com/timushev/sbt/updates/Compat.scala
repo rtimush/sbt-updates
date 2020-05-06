@@ -3,7 +3,7 @@ package com.timushev.sbt.updates
 import sbt.ModuleID
 
 object Compat {
-  type ModuleFilter = sbt.librarymanagement.ModuleFilter
+  type ModuleFilter     = sbt.librarymanagement.ModuleFilter
   type DependencyFilter = sbt.librarymanagement.DependencyFilter
   val DependencyFilter = sbt.librarymanagement.DependencyFilter
 

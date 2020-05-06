@@ -11,9 +11,8 @@ TaskKey[Unit]("check") := {
   allUpdates.keys.find(_.name == "sbt-scalafmt") match {
     case Some(key) =>
       val expected = "2.0.1"
-      if (!allUpdates(key).contains(Version(expected))) {
+      if (!allUpdates(key).contains(Version(expected)))
         sys.error(s"Version $expected is not found as an update for org.scalameta:sbt-scalafmt:2.0.0")
-      }
     case None =>
       sys.error("No updates for org.scalameta:sbt-scalafmt:2.0.0 found")
   }

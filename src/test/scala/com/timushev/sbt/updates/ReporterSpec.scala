@@ -27,11 +27,11 @@ class ReporterSpec extends AnyFreeSpec with Matchers {
 
       "with many dependencies" - {
         val dependencies = Seq[ModuleID](
-          "test" % "one" % "1.0.0",
-          "test" % "two" % "2.0.0",
+          "test" % "one"   % "1.0.0",
+          "test" % "two"   % "2.0.0",
           "test" % "three" % "3.0.0",
-          "test" % "four" % "4.0.0",
-          "test" % "five" % "5.0.0"
+          "test" % "four"  % "4.0.0",
+          "test" % "five"  % "5.0.0"
         )
 
         "should return same dependencies when there are no dependenciesOverrides" in {
@@ -42,32 +42,32 @@ class ReporterSpec extends AnyFreeSpec with Matchers {
         "should return correct dependencies when one of dependencies is overridden" in {
           val dependenciesOverrides = Seq[ModuleID]("test" % "three" % "4.0.0")
           Reporter.overrideDependencies(dependencies, dependenciesOverrides) shouldEqual Seq(
-            "test" % "one" % "1.0.0",
-            "test" % "two" % "2.0.0",
+            "test" % "one"   % "1.0.0",
+            "test" % "two"   % "2.0.0",
             "test" % "three" % "4.0.0",
-            "test" % "four" % "4.0.0",
-            "test" % "five" % "5.0.0"
+            "test" % "four"  % "4.0.0",
+            "test" % "five"  % "5.0.0"
           )
         }
 
         "should return correct dependencies when some of dependencies are overridden" in {
           val dependenciesOverrides = Seq[ModuleID](
             "test" % "three" % "4.0.0",
-            "test" % "five" % "6.0.0"
+            "test" % "five"  % "6.0.0"
           )
           Reporter.overrideDependencies(dependencies, dependenciesOverrides) shouldEqual Seq(
-            "test" % "one" % "1.0.0",
-            "test" % "two" % "2.0.0",
+            "test" % "one"   % "1.0.0",
+            "test" % "two"   % "2.0.0",
             "test" % "three" % "4.0.0",
-            "test" % "four" % "4.0.0",
-            "test" % "five" % "6.0.0"
+            "test" % "four"  % "4.0.0",
+            "test" % "five"  % "6.0.0"
           )
         }
       }
 
       "with cross-versioning" - {
         "should return overridden dependencies when overriding with an explicit cross-version" in {
-          val dependencies = Seq[ModuleID]("test" %% "test" % "1.0.0")
+          val dependencies          = Seq[ModuleID]("test" %% "test" % "1.0.0")
           val dependenciesOverrides = Seq[ModuleID]("test" % "test_2.12" % "2.0.0")
           Reporter
             .finalDependencies("2.12.1", dependencies, dependenciesOverrides)
@@ -75,7 +75,7 @@ class ReporterSpec extends AnyFreeSpec with Matchers {
         }
 
         "should not override dependencies when overriding with a different explicit cross-version" in {
-          val dependencies = Seq[ModuleID]("test" %% "test" % "1.0.0")
+          val dependencies          = Seq[ModuleID]("test" %% "test" % "1.0.0")
           val dependenciesOverrides = Seq[ModuleID]("test" % "test_2.11" % "2.0.0")
           Reporter
             .finalDependencies("2.12.1", dependencies, dependenciesOverrides)

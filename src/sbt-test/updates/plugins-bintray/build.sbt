@@ -13,9 +13,8 @@ TaskKey[Unit]("check") := {
   allUpdates.keys.find(_.name == "sbt-updates") match {
     case Some(key) =>
       val expected = "0.2.0"
-      if (!allUpdates(key).contains(Version(expected))) {
+      if (!allUpdates(key).contains(Version(expected)))
         sys.error(s"Version $expected is not found as an update for com.timushev.sbt:sbt-updates:0.1.10")
-      }
     case None =>
       sys.error("No updates for com.timushev.sbt:sbt-updates:0.1.10 found")
   }

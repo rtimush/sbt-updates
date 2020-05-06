@@ -23,30 +23,32 @@ object SbtAxis {
   private val jvm: PlatformAxis = PlatformAxis("jvm", "", "jvm")
 
   implicit class RichProjectMatrix(val matrix: ProjectMatrix) extends AnyVal {
-    def sbtPluginRow(axis: SbtAxis, ss: Def.SettingsDefinition*): ProjectMatrix = matrix.customRow(
-      autoScalaLibrary = false,
-      axisValues = Seq(axis, jvm),
-      _.settings(
-        sbtPlugin := true,
-        scalaVersion := axis.scalaVersion,
-        pluginCrossBuild / sbtVersion := axis.fullVersion
-      ).settings(ss: _*)
-    )
-    def sbtScriptedRow(axis: SbtAxis, buildAxis: SbtAxis): ProjectMatrix = matrix.customRow(
-      autoScalaLibrary = false,
-      axisValues = Seq(axis, jvm),
-      _.enablePlugins(ScriptedPlugin).settings(
-        sbtPlugin := true,
-        scalaVersion := axis.scalaVersion,
-        pluginCrossBuild / sbtVersion := axis.fullVersion,
-        publish / skip := true,
-        compile / skip := true,
-        scriptedDependencies := Def.taskDyn {
-          if (insideCI.value) Def.task(())
-          else Def.task(()).dependsOn(matrix.finder(buildAxis)(false) / publishLocal)
-        }.value
+    def sbtPluginRow(axis: SbtAxis, ss: Def.SettingsDefinition*): ProjectMatrix =
+      matrix.customRow(
+        autoScalaLibrary = false,
+        axisValues = Seq(axis, jvm),
+        _.settings(
+          sbtPlugin := true,
+          scalaVersion := axis.scalaVersion,
+          pluginCrossBuild / sbtVersion := axis.fullVersion
+        ).settings(ss: _*)
       )
-    )
+    def sbtScriptedRow(axis: SbtAxis, buildAxis: SbtAxis): ProjectMatrix =
+      matrix.customRow(
+        autoScalaLibrary = false,
+        axisValues = Seq(axis, jvm),
+        _.enablePlugins(ScriptedPlugin).settings(
+          sbtPlugin := true,
+          scalaVersion := axis.scalaVersion,
+          pluginCrossBuild / sbtVersion := axis.fullVersion,
+          publish / skip := true,
+          compile / skip := true,
+          scriptedDependencies := Def.taskDyn {
+            if (insideCI.value) Def.task(())
+            else Def.task(()).dependsOn(matrix.finder(buildAxis)(false) / publishLocal)
+          }.value
+        )
+      )
   }
 
 }
