@@ -14,11 +14,11 @@ trait UpdatesKeys {
   )
   lazy val dependencyUpdatesExclusions =
     settingKey[ModuleFilter]("Dependencies that are excluded from update reporting")
-  lazy val dependencyUpdatesFilter = settingKey[ModuleFilter]("Dependencies that are included to update reporting")
+  lazy val dependencyUpdatesFilter    = settingKey[ModuleFilter]("Dependencies that are included to update reporting")
   lazy val dependencyUpdatesFailBuild = settingKey[Boolean]("Fail a build if updates found")
-  lazy val dependencyAllowPreRelease = settingKey[Boolean]("If true, also take pre-release versions into consideration")
-  lazy val dependencyUpdatesData = taskKey[Map[ModuleID, SortedSet[Version]]]("")
-  lazy val dependencyUpdates = taskKey[Unit]("Shows a list of project dependencies that can be updated.")
+  lazy val dependencyAllowPreRelease  = settingKey[Boolean]("If true, also take pre-release versions into consideration")
+  lazy val dependencyUpdatesData      = taskKey[Map[ModuleID, SortedSet[Version]]]("")
+  lazy val dependencyUpdates          = taskKey[Unit]("Shows a list of project dependencies that can be updated.")
   lazy val dependencyUpdatesReport =
     taskKey[File]("Writes a list of project dependencies that can be updated to a file.")
 }

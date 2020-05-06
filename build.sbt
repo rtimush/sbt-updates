@@ -10,13 +10,13 @@ ThisBuild / licenses += (("BSD 3-Clause", url("https://github.com/rtimush/sbt-up
 
 ThisBuild / scalacOptions := Seq("-deprecation", "-unchecked", "-feature")
 
-lazy val `sbt-1.x` = SbtAxis("1.x", "1.1.5")
+lazy val `sbt-1.x`    = SbtAxis("1.x", "1.1.5")
 lazy val `sbt-1.3.10` = SbtAxis("1.3.10")
-lazy val `sbt-1.0.0` = SbtAxis("1.0.0")
+lazy val `sbt-1.0.0`  = SbtAxis("1.0.0")
 
-lazy val `sbt-0.13.x` = SbtAxis("0.13.x", "0.13.16")
+lazy val `sbt-0.13.x`  = SbtAxis("0.13.x", "0.13.16")
 lazy val `sbt-0.13.16` = SbtAxis("0.13.16")
-lazy val `sbt-0.13.9` = SbtAxis("0.13.9")
+lazy val `sbt-0.13.9`  = SbtAxis("0.13.9")
 
 lazy val publishSettings = Seq(
   publishMavenStyle := false,

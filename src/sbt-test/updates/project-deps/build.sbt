@@ -10,7 +10,7 @@ RootDependencies.deps
 
 TaskKey[Unit]("check") := {
   val subprojectUpdates = (dependencyUpdatesData in subproject).value
-  val updates = dependencyUpdatesData.value
+  val updates           = dependencyUpdatesData.value
   if (!subprojectUpdates.keys.exists(m => m.organization == "org.specs2"))
     sys.error(
       s"Missing dependency update for a subproject dependency defined in project/ in a non-default package: ${subprojectUpdates.keySet}"

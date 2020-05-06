@@ -34,7 +34,7 @@ class UpdatesFinderSpec extends AnyFreeSpec with Matchers {
 
   "An updates finder" - {
     "for snapshot artifacts" - {
-      val u = updates("1.0.0-SNAPSHOT", available, allowPreRelease = false)
+      val u  = updates("1.0.0-SNAPSHOT", available, allowPreRelease = false)
       val pu = updates("1.0.0-SNAPSHOT", available, allowPreRelease = true)
       "should not show old stable versions" in {
         u should not(contain("0.9.9"))
@@ -65,7 +65,7 @@ class UpdatesFinderSpec extends AnyFreeSpec with Matchers {
       }
     }
     "for milestone artifacts" - {
-      val u = updates("1.0.0-M2", available, allowPreRelease = false)
+      val u  = updates("1.0.0-M2", available, allowPreRelease = false)
       val pu = updates("1.0.0-M2", available, allowPreRelease = true)
       "should not show old stable versions" in {
         u should not(contain("0.9.9"))
@@ -96,8 +96,8 @@ class UpdatesFinderSpec extends AnyFreeSpec with Matchers {
       }
     }
     "for stable artifacts" - {
-      val u = updates("1.0.0", available, allowPreRelease = false)
-      val pu = updates("1.0.0", available, allowPreRelease = true)
+      val u     = updates("1.0.0", available, allowPreRelease = false)
+      val pu    = updates("1.0.0", available, allowPreRelease = true)
       val uPlus = updates("1.0.+", available, allowPreRelease = false)
       "should not show old stable versions" in {
         u should not(contain("0.9.9"))

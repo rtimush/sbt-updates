@@ -3,9 +3,9 @@ import com.timushev.sbt.updates.versions.Version
 scalaVersion := "2.10.4"
 crossScalaVersions := Seq("2.10.4", "2.11.5")
 
-libraryDependencies += "org.specs2" %% "specs2" % "3.1"
-dependencyOverrides += "org.specs2" % "specs2_2.10" % "3.1.1"
-dependencyOverrides += "org.specs2" % "specs2_2.11" % "3.2"
+libraryDependencies += "org.specs2" %% "specs2"      % "3.1"
+dependencyOverrides += "org.specs2"  % "specs2_2.10" % "3.1.1"
+dependencyOverrides += "org.specs2"  % "specs2_2.11" % "3.2"
 
 TaskKey[Unit]("check") := {
   val updates = dependencyUpdatesData.value

@@ -35,14 +35,13 @@ class IvyMetadataLoader(repo: URLRepository, downloader: Downloader) extends Met
     module.configurations.foreach(tokens.put(IvyPatternHelper.CONF_KEY, _))
     module.extraAttributes.foreach { case (k, v) => tokens.put(removeE(k), v) }
     val substituted = IvyPatternHelper.substituteTokens(pattern, tokens)
-    if (IvyPatternHelper.getFirstToken(substituted) == IvyPatternHelper.REVISION_KEY) {
+    if (IvyPatternHelper.getFirstToken(substituted) == IvyPatternHelper.REVISION_KEY)
       Some(IvyPatternHelper.getTokenRoot(substituted))
-    } else {
+    else
       None
-    }
   }
 
-  private def download(url: String): Future[Option[String]] = {
+  private def download(url: String): Future[Option[String]] =
     Future {
       catching(classOf[FileNotFoundException]).opt {
         val is = downloader.startDownload(new URL(url))
@@ -50,13 +49,10 @@ class IvyMetadataLoader(repo: URLRepository, downloader: Downloader) extends Met
         finally is.close()
       }
     }
-  }
 
-  private def extractVersions(data: String): Seq[Version] = {
+  private def extractVersions(data: String): Seq[Version] =
     IvyMetadataLoader.VersionExtractor.applyOrElse(data, (_: String) => Nil)
-  }
 
-  private def removeE(s: String): String = {
+  private def removeE(s: String): String =
     if (s.startsWith("e:")) s.substring(2) else s
-  }
 }
