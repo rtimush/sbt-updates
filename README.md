@@ -1,4 +1,4 @@
-sbt-updates [![Build Status](https://travis-ci.org/rtimush/sbt-updates.svg?branch=master)](https://travis-ci.org/rtimush/sbt-updates) [![Gitter](https://badges.gitter.im/rtimush/sbt-updates.svg)](https://gitter.im/rtimush/sbt-updates?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+sbt-updates [![Build Status](https://travis-ci.org/rtimush/sbt-updates.svg?branch=master)](https://travis-ci.org/rtimush/sbt-updates)
 ==================
 Display your sbt project's dependency updates.
 
