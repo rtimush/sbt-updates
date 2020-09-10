@@ -94,8 +94,8 @@ object VersionParser extends RegexParsers {
   private val part: Parser[List[String]] = token ~ (("." | "-") ~> token).* ^^ { case h ~ t => h :: t }
 
   private val version: Parser[(List[Long], List[String], List[String])] =
-    numericPart ~ (("." | "-") ~> part).? ~ ("+" ~> part).? ^^ {
-      case a ~ b ~ c => (a, b.getOrElse(Nil), c.getOrElse(Nil))
+    numericPart ~ (("." | "-") ~> part).? ~ ("+" ~> part).? ^^ { case a ~ b ~ c =>
+      (a, b.getOrElse(Nil), c.getOrElse(Nil))
     }
 
   def parse(text: String): VersionParser.ParseResult[(List[Long], List[String], List[String])] = parseAll(version, text)

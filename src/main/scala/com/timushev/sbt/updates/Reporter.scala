@@ -74,16 +74,15 @@ object Reporter {
     if (dependencyUpdates.isEmpty) Seq.empty
     else {
       val table = dependencyUpdates
-        .map {
-          case (m, vs) =>
-            val c = Version(m.revision)
-            Seq(
-              Some(formatModule(m)),
-              Some(m.revision),
-              patchUpdate(c, vs).map(_.toString),
-              minorUpdate(c, vs).map(_.toString),
-              majorUpdate(c, vs).map(_.toString)
-            )
+        .map { case (m, vs) =>
+          val c = Version(m.revision)
+          Seq(
+            Some(formatModule(m)),
+            Some(m.revision),
+            patchUpdate(c, vs).map(_.toString),
+            minorUpdate(c, vs).map(_.toString),
+            majorUpdate(c, vs).map(_.toString)
+          )
         }
         .toSeq
         .sortBy(_.head)

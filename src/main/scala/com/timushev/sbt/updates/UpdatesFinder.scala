@@ -33,7 +33,7 @@ object UpdatesFinder {
 
   private def isUpdate(current: Version) = current < _
 
-  private val withEmpty: PartialFunction[Throwable, Seq[Version]] = {
-    case _ => Seq.empty
+  private val withEmpty: PartialFunction[Throwable, Seq[Version]] = { case _ =>
+    Seq.empty
   }
 }
