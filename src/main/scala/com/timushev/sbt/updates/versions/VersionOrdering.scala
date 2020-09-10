@@ -9,8 +9,8 @@ class VersionOrdering extends Ordering[Version] {
     try subParts
       .findAllIn(s)
       .matchData
-      .flatMap {
-        case Groups(num, str) => Seq(Option(num).map(BigInt.apply).map(Left.apply), Option(str).map(Right.apply))
+      .flatMap { case Groups(num, str) =>
+        Seq(Option(num).map(BigInt.apply).map(Left.apply), Option(str).map(Right.apply))
       }
       .flatten
       .toList

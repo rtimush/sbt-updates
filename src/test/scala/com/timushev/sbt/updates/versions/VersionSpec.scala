@@ -127,10 +127,9 @@ class VersionSpec extends AnyFreeSpec with Matchers {
       case h :: t => t.map((h, _))
       case Nil    => List.empty
     }
-    pairs.foreach {
-      case (a, b) =>
-        a should be < b
-        b should be > a
+    pairs.foreach { case (a, b) =>
+      a should be < b
+      b should be > a
     }
   }
 }
