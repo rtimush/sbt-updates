@@ -35,6 +35,7 @@ lazy val `sbt-updates` = (projectMatrix in file("."))
   .sbtScriptedRow(`sbt-0.13.16`, `sbt-0.13.x`)
 
 lazy val root = (project in file("."))
+  .withId("sbt-updates")
   .aggregate(`sbt-updates`.projectRefs: _*)
   .settings(
     publish / skip := true,

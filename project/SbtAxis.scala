@@ -30,6 +30,7 @@ object SbtAxis {
         _.settings(
           sbtPlugin := true,
           scalaVersion := axis.scalaVersion,
+          crossPaths := true,
           pluginCrossBuild / sbtVersion := axis.fullVersion
         ).settings(ss: _*)
       )
@@ -40,6 +41,7 @@ object SbtAxis {
         _.enablePlugins(ScriptedPlugin).settings(
           sbtPlugin := true,
           scalaVersion := axis.scalaVersion,
+          crossPaths := true,
           pluginCrossBuild / sbtVersion := axis.fullVersion,
           publish / skip := true,
           compile / skip := true,
