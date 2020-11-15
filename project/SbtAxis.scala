@@ -4,21 +4,24 @@ import sbt.VirtualAxis.PlatformAxis
 import sbt._
 import sbt.internal.ProjectMatrix
 
-case class SbtAxis(fullVersion: String, idSuffix: String, directorySuffix: String) extends VirtualAxis.WeakAxis {
+case class SbtAxis(fullVersion: Option[String], idSuffix: String, directorySuffix: String)
+    extends VirtualAxis.WeakAxis {
   val scalaVersion: String =
-    VersionNumber(fullVersion) match {
-      case VersionNumber(Seq(0, 13, _*), _, _) => "2.10.7"
-      case VersionNumber(Seq(1, _*), _, _)     => "2.12.10"
-      case _                                   => sys.error(s"Unsupported sbt version: $fullVersion")
+    fullVersion.map(VersionNumber(_)) match {
+      case Some(VersionNumber(Seq(0, 13, _*), _, _))    => "2.10.7"
+      case Some(VersionNumber(Seq(1, _*), _, _)) | None => "2.12.10"
+      case _                                            => sys.error(s"Unsupported sbt version: $fullVersion")
     }
 }
 
 object SbtAxis {
 
+  def apply(): SbtAxis =
+    SbtAxis(None, "-latest", "-latest")
   def apply(version: String): SbtAxis =
     SbtAxis(version, version)
   def apply(version: String, fullVersion: String): SbtAxis =
-    SbtAxis(fullVersion, "-" + version.replace('.', '_'), "-" + version)
+    SbtAxis(Some(fullVersion), "-" + version.replace('.', '_'), "-" + version)
 
   private val jvm: PlatformAxis = PlatformAxis("jvm", "", "jvm")
 
@@ -31,7 +34,7 @@ object SbtAxis {
           sbtPlugin := true,
           scalaVersion := axis.scalaVersion,
           crossPaths := true,
-          pluginCrossBuild / sbtVersion := axis.fullVersion
+          pluginCrossBuild / sbtVersion := axis.fullVersion.getOrElse(sbtVersion.value)
         ).settings(ss: _*)
       )
     def sbtScriptedRow(axis: SbtAxis, buildAxis: SbtAxis): ProjectMatrix =
@@ -42,7 +45,7 @@ object SbtAxis {
           sbtPlugin := true,
           scalaVersion := axis.scalaVersion,
           crossPaths := true,
-          pluginCrossBuild / sbtVersion := axis.fullVersion,
+          pluginCrossBuild / sbtVersion := axis.fullVersion.getOrElse(sbtVersion.value),
           publish / skip := true,
           compile / skip := true,
           scriptedDependencies := Def.taskDyn {

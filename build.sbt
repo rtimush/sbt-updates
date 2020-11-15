@@ -11,7 +11,7 @@ ThisBuild / licenses += (("BSD 3-Clause", url("https://github.com/rtimush/sbt-up
 ThisBuild / scalacOptions := Seq("-deprecation", "-unchecked", "-feature")
 
 lazy val `sbt-1.x`    = SbtAxis("1.x", "1.1.5")
-lazy val `sbt-1.3.10` = SbtAxis("1.3.10")
+lazy val `sbt-latest` = SbtAxis()
 lazy val `sbt-1.0.0`  = SbtAxis("1.0.0")
 
 lazy val `sbt-0.13.x`  = SbtAxis("0.13.x", "0.13.16")
@@ -29,7 +29,7 @@ lazy val `sbt-updates` = (projectMatrix in file("."))
   .settings(libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.3" % "test")
   .sbtPluginRow(`sbt-1.x`, publishSettings: _*)
   .sbtScriptedRow(`sbt-1.0.0`, `sbt-1.x`)
-  .sbtScriptedRow(`sbt-1.3.10`, `sbt-1.x`)
+  .sbtScriptedRow(`sbt-latest`, `sbt-1.x`)
   .sbtPluginRow(`sbt-0.13.x`, publishSettings: _*)
   .sbtScriptedRow(`sbt-0.13.9`, `sbt-0.13.x`)
   .sbtScriptedRow(`sbt-0.13.16`, `sbt-0.13.x`)
