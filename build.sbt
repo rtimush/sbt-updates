@@ -26,7 +26,7 @@ lazy val publishSettings = Seq(
 )
 
 lazy val `sbt-updates` = (projectMatrix in file("."))
-  .settings(libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.3" % "test")
+  .settings(libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.4" % "test")
   .sbtPluginRow(`sbt-1.x`, publishSettings: _*)
   .sbtScriptedRow(`sbt-1.0.0`, `sbt-1.x`)
   .sbtScriptedRow(`sbt-latest`, `sbt-1.x`)
