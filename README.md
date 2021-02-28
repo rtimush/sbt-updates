@@ -1,4 +1,4 @@
-sbt-updates [![Build Status](https://travis-ci.org/rtimush/sbt-updates.svg?branch=master)](https://travis-ci.org/rtimush/sbt-updates)
+sbt-updates
 ==================
 Display your sbt project's dependency updates.
 
@@ -23,8 +23,7 @@ addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "x.x.x")
 The latest version is ![Bintray](https://img.shields.io/bintray/v/rtimush/sbt-plugins/sbt-updates?color=blue&label=sbt-updates&style=plastic)
 
 ### Snapshot version
-Choose one of versions available on [BinTray](https://bintray.com/rtimush/sbt-plugin-snapshots/sbt-updates/view)
-or the [latest](https://bintray.com/rtimush/sbt-plugin-snapshots/sbt-updates/_latestVersion) one. Then create a `~/.sbt/1.0/plugins/sbt-updates.sbt` file (for sbt 1.x series), or `~/.sbt/0.13/plugins/sbt-updates.sbt` (for sbt 0.13.x series) with the following content:
+Choose one of versions available on [Sonatype](https://oss.sonatype.org/content/repositories/snapshots/com/timushev/sbt/sbt-updates_2.12_1.0/). Then create a `~/.sbt/1.0/plugins/sbt-updates.sbt` file (for sbt 1.x series), or `~/.sbt/0.13/plugins/sbt-updates.sbt` (for sbt 0.13.x series) with the following content:
 
 ```
 resolvers += Resolver.bintrayIvyRepo("rtimush", "sbt-plugin-snapshots")

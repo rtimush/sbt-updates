@@ -1,12 +1,22 @@
 import SbtAxis.RichProjectMatrix
 import com.rallyhealth.sbt.versioning.SnapshotVersion
 
-ThisBuild / name := "sbt-updates"
 ThisBuild / organization := "com.timushev.sbt"
-ThisBuild / isSnapshot := (ThisBuild / versionFromGit).value.isInstanceOf[SnapshotVersion]
-ThisBuild / version := (ThisBuild / version).value.replaceAll("""-SNAPSHOT$""", "")
 ThisBuild / homepage := Some(url("https://github.com/rtimush/sbt-updates"))
 ThisBuild / licenses += (("BSD 3-Clause", url("https://github.com/rtimush/sbt-updates/blob/master/LICENSE")))
+ThisBuild / publishTo := sonatypePublishToBundle.value
+ThisBuild / developers := List(
+  Developer("rtimush", "Roman Timushev", "rtimush@gmail.com", url("https://github.com/rtimush"))
+)
+ThisBuild / scmInfo := Some(
+  ScmInfo(
+    url("https://github.com/rtimush/sbt-updates"),
+    "scm:git:https://github.com/rtimush/sbt-updates.git",
+    Some("scm:git:git@github.com:rtimush/sbt-updates.git")
+  )
+)
+
+sonatypeProfileName := "com.timushev"
 
 ThisBuild / scalacOptions := Seq("-deprecation", "-unchecked", "-feature")
 
@@ -18,19 +28,12 @@ lazy val `sbt-0.13.x`  = SbtAxis("0.13.x", "0.13.16")
 lazy val `sbt-0.13.16` = SbtAxis("0.13.16")
 lazy val `sbt-0.13.9`  = SbtAxis("0.13.9")
 
-lazy val publishSettings = Seq(
-  publishMavenStyle := false,
-  bintrayRepository := (if (isSnapshot.value) "sbt-plugin-snapshots" else "sbt-plugins"),
-  bintrayOrganization in bintray := None,
-  bintrayReleaseOnPublish := isSnapshot.value
-)
-
 lazy val `sbt-updates` = (projectMatrix in file("."))
   .settings(libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.3" % "test")
-  .sbtPluginRow(`sbt-1.x`, publishSettings: _*)
+  .sbtPluginRow(`sbt-1.x`)
   .sbtScriptedRow(`sbt-1.0.0`, `sbt-1.x`)
   .sbtScriptedRow(`sbt-latest`, `sbt-1.x`)
-  .sbtPluginRow(`sbt-0.13.x`, publishSettings: _*)
+  .sbtPluginRow(`sbt-0.13.x`)
   .sbtScriptedRow(`sbt-0.13.9`, `sbt-0.13.x`)
   .sbtScriptedRow(`sbt-0.13.16`, `sbt-0.13.x`)
 
