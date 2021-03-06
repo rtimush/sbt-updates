@@ -14,7 +14,6 @@ pull_request_rules:
         method: merge
         strict: true
         strict_method: rebase
-        update_bot_account: scala-steward
   - name: automatic merge for scala-steward pull requests affecting project plugins.sbt
     conditions:
       - author=scala-steward
@@ -26,7 +25,6 @@ pull_request_rules:
         method: merge
         strict: true
         strict_method: rebase
-        update_bot_account: scala-steward
   - name: semi-automatic merge for scala-steward pull requests
     conditions:
       - author=scala-steward
@@ -37,4 +35,3 @@ pull_request_rules:
         method: merge
         strict: true
         strict_method: rebase
-        update_bot_account: scala-steward
