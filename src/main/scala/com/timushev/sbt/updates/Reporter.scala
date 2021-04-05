@@ -16,10 +16,9 @@ object Reporter {
   import com.timushev.sbt.updates.UpdatesFinder._
 
   def dependencyUpdatesData(
-      project: ModuleID,
       dependencies: Seq[ModuleID],
       dependenciesOverrides: Iterable[ModuleID],
-      dependencyPositions: Map[ModuleID, SourcePosition],
+      dependencyPositions: Map[ModuleID, Set[SourcePosition]],
       resolvers: Seq[Resolver],
       credentials: Seq[Credentials],
       scalaVersions: Seq[String],
@@ -159,16 +158,25 @@ object Reporter {
 
   def excludeDependenciesFromPlugins(
       dependencies: Seq[ModuleID],
-      dependencyPositions: Map[ModuleID, SourcePosition],
+      dependencyPositions: Map[ModuleID, Set[SourcePosition]],
       buildRoot: File
   ): Seq[ModuleID] =
-    dependencies.filter { moduleId =>
-      dependencyPositions.get(moduleId) match {
-        case Some(fp: FilePosition) if fp.path.startsWith("(sbt.Classpaths") => true
-        case Some(fp: FilePosition) if fp.path.startsWith("(") =>
-          extractFileName(fp.path).exists(fileExists(buildRoot, _))
-        case _ => true
-      }
+    dependencies.filter {
+      case moduleId
+          if moduleId.organization == "org.scala-lang" &&
+            moduleId.name == "scala-library" =>
+        true
+      case moduleId =>
+        dependencyPositions.get(moduleId).fold(true) {
+          _.exists {
+            case fp: FilePosition if fp.path.startsWith("(sbt.Classpaths") =>
+              false
+            case fp: FilePosition if fp.path.startsWith("(") =>
+              extractFileName(fp.path).exists(fileExists(buildRoot, _))
+            case _ =>
+              true
+          }
+        }
     }
 
   val FileNamePattern: Regex = "^\\([^\\)]+\\) (.*)$".r
