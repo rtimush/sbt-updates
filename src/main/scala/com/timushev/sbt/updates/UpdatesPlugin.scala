@@ -4,6 +4,7 @@ import com.timushev.sbt.updates.UpdatesKeys._
 import sbt.Keys._
 import sbt._
 import com.timushev.sbt.updates.Compat._
+import com.timushev.sbt.updates.DependencyPositions.dependencyPositionsTask
 
 object UpdatesPlugin extends AutoPlugin {
   object autoImport extends UpdatesKeys with Implicits
@@ -20,7 +21,7 @@ object UpdatesPlugin extends AutoPlugin {
       Reporter.dependencyUpdatesData(
         libraryDependencies.value,
         dependencyOverrides.value,
-        dependencyPositions.value,
+        dependencyPositionsTask.value,
         fullResolvers.value,
         credentials.value,
         crossScalaVersions.value,
