@@ -16,7 +16,6 @@ object Reporter {
   import com.timushev.sbt.updates.UpdatesFinder._
 
   def dependencyUpdatesData(
-      project: ModuleID,
       dependencies: Seq[ModuleID],
       dependenciesOverrides: Iterable[ModuleID],
       dependencyPositions: Map[ModuleID, SourcePosition],

@@ -18,7 +18,6 @@ object UpdatesPlugin extends AutoPlugin {
     dependencyAllowPreRelease := false,
     dependencyUpdatesData := {
       Reporter.dependencyUpdatesData(
-        projectID.value,
         libraryDependencies.value,
         dependencyOverrides.value,
         dependencyPositions.value,
