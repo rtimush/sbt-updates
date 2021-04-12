@@ -6,7 +6,7 @@ import com.timushev.sbt.updates.versions.Version
 import scala.util.matching.Regex
 
 object HtmlVersionExtractor {
-  val Pattern: Regex = "<a[^>]+href=\":?([^/]*)/\"[^>]*>\\1/</a>".r
+  val Pattern: Regex = "<a[^>]+href=\":?([^/]*)/\"[^>]*>\\1/?</a>".r
 }
 
 class HtmlVersionExtractor extends VersionExtractor {
