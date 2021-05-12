@@ -10,7 +10,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2.3.4
         with:
           fetch-depth: 0
       - uses: actions/cache@v2
@@ -44,7 +44,7 @@ jobs:
       fail-fast: false
     name: test (java ${{ matrix.java }}, sbt ${{ matrix.sbt }})
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2.3.4
         with:
           fetch-depth: 0
       - uses: actions/cache@v2
@@ -74,7 +74,7 @@ jobs:
     needs: test
     if: github.repository == 'rtimush/sbt-updates' && ( github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/') )
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2.3.4
         with:
           fetch-depth: 0
       - uses: actions/cache@v2
