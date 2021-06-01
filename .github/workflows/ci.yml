@@ -20,7 +20,7 @@ jobs:
             ~/.cache/coursier/v1
             ~/.ivy2/cache
           key: ${{ runner.os }}-build-cache-${{ hashFiles('*.sbt') }}-${{ hashFiles('project/*') }}
-      - uses: olafurpg/setup-scala@v10
+      - uses: olafurpg/setup-scala@v12
         with:
           java-version: zulu@1.8
       - run: sbt scalafmtCheckAll scalafmtSbtCheck test publishLocal
@@ -58,7 +58,7 @@ jobs:
         with:
           name: sbt-updates
           path: /home/runner/.ivy2/local
-      - uses: olafurpg/setup-scala@v10
+      - uses: olafurpg/setup-scala@v12
         with:
           java-version: zulu@1.${{ matrix.java }}
       - run: sbt sbt-updates-${{ matrix.sbt }}/scripted
@@ -88,7 +88,7 @@ jobs:
         with:
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
           passphrase: ${{ secrets.GPG_PRIVATE_KEY_PASSPHRASE }}
-      - uses: olafurpg/setup-scala@v10
+      - uses: olafurpg/setup-scala@v12
         with:
           java-version: zulu@1.8
       - run: sbt publishSigned
