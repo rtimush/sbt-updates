@@ -7,14 +7,14 @@ sealed trait Version {
   def major: Long
   def minor: Long
   def patch: Long
+  def text: String
 }
 
 case class ValidVersion(text: String, releasePart: List[Long], preReleasePart: List[String], buildPart: List[String])
     extends Version {
-  def major: Long               = releasePart.headOption.getOrElse(0)
-  def minor: Long               = releasePart.drop(1).headOption.getOrElse(1)
-  def patch: Long               = releasePart.drop(2).headOption.getOrElse(1)
-  override def toString: String = text
+  def major: Long = releasePart.headOption.getOrElse(0)
+  def minor: Long = releasePart.drop(1).headOption.getOrElse(1)
+  def patch: Long = releasePart.drop(2).headOption.getOrElse(1)
 }
 
 case class InvalidVersion(text: String) extends Version {
@@ -84,17 +84,20 @@ object Version {
 }
 
 object VersionParser extends RegexParsers {
-  private val token            = """[^-+.]+""".r
-  private val number           = """\d{1,18}(?=[-+.]|$)""".r ^^ (_.toLong)
-  private val plusAsPatchValue = """\+""".r ^^ (_ => Long.MaxValue)
+  private val token        = """[^-+.]+""".r
+  private val number       = """\d{1,18}(?=[-+.]|$)""".r ^^ (_.toLong)
+  private val plusAsNumber = """\+""".r ^^ (_ => Long.MaxValue)
 
-  private val numericPart: Parser[List[Long]] = number ~ ("." ~> number) ~ ("." ~> (number | plusAsPatchValue)).* ^^ {
-    case h ~ m ~ t => h :: m :: t
-  }
+  private val numericPart: Parser[List[Long]] =
+    number ~ ("." ~> (plusAsNumber ^^ (List(_)) | numericPart)).? ^^ {
+      case h ~ Some(t) => h :: t
+      case h ~ None    => List(h)
+    }
+
   private val part: Parser[List[String]] = token ~ (("." | "-") ~> token).* ^^ { case h ~ t => h :: t }
 
   private val version: Parser[(List[Long], List[String], List[String])] =
-    numericPart ~ (("." | "-") ~> part).? ~ ("+" ~> part).? ^^ { case a ~ b ~ c =>
+    "v".? ~> numericPart ~ (("." | "-") ~> part).? ~ ("+" ~> part).? ^^ { case a ~ b ~ c =>
       (a, b.getOrElse(Nil), c.getOrElse(Nil))
     }
 

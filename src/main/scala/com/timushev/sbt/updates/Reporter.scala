@@ -78,9 +78,9 @@ object Reporter {
           Seq(
             Some(formatModule(m)),
             Some(m.revision),
-            patchUpdate(c, vs).map(_.toString),
-            minorUpdate(c, vs).map(_.toString),
-            majorUpdate(c, vs).map(_.toString)
+            patchUpdate(c, vs).map(_.text),
+            minorUpdate(c, vs).map(_.text),
+            majorUpdate(c, vs).map(_.text)
           )
         }
         .toSeq
@@ -151,10 +151,10 @@ object Reporter {
   def pad(s: String, w: Int): String = s.padTo(w, ' ')
 
   def include(included: ModuleFilter)(module: ModuleID, versions: SortedSet[Version]): SortedSet[Version] =
-    versions.filter(version => included.apply(module.withRevision0(version.toString)))
+    versions.filter(version => included.apply(module.withRevision0(version.text)))
 
   def exclude(excluded: ModuleFilter)(module: ModuleID, versions: SortedSet[Version]): SortedSet[Version] =
-    versions.filterNot(version => excluded.apply(module.withRevision0(version.toString)))
+    versions.filterNot(version => excluded.apply(module.withRevision0(version.text)))
 
   def excludeDependenciesFromPlugins(
       dependencies: Seq[ModuleID],
