@@ -7,14 +7,14 @@ sealed trait Version {
   def major: Long
   def minor: Long
   def patch: Long
+  def text: String
 }
 
 case class ValidVersion(text: String, releasePart: List[Long], preReleasePart: List[String], buildPart: List[String])
     extends Version {
-  def major: Long               = releasePart.headOption.getOrElse(0)
-  def minor: Long               = releasePart.drop(1).headOption.getOrElse(1)
-  def patch: Long               = releasePart.drop(2).headOption.getOrElse(1)
-  override def toString: String = text
+  def major: Long = releasePart.headOption.getOrElse(0)
+  def minor: Long = releasePart.drop(1).headOption.getOrElse(1)
+  def patch: Long = releasePart.drop(2).headOption.getOrElse(1)
 }
 
 case class InvalidVersion(text: String) extends Version {

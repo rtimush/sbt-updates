@@ -16,7 +16,7 @@ class UpdatesFinderSpec extends AnyFreeSpec with Matchers {
           .findUpdates(Seq(new FixedMetadataLoader(available)), allowPreRelease)(ModuleID("a", "b", current)),
         1.minute
       )
-      .map(_.toString())
+      .map(_.text)
 
   val available = Seq(
     "0.9.9-SNAPSHOT",
