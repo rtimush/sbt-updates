@@ -31,11 +31,10 @@ class VersionSpec extends AnyFreeSpec with Matchers {
           b should equal("build" :: "10" :: Nil)
         case _ => fail("not a build version")
       }
-
       Version("2.0.2+9-4e5b95f4-SNAPSHOT") match { // Sbt-Dynver style snapshot version
         case SnapshotVersion(r, p, b) =>
           r should equal(2 :: 0 :: 2 :: Nil)
-        case _ => fail("not a snaphshot version")
+        case _ => fail("not a snapshot version")
       }
     }
     "should be ordered according to the semantic versioning spec" in {
@@ -88,21 +87,6 @@ class VersionSpec extends AnyFreeSpec with Matchers {
           case other                                                                => fail(other.toString)
         }
       }
-
-      "should reject versions like 1.+.+, 1.+.0, +.0.0" in {
-        VersionParser.parse("1.+.+") match {
-          case VersionParser.Failure(_, _) =>
-          case other                       => fail(other.toString)
-        }
-        VersionParser.parse("1.+.0") match {
-          case VersionParser.Failure(_, _) =>
-          case other                       => fail(other.toString)
-        }
-        VersionParser.parse("+.0.0") match {
-          case VersionParser.Failure(_, _) =>
-          case other                       => fail(other.toString)
-        }
-      }
       "should parse versions like 1.0.3m" in {
         VersionParser.parse("1.0.3m") match {
           case VersionParser.Success((1 :: 0 :: Nil, "3m" :: Nil, Nil), _) =>
@@ -117,6 +101,12 @@ class VersionSpec extends AnyFreeSpec with Matchers {
         VersionParser.parse("9.1-901-1.jdbc4") match {
           case VersionParser.Success((9 :: 1 :: Nil, "901" :: "1" :: "jdbc4" :: Nil, Nil), _) =>
           case other                                                                          => fail(other.toString)
+        }
+      }
+      "should parse versions like v3-rev411-1.25.0" in {
+        VersionParser.parse("v3-rev411-1.25.0") match {
+          case VersionParser.Success((3 :: Nil, "rev411" :: "1" :: "25" :: "0" :: Nil, Nil), _) =>
+          case other                                                                            => fail(other.toString)
         }
       }
     }
