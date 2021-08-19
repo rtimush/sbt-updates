@@ -14,9 +14,9 @@ object UpdatesPlugin extends AutoPlugin {
   override val projectSettings = Seq(
     dependencyUpdatesReportFile := target.value / "dependency-updates.txt",
     dependencyUpdatesExclusions := DependencyFilter.fnToModuleFilter(_ => false),
-    dependencyUpdatesFilter := DependencyFilter.fnToModuleFilter(_ => true),
-    dependencyUpdatesFailBuild := false,
-    dependencyAllowPreRelease := false,
+    dependencyUpdatesFilter     := DependencyFilter.fnToModuleFilter(_ => true),
+    dependencyUpdatesFailBuild  := false,
+    dependencyAllowPreRelease   := false,
     dependencyUpdatesData := {
       Reporter.dependencyUpdatesData(
         libraryDependencies.value,
