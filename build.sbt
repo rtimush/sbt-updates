@@ -2,7 +2,7 @@ import SbtAxis.RichProjectMatrix
 import com.rallyhealth.sbt.versioning.SnapshotVersion
 
 ThisBuild / organization := "com.timushev.sbt"
-ThisBuild / homepage := Some(url("https://github.com/rtimush/sbt-updates"))
+ThisBuild / homepage     := Some(url("https://github.com/rtimush/sbt-updates"))
 ThisBuild / licenses += (("BSD 3-Clause", url("https://github.com/rtimush/sbt-updates/blob/master/LICENSE")))
 ThisBuild / publishTo := sonatypePublishToBundle.value
 ThisBuild / developers := List(
@@ -41,10 +41,10 @@ lazy val root = (project in file("."))
   .withId("sbt-updates")
   .aggregate(`sbt-updates`.projectRefs: _*)
   .settings(
-    publish / skip := true,
-    compile / skip := true,
-    scalafmtAll / aggregate := false,
-    scalafmtSbt / aggregate := false,
+    publish / skip               := true,
+    compile / skip               := true,
+    scalafmtAll / aggregate      := false,
+    scalafmtSbt / aggregate      := false,
     scalafmtCheckAll / aggregate := false,
     scalafmtSbtCheck / aggregate := false
   )
