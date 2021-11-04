@@ -18,7 +18,11 @@ class Downloader(credentials: Seq[Credentials], logger: Logger) {
       case Right(Some(c)) =>
         logger.debug(s"Downloading $url as ${c.userName}")
         val auth = Base64.encodeToString(s"${c.userName}:${c.passwd}".getBytes)
-        connection.setRequestProperty("Authorization", s"Basic $auth")
+        if (c.realm contains "gitlab-private-token") {
+          connection.setRequestProperty("Private-Token", c.passwd)
+        } else {
+          connection.setRequestProperty("Authorization", s"Basic $auth")
+        }
       case Right(None) =>
         logger.debug(s"Downloading $url anonymously")
       case Left(e) =>
