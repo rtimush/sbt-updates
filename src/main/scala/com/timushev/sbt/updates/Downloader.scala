@@ -1,11 +1,10 @@
 package com.timushev.sbt.updates
 
-import java.io.InputStream
-import java.net.URL
-
 import org.apache.ivy.Ivy
 import sbt.{Credentials, Logger}
 
+import java.io.InputStream
+import java.net.URL
 import scala.util.control.Exception._
 
 class Downloader(credentials: Seq[Credentials], logger: Logger) {

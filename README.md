@@ -9,7 +9,7 @@ If your project uses `crossScalaVersions` you will be presented only with update
 
 Requirements
 ==============
-sbt 0.13.9 and later. sbt 1.x is supported since version 0.3.1.
+sbt 1.3.0 and later. For older sbt versions use the sbt-updates 0.6.0.
 
 Installation
 ============

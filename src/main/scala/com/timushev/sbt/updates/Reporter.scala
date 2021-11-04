@@ -1,9 +1,9 @@
 package com.timushev.sbt.updates
 
-import com.timushev.sbt.updates.Compat._
 import com.timushev.sbt.updates.metadata.MetadataLoaderFactory
 import com.timushev.sbt.updates.versions.Version
 import sbt._
+import sbt.librarymanagement.ModuleFilter
 import sbt.std.TaskStreams
 
 import scala.collection.immutable.SortedSet
@@ -52,7 +52,7 @@ object Reporter {
     val overridden        = overrides.map(id => (key(id), id.revision)).toMap
     dependencies.map { dep =>
       overridden.get(key(dep)) match {
-        case Some(rev) => dep.withRevision0(rev)
+        case Some(rev) => dep.withRevision(rev)
         case None      => dep
       }
     }
@@ -151,10 +151,10 @@ object Reporter {
   def pad(s: String, w: Int): String = s.padTo(w, ' ')
 
   def include(included: ModuleFilter)(module: ModuleID, versions: SortedSet[Version]): SortedSet[Version] =
-    versions.filter(version => included.apply(module.withRevision0(version.text)))
+    versions.filter(version => included.apply(module.withRevision(version.text)))
 
   def exclude(excluded: ModuleFilter)(module: ModuleID, versions: SortedSet[Version]): SortedSet[Version] =
-    versions.filterNot(version => excluded.apply(module.withRevision0(version.text)))
+    versions.filterNot(version => excluded.apply(module.withRevision(version.text)))
 
   def excludeDependenciesFromPlugins(
       dependencies: Seq[ModuleID],

@@ -1,5 +1,6 @@
 import SbtAxis.RichProjectMatrix
-import com.rallyhealth.sbt.versioning.SnapshotVersion
+
+ThisBuild / gitVersioningSnapshotLowerBound := "0.7.0"
 
 ThisBuild / organization := "com.timushev.sbt"
 ThisBuild / homepage     := Some(url("https://github.com/rtimush/sbt-updates"))
@@ -20,22 +21,15 @@ sonatypeProfileName := "com.timushev"
 
 ThisBuild / scalacOptions := Seq("-deprecation", "-unchecked", "-feature")
 
-lazy val `sbt-1.x`    = SbtAxis("1.x", "1.1.5")
+lazy val `sbt-1.x`    = SbtAxis("1.x", "1.3.0")
 lazy val `sbt-latest` = SbtAxis()
-lazy val `sbt-1.0.0`  = SbtAxis("1.0.0")
-
-lazy val `sbt-0.13.x`  = SbtAxis("0.13.x", "0.13.16")
-lazy val `sbt-0.13.16` = SbtAxis("0.13.16")
-lazy val `sbt-0.13.9`  = SbtAxis("0.13.9")
+lazy val `sbt-1.3.0`  = SbtAxis("1.3.0")
 
 lazy val `sbt-updates` = (projectMatrix in file("."))
   .settings(libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.10" % "test")
   .sbtPluginRow(`sbt-1.x`)
-  .sbtScriptedRow(`sbt-1.0.0`, `sbt-1.x`)
+  .sbtScriptedRow(`sbt-1.3.0`, `sbt-1.x`)
   .sbtScriptedRow(`sbt-latest`, `sbt-1.x`)
-  .sbtPluginRow(`sbt-0.13.x`)
-  .sbtScriptedRow(`sbt-0.13.9`, `sbt-0.13.x`)
-  .sbtScriptedRow(`sbt-0.13.16`, `sbt-0.13.x`)
 
 lazy val root = (project in file("."))
   .withId("sbt-updates")

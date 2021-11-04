@@ -1,10 +1,10 @@
 package com.timushev.sbt.updates
 
+import com.timushev.sbt.updates.DependencyPositions.dependencyPositionsTask
 import com.timushev.sbt.updates.UpdatesKeys._
 import sbt.Keys._
 import sbt._
-import com.timushev.sbt.updates.Compat._
-import com.timushev.sbt.updates.DependencyPositions.dependencyPositionsTask
+import sbt.librarymanagement.DependencyFilter
 
 object UpdatesPlugin extends AutoPlugin {
   object autoImport extends UpdatesKeys with Implicits

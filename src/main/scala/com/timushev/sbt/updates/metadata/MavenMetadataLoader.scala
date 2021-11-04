@@ -1,13 +1,12 @@
 package com.timushev.sbt.updates.metadata
 
-import java.net.URL
-import java.util
-
 import com.timushev.sbt.updates.Downloader
 import com.timushev.sbt.updates.versions.Version
 import org.apache.ivy.core.IvyPatternHelper
 import sbt.{ModuleID, URLRepository}
 
+import java.net.URL
+import java.util
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.xml.XML

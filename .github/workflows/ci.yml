@@ -34,11 +34,9 @@ jobs:
     strategy:
       matrix:
         include:
-          - { sbt: 0_13_9,  java: 8  }
-          - { sbt: 0_13_16, java: 8  }
-          - { sbt: 1_0_0,   java: 8  }
+          - { sbt: 1_3_0,   java: 8  }
           - { sbt: latest,  java: 8  }
-          - { sbt: 1_0_0,   java: 11 }
+          - { sbt: 1_3_0,   java: 11 }
           - { sbt: latest,  java: 11 }
           - { sbt: latest,  java: 14 }
       fail-fast: false

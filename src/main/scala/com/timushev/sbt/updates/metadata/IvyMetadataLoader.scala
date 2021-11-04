@@ -1,15 +1,14 @@
 package com.timushev.sbt.updates.metadata
 
-import java.io.FileNotFoundException
-import java.net.URL
-import java.util
-
 import com.timushev.sbt.updates.Downloader
 import com.timushev.sbt.updates.metadata.extractor.HtmlVersionExtractor
 import com.timushev.sbt.updates.versions.Version
 import org.apache.ivy.core.IvyPatternHelper
 import sbt.{IO, ModuleID, URLRepository}
 
+import java.io.FileNotFoundException
+import java.net.URL
+import java.util
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.util.control.Exception.catching

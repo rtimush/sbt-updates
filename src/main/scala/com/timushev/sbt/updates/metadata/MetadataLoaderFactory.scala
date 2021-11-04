@@ -1,11 +1,10 @@
 package com.timushev.sbt.updates.metadata
 
-import java.net.URL
-
 import com.timushev.sbt.updates.Downloader
 import com.timushev.sbt.updates.versions.Version
 import sbt._
 
+import java.net.URL
 import scala.collection.mutable
 import scala.concurrent.Future
 import scala.util.matching.Regex
