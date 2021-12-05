@@ -1,6 +1,7 @@
 package com.timushev.sbt.updates
 
 import com.timushev.sbt.updates.Compat._
+import com.timushev.sbt.updates.authentication.{Coursier, RepositoryAuthentication}
 import com.timushev.sbt.updates.metadata.MetadataLoaderFactory
 import com.timushev.sbt.updates.versions.Version
 import sbt._
@@ -21,6 +22,7 @@ object Reporter {
       dependencyPositions: Map[ModuleID, Set[SourcePosition]],
       resolvers: Seq[Resolver],
       credentials: Seq[Credentials],
+      csrConfiguration: Option[Coursier.CoursierConfiguration],
       scalaVersions: Seq[String],
       excluded: ModuleFilter,
       included: ModuleFilter,
@@ -29,7 +31,10 @@ object Reporter {
       out: TaskStreams[_]
   ): Map[ModuleID, SortedSet[Version]] = {
     val buildDependencies = excludeDependenciesFromPlugins(dependencies, dependencyPositions, buildRoot)
-    val loaders           = resolvers.collect(MetadataLoaderFactory.loader(out.log, credentials))
+    val authentications =
+      credentials.flatMap(RepositoryAuthentication.fromCredentials) ++
+        csrConfiguration.toSeq.flatMap(RepositoryAuthentication.fromCoursier)
+    val loaders = resolvers.collect(MetadataLoaderFactory.loader(out.log, authentications))
     val updatesFuture = Future
       .sequence {
         scalaVersions

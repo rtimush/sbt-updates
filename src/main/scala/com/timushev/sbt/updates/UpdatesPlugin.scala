@@ -5,18 +5,22 @@ import sbt.Keys._
 import sbt._
 import com.timushev.sbt.updates.Compat._
 import com.timushev.sbt.updates.DependencyPositions.dependencyPositionsTask
+import com.timushev.sbt.updates.authentication.Coursier.{dependencyUpdatesCsrConfigurationTask, CoursierConfiguration}
 
 object UpdatesPlugin extends AutoPlugin {
   object autoImport extends UpdatesKeys with Implicits
 
   override val trigger: PluginTrigger = allRequirements
 
+  private val dependencyUpdatesCsrConfiguration = taskKey[Option[CoursierConfiguration]]("")
+
   override val projectSettings = Seq(
-    dependencyUpdatesReportFile := target.value / "dependency-updates.txt",
-    dependencyUpdatesExclusions := DependencyFilter.fnToModuleFilter(_ => false),
-    dependencyUpdatesFilter     := DependencyFilter.fnToModuleFilter(_ => true),
-    dependencyUpdatesFailBuild  := false,
-    dependencyAllowPreRelease   := false,
+    dependencyUpdatesReportFile       := target.value / "dependency-updates.txt",
+    dependencyUpdatesExclusions       := DependencyFilter.fnToModuleFilter(_ => false),
+    dependencyUpdatesFilter           := DependencyFilter.fnToModuleFilter(_ => true),
+    dependencyUpdatesFailBuild        := false,
+    dependencyAllowPreRelease         := false,
+    dependencyUpdatesCsrConfiguration := dependencyUpdatesCsrConfigurationTask.value,
     dependencyUpdatesData := {
       Reporter.dependencyUpdatesData(
         libraryDependencies.value,
@@ -24,6 +28,7 @@ object UpdatesPlugin extends AutoPlugin {
         dependencyPositionsTask.value,
         fullResolvers.value,
         credentials.value,
+        dependencyUpdatesCsrConfiguration.value,
         crossScalaVersions.value,
         dependencyUpdatesExclusions.value,
         dependencyUpdatesFilter.value,

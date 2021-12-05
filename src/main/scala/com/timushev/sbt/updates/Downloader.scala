@@ -1,28 +1,28 @@
 package com.timushev.sbt.updates
 
+import com.timushev.sbt.updates.authentication.RepositoryAuthentication
+import org.apache.ivy.Ivy
+import sbt.Logger
+
 import java.io.InputStream
 import java.net.URL
 
-import org.apache.ivy.Ivy
-import sbt.{Credentials, Logger}
-
-import scala.util.control.Exception._
-
-class Downloader(credentials: Seq[Credentials], logger: Logger) {
+class Downloader(repositoryId: String, authentications: Seq[RepositoryAuthentication], logger: Logger) {
   def startDownload(url: URL): InputStream = {
-    val hostCredentials = nonFatalCatch.either(Credentials.forHost(credentials, url.getHost))
-    val connection      = url.openConnection()
+    val hostAuthentication = RepositoryAuthentication.find(url.getHost, repositoryId, authentications)
+    val connection         = url.openConnection()
     // Same as in org.apache.ivy.util.url.BasicURLHandler
     connection.setRequestProperty("User-Agent", s"Apache Ivy/${Ivy.getIvyVersion}")
-    hostCredentials match {
-      case Right(Some(c)) =>
-        logger.debug(s"Downloading $url as ${c.userName}")
-        val auth = Base64.encodeToString(s"${c.userName}:${c.passwd}".getBytes)
-        connection.setRequestProperty("Authorization", s"Basic $auth")
-      case Right(None) =>
+    hostAuthentication match {
+      case Some(c) =>
+        logger.debug(s"Downloading $url as ${c.describe}")
+        if (c.user.nonEmpty || c.password.nonEmpty) {
+          val auth = Base64.encodeToString(s"${c.user}:${c.password}".getBytes)
+          connection.setRequestProperty("Authorization", s"Basic $auth")
+        }
+        c.headers.foreach((connection.addRequestProperty _).tupled)
+      case None =>
         logger.debug(s"Downloading $url anonymously")
-      case Left(e) =>
-        logger.debug(s"Downloading $url anonymously because credentials couldn't be loaded")
     }
     connection.setConnectTimeout(120000)
     connection.setReadTimeout(120000)

@@ -1,5 +1,4 @@
 import SbtAxis.RichProjectMatrix
-import com.rallyhealth.sbt.versioning.SnapshotVersion
 
 ThisBuild / organization := "com.timushev.sbt"
 ThisBuild / homepage     := Some(url("https://github.com/rtimush/sbt-updates"))

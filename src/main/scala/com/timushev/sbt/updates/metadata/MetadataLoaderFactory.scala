@@ -1,8 +1,8 @@
 package com.timushev.sbt.updates.metadata
 
 import java.net.URL
-
 import com.timushev.sbt.updates.Downloader
+import com.timushev.sbt.updates.authentication.RepositoryAuthentication
 import com.timushev.sbt.updates.versions.Version
 import sbt._
 
@@ -14,17 +14,20 @@ object MetadataLoaderFactory {
   val KnownProtocol: Regex    = "(?i)^https?$".r
   val KnownProtocolUrl: Regex = "(?i)^https?://".r
 
-  def loader(logger: Logger, credentials: Seq[Credentials]): PartialFunction[Resolver, MetadataLoader] =
+  def loader(
+      logger: Logger,
+      authentications: Seq[RepositoryAuthentication]
+  ): PartialFunction[Resolver, MetadataLoader] =
     Function.unlift { resolver =>
       loaderCache.synchronized {
-        loaderCache.getOrElseUpdate(resolver, newLoader(logger, credentials, resolver).map(cached))
+        loaderCache.getOrElseUpdate(resolver, newLoader(logger, authentications, resolver).map(cached))
       }
     }
 
-  private def newLoader(logger: Logger, credentials: Seq[Credentials], resolver: Resolver) =
+  private def newLoader(logger: Logger, authentications: Seq[RepositoryAuthentication], resolver: Resolver) =
     resolver match {
       case repo: MavenRepository =>
-        val downloader = new Downloader(credentials, logger)
+        val downloader = new Downloader(repo.name, authentications, logger)
         val url        = new URL(repo.root)
         url.getProtocol match {
           case KnownProtocol() =>
@@ -36,7 +39,7 @@ object MetadataLoaderFactory {
         }
       case repo: URLRepository =>
         if (repo.patterns.artifactPatterns.forall(KnownProtocolUrl.findFirstIn(_).nonEmpty)) {
-          val downloader = new Downloader(credentials, logger)
+          val downloader = new Downloader(repo.name, authentications, logger)
           Some(new IvyMetadataLoader(repo, downloader))
         } else
           None
