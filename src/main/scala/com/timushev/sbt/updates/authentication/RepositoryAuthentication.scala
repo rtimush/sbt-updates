@@ -56,6 +56,8 @@ object RepositoryAuthentication {
       repositoryId: String,
       authentications: Seq[RepositoryAuthentication]
   ): Option[RepositoryAuthentication] =
-    authentications.find(a => a.host == Some(host) || a.repositoryId == Some(repositoryId))
+    authentications
+      .find(a => a.repositoryId == Some(repositoryId))
+      .orElse(authentications.find(a => a.host == Some(host)))
 
 }
