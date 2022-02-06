@@ -22,19 +22,15 @@ case class RepositoryAuthentication(
 object RepositoryAuthentication {
 
   def fromCredentials(c: Credentials): Option[RepositoryAuthentication] =
-    c match {
-      case d: DirectCredentials =>
-        Some(
-          RepositoryAuthentication(
-            repositoryId = None,
-            realm = Some(d.realm),
-            host = Some(d.host),
-            user = d.userName,
-            password = d.passwd,
-            headers = Nil
-          )
-        )
-      case _ => None
+    allCatch.opt(Credentials.toDirect(c)).map { d =>
+      RepositoryAuthentication(
+        repositoryId = None,
+        realm = Some(d.realm),
+        host = Some(d.host),
+        user = d.userName,
+        password = d.passwd,
+        headers = Nil
+      )
     }
 
   def fromCoursier(c: CoursierConfiguration): Seq[RepositoryAuthentication] =
