@@ -13,6 +13,8 @@ class Downloader(repositoryId: String, authentications: Seq[RepositoryAuthentica
     val connection         = url.openConnection()
     // Same as in org.apache.ivy.util.url.BasicURLHandler
     connection.setRequestProperty("User-Agent", s"Apache Ivy/${Ivy.getIvyVersion}")
+    // Otherwise Java sets a default that is not accepted by all remote repositories (AWS CodeArtifact as an example)
+    connection.setRequestProperty("Accept", "*/*")
     hostAuthentication match {
       case Some(c) =>
         logger.debug(s"Downloading $url as ${c.describe}")
