@@ -25,7 +25,7 @@ class IvyMetadataLoader(repo: URLRepository, downloader: Downloader) extends Met
   }
 
   private def getRevisionPrefix(pattern: String, module: ModuleID): Option[String] = {
-    val tokens = new util.HashMap[String, String]()
+    val tokens = new util.HashMap[String, String]
     val organization =
       if (repo.patterns.isMavenCompatible) module.organization.replace('.', '/')
       else module.organization

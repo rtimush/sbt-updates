@@ -16,7 +16,7 @@ object DependencyPositions {
         val extracted = Project.extract(st)
         val empty     = extracted.structure.data.set(sk.scope, sk.key, Nil)
         val settings = extracted.structure.settings.filter { s =>
-          (s.key.key == libraryDependencies.key) && (s.key.scope.project == Select(projRef))
+          s.key.key == libraryDependencies.key && s.key.scope.project == Select(projRef)
         }
         settings
           .flatMap { case s: Setting[Seq[ModuleID]] @unchecked =>
