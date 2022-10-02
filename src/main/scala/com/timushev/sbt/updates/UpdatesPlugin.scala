@@ -6,6 +6,7 @@ import sbt._
 import com.timushev.sbt.updates.Compat._
 import com.timushev.sbt.updates.DependencyPositions.dependencyPositionsTask
 import com.timushev.sbt.updates.authentication.Coursier.{dependencyUpdatesCsrConfigurationTask, CoursierConfiguration}
+import com.timushev.sbt.updates.model.{Csv, SbtOutput}
 
 object UpdatesPlugin extends AutoPlugin {
   object autoImport extends UpdatesKeys with Implicits
@@ -45,11 +46,20 @@ object UpdatesPlugin extends AutoPlugin {
         streams.value
       )
     },
-    dependencyUpdatesReport := {
+    dependencyUpdatesReport :=
       Reporter.writeDependencyUpdatesReport(
         projectID.value,
         dependencyUpdatesData.value,
         dependencyUpdatesReportFile.value,
+        SbtOutput,
+        streams.value
+      ),
+    dependencyUpdatesCsvReport := {
+      Reporter.writeDependencyUpdatesReport(
+        projectID.value,
+        dependencyUpdatesData.value,
+        dependencyUpdatesReportFile.value,
+        Csv,
         streams.value
       )
     }

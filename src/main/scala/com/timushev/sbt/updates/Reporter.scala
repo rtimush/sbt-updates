@@ -3,6 +3,7 @@ package com.timushev.sbt.updates
 import com.timushev.sbt.updates.Compat._
 import com.timushev.sbt.updates.authentication.{Coursier, RepositoryAuthentication}
 import com.timushev.sbt.updates.metadata.MetadataLoaderFactory
+import com.timushev.sbt.updates.model.{Csv, ReportType, SbtOutput}
 import com.timushev.sbt.updates.versions.Version
 import sbt._
 import sbt.std.TaskStreams
@@ -77,19 +78,7 @@ object Reporter {
   def gatherDependencyUpdates(dependencyUpdates: Map[ModuleID, SortedSet[Version]]): Seq[String] =
     if (dependencyUpdates.isEmpty) Seq.empty
     else {
-      val table = dependencyUpdates
-        .map { case (m, vs) =>
-          val c = Version(m.revision)
-          Seq(
-            Some(formatModule(m)),
-            Some(m.revision),
-            patchUpdate(c, vs).map(_.text),
-            minorUpdate(c, vs).map(_.text),
-            majorUpdate(c, vs).map(_.text)
-          )
-        }
-        .toSeq
-        .sortBy(_.head)
+      val table     = latestSemVerRevisions(dependencyUpdates)
       val widths    = table.transpose.map(c => c.foldLeft(0)((m, c) => m.max(c.map(_.length).getOrElse(0))))
       val separator = Seq("", " : ", " -> ", " -> ", " -> ")
       for (row <- table)
@@ -103,6 +92,21 @@ object Reporter {
           }
           .mkString("")
     }
+
+  private def latestSemVerRevisions(dependencyUpdates: Map[ModuleID, SortedSet[Version]]) =
+    dependencyUpdates
+      .map { case (m, vs) =>
+        val c = Version(m.revision)
+        Seq(
+          Some(formatModule(m)),
+          Some(m.revision),
+          patchUpdate(c, vs).map(_.text),
+          minorUpdate(c, vs).map(_.text),
+          majorUpdate(c, vs).map(_.text)
+        )
+      }
+      .toSeq
+      .sortBy(_.head)
 
   def dependencyUpdatesReport(project: ModuleID, dependencyUpdates: Map[ModuleID, SortedSet[Version]]): String = {
     val updates = gatherDependencyUpdates(dependencyUpdates)
@@ -120,6 +124,11 @@ object Reporter {
     }
   }
 
+  def dependencyUpdatesCsvReport(dependencyUpdates: Map[ModuleID, SortedSet[Version]]): String =
+    latestSemVerRevisions(dependencyUpdates)
+      .map(_.filterNot(_.isEmpty).map(_.getOrElse("")).mkString(";"))
+      .mkString("\n")
+
   def displayDependencyUpdates(
       project: ModuleID,
       dependencyUpdates: Map[ModuleID, SortedSet[Version]],
@@ -134,9 +143,14 @@ object Reporter {
       project: ModuleID,
       dependencyUpdates: Map[ModuleID, SortedSet[Version]],
       file: File,
+      `type`: ReportType,
       out: TaskStreams[_]
   ): File = {
-    IO.write(file, dependencyUpdatesReport(project, dependencyUpdates) + "\n")
+    val reportContent = `type` match {
+      case SbtOutput => dependencyUpdatesReport(project, dependencyUpdates) + "\n"
+      case Csv       => dependencyUpdatesCsvReport(dependencyUpdates)
+    }
+    IO.write(file, reportContent)
     out.log.info("Dependency update report written to %s".format(file))
     file
   }

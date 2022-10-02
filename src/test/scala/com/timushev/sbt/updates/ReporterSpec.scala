@@ -1,8 +1,11 @@
 package com.timushev.sbt.updates
 
 import sbt.{globFilter => _, _}
+import com.timushev.sbt.updates.versions.Version
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.should.Matchers
+
+import scala.collection.immutable.SortedSet
 
 class ReporterSpec extends AnyFreeSpec with Matchers {
   "A Reporter object" - {
@@ -81,6 +84,20 @@ class ReporterSpec extends AnyFreeSpec with Matchers {
             .finalDependencies("2.12.1", dependencies, dependenciesOverrides)
             .map(_.revision) shouldEqual Seq("1.0.0")
         }
+      }
+    }
+  }
+  "Reporter" - {
+    "on CSV" - {
+      "should return a valid CSV file containing all dependencies upgrades available" in {
+        val input = Map(
+          "test" % "three" % "4.0.0" -> SortedSet(Version("4.0.1"), Version("4.2.0"), Version("5.4.8")),
+          "test" % "five"  % "6.0.0" -> SortedSet(Version("6.0.7"), Version("6.3.0"))
+        )
+        val expectation =
+          """test:five;6.0.0;6.0.7;6.3.0
+            |test:three;4.0.0;4.0.1;4.2.0;5.4.8""".stripMargin
+        Reporter.dependencyUpdatesCsvReport(input) shouldEqual expectation
       }
     }
   }
