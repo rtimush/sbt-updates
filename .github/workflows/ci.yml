@@ -55,7 +55,7 @@ jobs:
             ~/.cache/coursier/v1
             ~/.ivy2/cache
           key: ${{ runner.os }}-scripted-cache-${{ matrix.sbt }}-${{ hashFiles('*.sbt') }}-${{ hashFiles('project/*') }}
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4.1.7
         with:
           name: sbt-updates
           path: /home/runner/.ivy2/local
