@@ -25,7 +25,7 @@ jobs:
           java-version: "8"
           distribution: zulu
       - run: sbt scalafmtCheckAll scalafmtSbtCheck test publishLocal
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: sbt-updates
           path: /home/runner/.ivy2/local
