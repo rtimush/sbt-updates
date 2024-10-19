@@ -1,7 +1,7 @@
 package com.timushev.sbt.updates
 
 import sbt.Keys._
-import sbt._
+import sbt.{given, _}
 
 import scala.util.control.NonFatal
 
@@ -12,7 +12,7 @@ object DependencyPositions {
       try {
         val projRef   = thisProjectRef.value
         val st        = state.value
-        val sk        = libraryDependencies.in(GlobalScope.in(projRef)).scopedKey
+        val sk        = (GlobalScope / (projRef / libraryDependencies)).scopedKey
         val extracted = Project.extract(st)
         val empty     = extracted.structure.data.set(sk.scope, sk.key, Nil)
         val settings  = extracted.structure.settings.filter { s =>

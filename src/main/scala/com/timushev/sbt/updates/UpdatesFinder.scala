@@ -31,7 +31,7 @@ object UpdatesFinder {
       case (_, _)                                               => false
     }
 
-  private def isUpdate(current: Version) = current < _
+  private def isUpdate(current: Version): Version => Boolean = current < _
 
   private val withEmpty: PartialFunction[Throwable, Seq[Version]] = { case _ =>
     Seq.empty
