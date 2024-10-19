@@ -12,12 +12,12 @@ class MetadataLoaderFactorySpec extends AnyFreeSpec with Matchers {
   "A MetadataLoader factory" - {
     "should return a CachingMetadataLoader for maven repositories" in {
       MetadataLoaderFactory.loader(logger, Nil).apply(Resolver.jcenterRepo) should have(
-        'class(classOf[CachingMetadataLoader])
+        Symbol("class")(classOf[CachingMetadataLoader])
       )
     }
     "should return a CachingMetadataLoader for ivy repositories" in {
       MetadataLoaderFactory.loader(logger, Nil).apply(Resolver.sbtPluginRepo("releases")) should have(
-        'class(classOf[CachingMetadataLoader])
+        Symbol("class")(classOf[CachingMetadataLoader])
       )
     }
     "should ignore unknown protocols" in {
