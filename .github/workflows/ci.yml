@@ -24,6 +24,7 @@ jobs:
         with:
           java-version: "8"
           distribution: zulu
+      - uses: sbt/setup-sbt@v1
       - run: sbt scalafmtCheckAll scalafmtSbtCheck test publishLocal
       - uses: actions/upload-artifact@v4
         with:
@@ -61,6 +62,7 @@ jobs:
         with:
           java-version: "${{ matrix.java }}"
           distribution: zulu
+      - uses: sbt/setup-sbt@v1
       - run: sbt sbt-updates-${{ matrix.sbt }}/scripted
         env:
           CI: "true"
@@ -92,6 +94,7 @@ jobs:
         with:
           java-version: "8"
           distribution: zulu
+      - uses: sbt/setup-sbt@v1
       - run: sbt publishSigned
         env:
           SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
