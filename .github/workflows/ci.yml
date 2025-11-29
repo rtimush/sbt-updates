@@ -10,7 +10,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
       - uses: actions/cache@v4
@@ -20,12 +20,13 @@ jobs:
             ~/.cache/coursier/v1
             ~/.ivy2/cache
           key: ${{ runner.os }}-build-cache-${{ hashFiles('*.sbt') }}-${{ hashFiles('project/*') }}
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v5
         with:
           java-version: "8"
           distribution: zulu
+      - uses: sbt/setup-sbt@v1
       - run: sbt scalafmtCheckAll scalafmtSbtCheck test publishLocal
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         with:
           name: sbt-updates
           path: /home/runner/.ivy2/local
@@ -43,7 +44,7 @@ jobs:
       fail-fast: false
     name: test (java ${{ matrix.java }}, sbt ${{ matrix.sbt }})
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
       - uses: actions/cache@v4
@@ -53,14 +54,15 @@ jobs:
             ~/.cache/coursier/v1
             ~/.ivy2/cache
           key: ${{ runner.os }}-scripted-cache-${{ matrix.sbt }}-${{ hashFiles('*.sbt') }}-${{ hashFiles('project/*') }}
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v6
         with:
           name: sbt-updates
           path: /home/runner/.ivy2/local
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v5
         with:
           java-version: "${{ matrix.java }}"
           distribution: zulu
+      - uses: sbt/setup-sbt@v1
       - run: sbt sbt-updates-${{ matrix.sbt }}/scripted
         env:
           CI: "true"
@@ -74,7 +76,7 @@ jobs:
     needs: test
     if: github.repository == 'rtimush/sbt-updates' && ( github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/') )
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
       - uses: actions/cache@v4
@@ -88,10 +90,11 @@ jobs:
         with:
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
           passphrase: ${{ secrets.GPG_PRIVATE_KEY_PASSPHRASE }}
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v5
         with:
           java-version: "8"
           distribution: zulu
+      - uses: sbt/setup-sbt@v1
       - run: sbt publishSigned
         env:
           SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
