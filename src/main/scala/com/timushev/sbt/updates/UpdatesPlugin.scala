@@ -22,7 +22,7 @@ object UpdatesPlugin extends AutoPlugin {
     dependencyUpdatesFailBuild        := false,
     dependencyAllowPreRelease         := false,
     dependencyUpdatesCsrConfiguration := dependencyUpdatesCsrConfigurationTask.value,
-    dependencyUpdatesData := {
+    dependencyUpdatesData :=
       Reporter.dependencyUpdatesData(
         libraryDependencies.value,
         dependencyOverrides.value,
@@ -36,16 +36,14 @@ object UpdatesPlugin extends AutoPlugin {
         dependencyAllowPreRelease.value,
         (baseDirectory in ThisBuild).value,
         streams.value
-      )
-    },
-    dependencyUpdates := {
+      ),
+    dependencyUpdates :=
       Reporter.displayDependencyUpdates(
         projectID.value,
         dependencyUpdatesData.value,
         dependencyUpdatesFailBuild.value,
         streams.value
-      )
-    },
+      ),
     dependencyUpdatesReport :=
       Reporter.writeDependencyUpdatesReport(
         projectID.value,
@@ -54,7 +52,7 @@ object UpdatesPlugin extends AutoPlugin {
         SbtOutput,
         streams.value
       ),
-    dependencyUpdatesCsvReport := {
+    dependencyUpdatesCsvReport :=
       Reporter.writeDependencyUpdatesReport(
         projectID.value,
         dependencyUpdatesData.value,
@@ -62,6 +60,5 @@ object UpdatesPlugin extends AutoPlugin {
         Csv,
         streams.value
       )
-    }
   )
 }
