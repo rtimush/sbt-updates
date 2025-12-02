@@ -24,7 +24,7 @@ case class InvalidVersion(text: String) extends Version {
 }
 
 object ReleaseVersion {
-  val releaseKeyword: Regex = "(?i)final|release".r
+  val releaseKeyword: Regex                   = "(?i)final|release".r
   def unapply(v: Version): Option[List[Long]] =
     v match {
       case ValidVersion(_, releasePart, Nil, Nil)                     => Some(releasePart)

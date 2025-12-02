@@ -9,9 +9,9 @@ dependencyOverrides += "org.specs2"  % "specs2_2.11" % "3.2"
 
 TaskKey[Unit]("check") := {
   val updates = dependencyUpdatesData.value
-  val found = updates.keys.exists {
+  val found   = updates.keys.exists {
     case m if m.organization == "org.scala-lang" => false
-    case m if m.organization == "org.specs2" =>
+    case m if m.organization == "org.specs2"     =>
       val versions = updates(m)
       if (versions.contains(Version("3.1.1")))
         sys.error(s"Wrong update versions: $versions, should not contain 3.1.1")

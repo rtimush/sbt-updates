@@ -32,10 +32,10 @@ object Reporter {
       out: TaskStreams[_]
   ): Map[ModuleID, SortedSet[Version]] = {
     val buildDependencies = excludeDependenciesFromPlugins(dependencies, dependencyPositions, buildRoot)
-    val authentications =
+    val authentications   =
       credentials.flatMap(RepositoryAuthentication.fromCredentials) ++
         csrConfiguration.toSeq.flatMap(RepositoryAuthentication.fromCoursier)
-    val loaders = resolvers.collect(MetadataLoaderFactory.loader(out.log, authentications))
+    val loaders       = resolvers.collect(MetadataLoaderFactory.loader(out.log, authentications))
     val updatesFuture = Future
       .sequence {
         scalaVersions
@@ -198,7 +198,7 @@ object Reporter {
         }
     }
 
-  val FileNamePattern: Regex = "^\\([^\\)]+\\) (.*)$".r
+  val FileNamePattern: Regex                        = "^\\([^\\)]+\\) (.*)$".r
   def extractFileName(path: String): Option[String] =
     path match {
       case FileNamePattern(fileName) => Some(fileName)

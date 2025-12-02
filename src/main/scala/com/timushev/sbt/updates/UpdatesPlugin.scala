@@ -22,7 +22,7 @@ object UpdatesPlugin extends AutoPlugin {
     dependencyUpdatesFailBuild        := false,
     dependencyAllowPreRelease         := false,
     dependencyUpdatesCsrConfiguration := dependencyUpdatesCsrConfigurationTask.value,
-    dependencyUpdatesData :=
+    dependencyUpdatesData             :=
       Reporter.dependencyUpdatesData(
         libraryDependencies.value,
         dependencyOverrides.value,

@@ -49,7 +49,7 @@ object SbtAxis {
           compile / skip                := true,
           // Without this the build fails for sbt 0.13,
           // even though it's not clear why the warning is reported
-          conflictWarning := ConflictWarning.disable,
+          conflictWarning      := ConflictWarning.disable,
           scriptedDependencies := Def.taskDyn {
             if (insideCI.value) Def.task(())
             else Def.task(()).dependsOn(matrix.finder(buildAxis)(false) / publishLocal)
