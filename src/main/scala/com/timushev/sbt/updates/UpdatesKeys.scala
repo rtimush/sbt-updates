@@ -19,7 +19,7 @@ trait UpdatesKeys {
   lazy val dependencyAllowPreRelease = settingKey[Boolean]("If true, also take pre-release versions into consideration")
   lazy val dependencyUpdatesData     = taskKey[Map[ModuleID, SortedSet[Version]]]("")
   lazy val dependencyUpdates         = taskKey[Unit]("Shows a list of project dependencies that can be updated.")
-  lazy val dependencyUpdatesReport =
+  lazy val dependencyUpdatesReport   =
     taskKey[File]("Writes a list of project dependencies that can be updated to a file.")
   lazy val dependencyUpdatesCsvReport =
     taskKey[File]("Writes a list of project dependencies that can be updated to a CSV file.")

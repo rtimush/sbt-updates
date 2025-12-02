@@ -3,7 +3,7 @@ import SbtAxis.RichProjectMatrix
 ThisBuild / organization := "com.timushev.sbt"
 ThisBuild / homepage     := Some(url("https://github.com/rtimush/sbt-updates"))
 ThisBuild / licenses += (("BSD 3-Clause", url("https://github.com/rtimush/sbt-updates/blob/master/LICENSE")))
-ThisBuild / publishTo := sonatypePublishToBundle.value
+ThisBuild / publishTo  := sonatypePublishToBundle.value
 ThisBuild / developers := List(
   Developer("rtimush", "Roman Timushev", "rtimush@gmail.com", url("https://github.com/rtimush"))
 )
