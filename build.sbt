@@ -3,7 +3,6 @@ import SbtAxis.RichProjectMatrix
 ThisBuild / organization := "com.timushev.sbt"
 ThisBuild / homepage     := Some(url("https://github.com/rtimush/sbt-updates"))
 ThisBuild / licenses += (("BSD 3-Clause", url("https://github.com/rtimush/sbt-updates/blob/master/LICENSE")))
-ThisBuild / publishTo  := sonatypePublishToBundle.value
 ThisBuild / developers := List(
   Developer("rtimush", "Roman Timushev", "rtimush@gmail.com", url("https://github.com/rtimush"))
 )
@@ -14,8 +13,16 @@ ThisBuild / scmInfo := Some(
     Some("scm:git:git@github.com:rtimush/sbt-updates.git")
   )
 )
+ThisBuild / versionScheme := Some("early-semver")
 
-sonatypeProfileName := "com.timushev"
+ThisBuild / pomIncludeRepository             := { _ => false }
+ThisBuild / sbtPluginPublishLegacyMavenStyle := false
+ThisBuild / publishMavenStyle                := true
+ThisBuild / publishTo                        := {
+  val centralSnapshots = "https://central.sonatype.com/repository/maven-snapshots/"
+  if (isSnapshot.value) Some("central-snapshots".at(centralSnapshots))
+  else localStaging.value
+}
 
 ThisBuild / scalacOptions := Seq("-deprecation", "-unchecked", "-feature")
 
