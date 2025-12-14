@@ -40,10 +40,9 @@ lazy val `sbt-updates` = (projectMatrix in file("."))
 lazy val `sbt-updates-2_x` = `sbt-updates`
   .finder(`sbt-2`)(false)
   .settings(
-    scripted := {
+    scripted :=
       // TODO enable scripted test
       (Test / test).value
-    }
   )
 
 lazy val root = (project in file("."))
