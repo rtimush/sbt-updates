@@ -6,3 +6,4 @@ target/
 .cursor/
 .sbt/
 metals.sbt
+.java-version
