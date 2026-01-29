@@ -9,6 +9,7 @@ case class SbtAxis(fullVersion: Option[String], idSuffix: String, directorySuffi
   val scalaVersion: String =
     fullVersion.map(VersionNumber(_)) match {
       case Some(VersionNumber(Seq(1, _*), _, _)) | None => "2.12.10"
+      case Some(VersionNumber(Seq(2, _*), _, _)) | None => "3.7.2"
       case _                                            => sys.error(s"Unsupported sbt version: $fullVersion")
     }
 }
