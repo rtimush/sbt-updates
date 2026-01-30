@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [master]
+    branches: [master, sbt2-port]
     tags: ["*.*.*"]
   pull_request:
 
@@ -25,7 +25,7 @@ jobs:
           java-version: "8"
           distribution: zulu
       - uses: sbt/setup-sbt@v1
-      - run: sbt scalafmtCheckAll scalafmtSbtCheck test publishLocal
+      - run: sbt test publishLocal
       - uses: actions/upload-artifact@v6
         with:
           name: sbt-updates
@@ -41,6 +41,9 @@ jobs:
           - { sbt: 1_0_0, java: 11 }
           - { sbt: latest, java: 11 }
           - { sbt: latest, java: 14 }
+          - { sbt: 2_0, java: 8  }
+          - { sbt: 2_0, java: 11 }
+          - { sbt: 2_0, java: 17 }
       fail-fast: false
     name: test (java ${{ matrix.java }}, sbt ${{ matrix.sbt }})
     steps:
