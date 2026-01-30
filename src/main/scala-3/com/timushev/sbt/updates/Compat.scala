@@ -17,7 +17,7 @@ object Compat {
     Scoped.scopedSetting(scope, settingKey.key).scopedKey
   }
 
-  def setSetting[T](data: sbt.internal.util.Settings[sbt.Scope], scopedKey: ScopedKey[T], value: T): sbt.internal.util.Settings[sbt.Scope] = {
-    data.set(scopedKey.scope, scopedKey.key, value)
+  def setSetting[T](data: Def.Settings, scopedKey: ScopedKey[T], value: T): Def.Settings = {
+    data.set(scopedKey, value)
   }
 }
