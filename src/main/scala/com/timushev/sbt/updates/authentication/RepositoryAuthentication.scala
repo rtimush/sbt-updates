@@ -1,5 +1,6 @@
 package com.timushev.sbt.updates.authentication
 
+import com.timushev.sbt.updates.Compat
 import com.timushev.sbt.updates.authentication.Coursier.CoursierConfiguration
 import sbt._
 
@@ -22,7 +23,7 @@ case class RepositoryAuthentication(
 object RepositoryAuthentication {
 
   def fromCredentials(c: Credentials): Option[RepositoryAuthentication] =
-    allCatch.opt(Credentials.toDirect(c)).map { d =>
+    allCatch.opt(Compat.toDirectCredentials(c)).map { d =>
       RepositoryAuthentication(
         repositoryId = None,
         realm = Some(d.realm),
