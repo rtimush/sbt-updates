@@ -54,7 +54,14 @@ object SbtAxis {
           scriptedDependencies := Def.taskDyn {
             if (insideCI.value) Def.task(())
             else Def.task(()).dependsOn(matrix.finder(buildAxis)(false) / publishLocal)
-          }.value
+          }.value,
+
+          scriptedSbt := {
+            scalaBinaryVersion.value match {
+              case "2.12" => "1.11.7"
+              case _      => (pluginCrossBuild / sbtVersion).value
+            }
+          }
         )
       )
   }
