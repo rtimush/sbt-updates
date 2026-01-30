@@ -6,7 +6,7 @@ dependencyUpdatesFilter -= moduleFilter(organization = "org.scala-lang", revisio
 
 credentials += Credentials(Path("/tmp") / "does" / "not" / "exists")
 
-TaskKey[Unit]("check") := {
+InputKey[Unit]("check") := {
   val updates = dependencyUpdatesData.value
   if (updates.keySet != Set(ModuleID("org.scala-lang", "scala-library", "2.10.4")))
     sys.error(s"Wrong update keys: ${updates.keySet}")

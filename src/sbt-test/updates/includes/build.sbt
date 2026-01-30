@@ -8,7 +8,7 @@ libraryDependencies ++= Seq(
 
 dependencyUpdatesFilter := moduleFilter(organization = "org.scala-lang", name = "scala-reflect", revision = "2.10.5")
 
-TaskKey[Unit]("check") := {
+InputKey[Unit]("check") := {
   val updates = dependencyUpdatesData.value
   if (updates.keySet != Set(ModuleID("org.scala-lang", "scala-reflect", "2.10.4")))
     sys.error(s"Wrong update keys: ${updates.keySet}")

@@ -8,7 +8,7 @@ lazy val subproject = project
 PackageDependencies.deps
 RootDependencies.deps
 
-TaskKey[Unit]("check") := {
+InputKey[Unit]("check") := {
   val subprojectUpdates = (dependencyUpdatesData in subproject).value
   val updates           = dependencyUpdatesData.value
   if (!subprojectUpdates.keys.exists(m => m.organization == "org.specs2"))
