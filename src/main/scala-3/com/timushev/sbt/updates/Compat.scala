@@ -2,6 +2,7 @@ package com.timushev.sbt.updates
 
 import sbt.Keys._
 import sbt._
+import sbt.util.Uncached
 
 object Compat {
   type ModuleFilter     = sbt.librarymanagement.ModuleFilter
@@ -25,4 +26,6 @@ object Compat {
     import sbt.internal.librarymanagement.ivy.IvyCredentials
     IvyCredentials.toDirect(c)
   }
+
+  inline def uncached[T](value: T): T = Uncached(value)
 }

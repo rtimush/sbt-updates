@@ -21,8 +21,8 @@ object UpdatesPlugin extends AutoPlugin {
     dependencyUpdatesFilter           := DependencyFilter.fnToModuleFilter(_ => true),
     dependencyUpdatesFailBuild        := false,
     dependencyAllowPreRelease         := false,
-    dependencyUpdatesCsrConfiguration := dependencyUpdatesCsrConfigurationTask.value,
-    dependencyUpdatesData             :=
+    dependencyUpdatesCsrConfiguration := Compat.uncached(dependencyUpdatesCsrConfigurationTask.value),
+    dependencyUpdatesData             := Compat.uncached(
       Reporter.dependencyUpdatesData(
         libraryDependencies.value,
         dependencyOverrides.value,
@@ -36,23 +36,26 @@ object UpdatesPlugin extends AutoPlugin {
         dependencyAllowPreRelease.value,
         (ThisBuild / baseDirectory).value,
         streams.value
-      ),
-    dependencyUpdates :=
+      )
+    ),
+    dependencyUpdates := Compat.uncached(
       Reporter.displayDependencyUpdates(
         projectID.value,
         dependencyUpdatesData.value,
         dependencyUpdatesFailBuild.value,
         streams.value
-      ),
-    dependencyUpdatesReport :=
+      )
+    ),
+    dependencyUpdatesReport := Compat.uncached(
       Reporter.writeDependencyUpdatesReport(
         projectID.value,
         dependencyUpdatesData.value,
         dependencyUpdatesReportFile.value,
         SbtOutput,
         streams.value
-      ),
-    dependencyUpdatesCsvReport :=
+      )
+    ),
+    dependencyUpdatesCsvReport := Compat.uncached(
       Reporter.writeDependencyUpdatesReport(
         projectID.value,
         dependencyUpdatesData.value,
@@ -60,5 +63,6 @@ object UpdatesPlugin extends AutoPlugin {
         Csv,
         streams.value
       )
+    )
   )
 }
