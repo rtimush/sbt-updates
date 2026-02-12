@@ -28,7 +28,7 @@ ThisBuild / scalacOptions := {
   val base = Seq("-deprecation", "-unchecked", "-feature")
   CrossVersion.partialVersion(scalaVersion.value) match {
     case Some((2, minor)) if minor >= 12 => base ++ Seq("-Xsource:3")
-    case _                                => base
+    case _                               => base
   }
 }
 
@@ -44,7 +44,6 @@ lazy val `sbt-latest` = SbtAxis()
 lazy val `sbt-1.0.0`  = SbtAxis("1.0.0")
 lazy val `sbt-2.x`    = SbtAxis("2.x", "2.0.0-RC7")
 lazy val `sbt-2.0`    = SbtAxis("2.0", "2.0.0-RC7")
-
 
 lazy val `sbt-updates` = (projectMatrix in file("."))
   .settings(libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.19" % "test")
