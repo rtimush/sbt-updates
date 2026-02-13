@@ -5,7 +5,7 @@ import sbt.Defaults.sbtPluginExtra
 
 libraryDependencies += sbtPluginExtra("org.scalameta" % "sbt-scalafmt" % "2.0.0", "1.0", "2.12")
 
-TaskKey[Unit]("check") := {
+InputKey[Unit]("check") := {
   import com.timushev.sbt.updates.versions.Version
   val allUpdates = dependencyUpdatesData.value
   allUpdates.keys.find(_.name == "sbt-scalafmt") match {

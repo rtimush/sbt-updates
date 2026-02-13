@@ -12,9 +12,9 @@ object DependencyPositions {
       try {
         val projRef   = thisProjectRef.value
         val st        = state.value
-        val sk        = libraryDependencies.in(GlobalScope.in(projRef)).scopedKey
+        val sk        = Compat.createScopedKey(libraryDependencies, projRef)
         val extracted = Project.extract(st)
-        val empty     = extracted.structure.data.set(sk.scope, sk.key, Nil)
+        val empty     = Compat.setSetting(extracted.structure.data, sk, Nil)
         val settings  = extracted.structure.settings.filter { s =>
           (s.key.key == libraryDependencies.key) && (s.key.scope.project == Select(projRef))
         }

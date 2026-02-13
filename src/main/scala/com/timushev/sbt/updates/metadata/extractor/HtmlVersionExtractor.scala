@@ -14,5 +14,5 @@ class HtmlVersionExtractor extends VersionExtractor {
     Pattern.findAllIn(data).nonEmpty
 
   override def apply(data: String): Seq[Version] =
-    Pattern.findAllMatchIn(data).map(_.group(1)).map(Version.apply).to[Vector]
+    Pattern.findAllMatchIn(data).map(_.group(1)).map(Version.apply).toVector
 }

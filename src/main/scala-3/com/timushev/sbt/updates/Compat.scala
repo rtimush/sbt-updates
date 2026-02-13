@@ -2,6 +2,7 @@ package com.timushev.sbt.updates
 
 import sbt.Keys._
 import sbt._
+import sbt.util.Uncached
 
 object Compat {
   type ModuleFilter     = sbt.librarymanagement.ModuleFilter
@@ -17,15 +18,14 @@ object Compat {
     Scoped.scopedSetting(scope, settingKey.key).scopedKey
   }
 
-  def setSetting[T](
-      data: sbt.internal.util.Settings[sbt.Scope],
-      scopedKey: ScopedKey[T],
-      value: T
-  ): sbt.internal.util.Settings[sbt.Scope] =
-    data.set(scopedKey.scope, scopedKey.key, value)
+  def setSetting[T](data: Def.Settings, scopedKey: ScopedKey[T], value: T): Def.Settings = {
+    data.set(scopedKey, value)
+  }
 
-  def toDirectCredentials(c: sbt.Credentials): sbt.DirectCredentials =
-    sbt.Credentials.toDirect(c)
+  def toDirectCredentials(c: sbt.Credentials) = {
+    import sbt.internal.librarymanagement.ivy.IvyCredentials
+    IvyCredentials.toDirect(c)
+  }
 
-  def uncached[T](task: => T): T = task
+  inline def uncached[T](value: T): T = Uncached(value)
 }

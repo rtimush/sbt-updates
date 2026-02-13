@@ -7,7 +7,7 @@ resolvers += Resolver.url(
 
 libraryDependencies += sbtPluginExtra("com.timushev.sbt" % "sbt-updates" % "0.1.10", "0.13", "2.10")
 
-TaskKey[Unit]("check") := {
+InputKey[Unit]("check") := {
   import com.timushev.sbt.updates.versions.Version
   val allUpdates = dependencyUpdatesData.value
   allUpdates.keys.find(_.name == "sbt-updates") match {

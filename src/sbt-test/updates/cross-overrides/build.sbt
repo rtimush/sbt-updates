@@ -7,7 +7,7 @@ libraryDependencies += "org.specs2" %% "specs2"      % "3.1"
 dependencyOverrides += "org.specs2"  % "specs2_2.10" % "3.1.1"
 dependencyOverrides += "org.specs2"  % "specs2_2.11" % "3.2"
 
-TaskKey[Unit]("check") := {
+InputKey[Unit]("check") := {
   val updates = dependencyUpdatesData.value
   val found   = updates.keys.exists {
     case m if m.organization == "org.scala-lang" => false
