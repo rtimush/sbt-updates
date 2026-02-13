@@ -9,9 +9,9 @@ PackageDependencies.deps
 RootDependencies.deps
 
 InputKey[Unit]("check") := {
-  val subprojectUpdates = (dependencyUpdatesData in subproject).value
+  val subprojectUpdates = (subproject / dependencyUpdatesData).value
   val updates           = dependencyUpdatesData.value
-  if (!subprojectUpdates.keys.exists(m => m.organization == "org.specs2"))
+  if (!subprojectUpdates.keys.exists(m => m.organization == "org.typelevel"))
     sys.error(
       s"Missing dependency update for a subproject dependency defined in project/ in a non-default package: ${subprojectUpdates.keySet}"
     )
@@ -19,7 +19,7 @@ InputKey[Unit]("check") := {
     sys.error(
       s"Missing dependency update for a subproject dependency defined in project/ in a default package: ${subprojectUpdates.keySet}"
     )
-  if (!updates.keys.exists(m => m.organization == "org.specs2"))
+  if (!updates.keys.exists(m => m.organization == "org.typelevel"))
     sys.error(
       s"Missing dependency update for a root project dependency defined in project/ in a non-default package: ${updates.keySet}"
     )
