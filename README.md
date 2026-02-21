@@ -20,7 +20,7 @@ Create a `~/.sbt/1.0/plugins/sbt-updates.sbt` file (for sbt 1.x series), or `~/.
 addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "x.x.x")
 ```
 
-The latest version is [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.timushev.sbt/sbt-updates/badge.svg?subject=sbt-updates)](https://maven-badges.herokuapp.com/maven-central/com.timushev.sbt/sbt-updates/)
+The latest version is [![sbt-updates Scala version support](https://index.scala-lang.org/rtimush/sbt-updates/sbt-updates/latest-by-scala-version.svg?targetType=Sbt)](https://index.scala-lang.org/rtimush/sbt-updates/sbt-updates)
 
 ### Snapshot version
 Choose one of versions available on [Sonatype](https://oss.sonatype.org/content/repositories/snapshots/com/timushev/sbt/sbt-updates_2.12_1.0/). Then create a `~/.sbt/1.0/plugins/sbt-updates.sbt` file (for sbt 1.x series), or `~/.sbt/0.13/plugins/sbt-updates.sbt` (for sbt 0.13.x series) with the following content:
