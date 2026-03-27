@@ -46,7 +46,7 @@ lazy val `sbt-2.x`    = SbtAxis("2.x", "2.0.0-RC7")
 lazy val `sbt-2.0`    = SbtAxis("2.0", "2.0.0-RC7")
 
 lazy val `sbt-updates` = (projectMatrix in file("."))
-  .settings(libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.19" % "test")
+  .settings(libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.20" % "test")
   .sbtPluginRow(`sbt-1.x`)
   .sbtScriptedRow(`sbt-1.0.0`, `sbt-1.x`)
   .sbtScriptedRow(`sbt-latest`, `sbt-1.x`)
