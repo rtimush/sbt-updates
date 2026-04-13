@@ -6,7 +6,7 @@ dependencyUpdatesFilter -= moduleFilter(organization = "org.scala-lang", revisio
 
 InputKey[Unit]("check") := {
   val updates = dependencyUpdatesData.value
-  val keys   = updates.keys.toSeq
+  val keys    = updates.keys.toSeq
   if (keys.size != 1) sys.error(s"Wrong update keys: ${updates.keySet}")
   val m = keys.head
   if (m.organization != "org.scala-lang" || m.name != "scala-library" || m.revision != "2.10.4")
