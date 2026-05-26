@@ -1,6 +1,6 @@
 package com.timushev.sbt.updates.metadata
 
-import java.net.URL
+import java.net.URI
 import java.util
 
 import com.timushev.sbt.updates.Downloader
@@ -43,7 +43,7 @@ class MavenMetadataLoader(repo: URLRepository, downloader: Downloader) extends M
 
   private def download(url: String) =
     Future {
-      XML.load(downloader.startDownload(new URL(url)))
+      XML.load(downloader.startDownload(new URI(url).toURL))
     }
 
   private def removeE(s: String): String =

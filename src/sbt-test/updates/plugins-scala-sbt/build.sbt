@@ -2,7 +2,7 @@ import sbt.Defaults.sbtPluginExtra
 
 resolvers += Resolver.url(
   s"scala-sbt-sbt-plugin-releases",
-  new URL(s"https://repo.scala-sbt.org/scalasbt/sbt-plugin-releases/")
+  new URI(s"https://repo.scala-sbt.org/scalasbt/sbt-plugin-releases/").toURL
 )(Resolver.ivyStylePatterns)
 
 libraryDependencies += sbtPluginExtra("com.timushev.sbt" % "sbt-updates" % "0.1.10", "0.13", "2.10")

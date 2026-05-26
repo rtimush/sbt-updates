@@ -1,6 +1,6 @@
 package com.timushev.sbt.updates.metadata
 
-import java.net.URL
+import java.net.URI
 import com.timushev.sbt.updates.Downloader
 import com.timushev.sbt.updates.authentication.RepositoryAuthentication
 import com.timushev.sbt.updates.versions.Version
@@ -28,7 +28,7 @@ object MetadataLoaderFactory {
     resolver match {
       case repo: MavenRepository =>
         val downloader = new Downloader(repo.name, authentications, logger)
-        val url        = new URL(repo.root)
+        val url        = new URI(repo.root).toURL
         url.getProtocol match {
           case KnownProtocol() =>
             val resolver    = Resolver.url(repo.name, url)(Resolver.mavenStylePatterns)
