@@ -10,9 +10,12 @@ object DependencyPositions {
   def dependencyPositionsTask: Def.Initialize[Task[Map[ModuleID, Set[SourcePosition]]]] =
     Def.task {
       try {
-        val projRef   = thisProjectRef.value
-        val st        = state.value
-        val sk        = Compat.createScopedKey(libraryDependencies, projRef)
+        val projRef = thisProjectRef.value
+        val st      = state.value
+        val sk      = {
+          val scope = GlobalScope.copy(project = Select(projRef))
+          Scoped.scopedSetting(scope, libraryDependencies.key).scopedKey
+        }
         val extracted = Project.extract(st)
         val empty     = Compat.setSetting(extracted.structure.data, sk, Nil)
         val settings  = extracted.structure.settings.filter { s =>

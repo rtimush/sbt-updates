@@ -3,7 +3,8 @@ package com.timushev.sbt.updates
 import com.timushev.sbt.updates.UpdatesKeys._
 import sbt.Keys._
 import sbt._
-import com.timushev.sbt.updates.Compat._
+import sbt.librarymanagement.DependencyFilter
+import sbt.librarymanagement.ModuleFilter
 import com.timushev.sbt.updates.DependencyPositions.dependencyPositionsTask
 import com.timushev.sbt.updates.authentication.Coursier.{dependencyUpdatesCsrConfigurationTask, CoursierConfiguration}
 import com.timushev.sbt.updates.model.{Csv, SbtOutput}
