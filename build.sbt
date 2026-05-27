@@ -24,14 +24,6 @@ ThisBuild / publishTo                        := {
   else localStaging.value
 }
 
-ThisBuild / scalacOptions := {
-  val base = Seq("-deprecation", "-unchecked", "-feature")
-  CrossVersion.partialVersion(scalaVersion.value) match {
-    case Some((2, minor)) if minor >= 12 => base ++ Seq("-Xsource:3")
-    case _                               => base
-  }
-}
-
 ThisBuild / (pluginCrossBuild / sbtVersion) := {
   scalaBinaryVersion.value match {
     case "2.12" => "1.11.7"
@@ -52,6 +44,15 @@ lazy val `sbt-updates` = (projectMatrix in file("."))
   .sbtScriptedRow(`sbt-latest`, `sbt-1.x`)
   .sbtPluginRow(`sbt-2.x`)
   .sbtScriptedRow(`sbt-2.0`, `sbt-2.x`)
+  .settings(
+    scalacOptions ++= {
+      val base = Seq("-deprecation", "-unchecked", "-feature")
+      CrossVersion.partialVersion(scalaVersion.value) match {
+        case Some((2, minor)) if minor >= 12 => base ++ Seq("-Xsource:3")
+        case _                               => base
+      }
+    }
+  )
 
 lazy val root = (project in file("."))
   .withId("sbt-updates")
