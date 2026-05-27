@@ -1,7 +1,7 @@
 package com.timushev.sbt.updates.metadata
 
 import java.io.FileNotFoundException
-import java.net.URL
+import java.net.URI
 import java.util
 
 import com.timushev.sbt.updates.Downloader
@@ -44,7 +44,7 @@ class IvyMetadataLoader(repo: URLRepository, downloader: Downloader) extends Met
   private def download(url: String): Future[Option[String]] =
     Future {
       catching(classOf[FileNotFoundException]).opt {
-        val is = downloader.startDownload(new URL(url))
+        val is = downloader.startDownload(new URI(url).toURL)
         try IO.readStream(is)
         finally is.close()
       }

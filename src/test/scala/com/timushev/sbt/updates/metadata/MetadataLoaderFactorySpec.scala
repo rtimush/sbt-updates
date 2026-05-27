@@ -1,6 +1,6 @@
 package com.timushev.sbt.updates.metadata
 
-import java.net.URL
+import java.net.URI
 
 import sbt.{ConsoleLogger, Resolver}
 import org.scalatest.freespec.AnyFreeSpec
@@ -21,7 +21,7 @@ class MetadataLoaderFactorySpec extends AnyFreeSpec with Matchers {
       )
     }
     "should ignore unknown protocols" in {
-      val ftpResolver = Resolver.url("ftp", new URL("ftp://localhost/"))
+      val ftpResolver = Resolver.url("ftp", new URI("ftp://localhost/").toURL)
       MetadataLoaderFactory.loader(logger, Nil).isDefinedAt(ftpResolver) shouldBe false
     }
   }
