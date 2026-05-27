@@ -1,7 +1,7 @@
 package com.timushev.sbt.updates
 
 import sbt._
-import com.timushev.sbt.updates.Compat._
+import sbt.librarymanagement.ModuleFilter
 
 trait Implicits {
   implicit val moduleFilterRemoveValue: Remove.Value[ModuleFilter, ModuleFilter] =

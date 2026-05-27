@@ -2,9 +2,9 @@ package com.timushev.sbt.updates
 
 import com.timushev.sbt.updates.versions.Version
 import sbt._
+import sbt.librarymanagement.ModuleFilter
 
 import scala.collection.immutable.SortedSet
-import com.timushev.sbt.updates.Compat._
 
 trait UpdatesKeys {
   lazy val dependencyUpdatesReportFile = settingKey[File]("Dependency updates report file")
