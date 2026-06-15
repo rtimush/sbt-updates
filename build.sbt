@@ -27,15 +27,15 @@ ThisBuild / publishTo                        := {
 ThisBuild / (pluginCrossBuild / sbtVersion) := {
   scalaBinaryVersion.value match {
     case "2.12" => "1.11.7"
-    case _      => "2.0.0-RC7"
+    case _      => "2.0.0"
   }
 }
 
 lazy val `sbt-1.x`    = SbtAxis("1.x", "1.1.5")
 lazy val `sbt-latest` = SbtAxis()
 lazy val `sbt-1.0.0`  = SbtAxis("1.0.0")
-lazy val `sbt-2.x`    = SbtAxis("2.x", "2.0.0-RC7")
-lazy val `sbt-2.0`    = SbtAxis("2.0", "2.0.0-RC7")
+lazy val `sbt-2.x`    = SbtAxis("2.x", "2.0.0")
+lazy val `sbt-2.0`    = SbtAxis("2.0", "2.0.0")
 
 lazy val `sbt-updates` = (projectMatrix in file("."))
   .settings(libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.20" % "test")
