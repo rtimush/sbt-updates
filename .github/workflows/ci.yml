@@ -130,6 +130,11 @@ jobs:
           pattern: sbt-updates-stage-*
           merge-multiple: true
           path: target/sona-staging
+      - uses: actions/setup-java@v5
+        with:
+          java-version: "8"
+          distribution: zulu
+      - uses: sbt/setup-sbt@v1
       - run: sbt sonaRelease
         env:
           SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
