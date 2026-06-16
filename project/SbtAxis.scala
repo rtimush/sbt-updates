@@ -17,7 +17,7 @@ case class SbtAxis(fullVersion: Option[String], idSuffix: String, directorySuffi
 object SbtAxis {
 
   def apply(): SbtAxis =
-    SbtAxis(None, "-latest", "-latest")
+    SbtAxis(None, "-1_latest", "-1_latest")
   def apply(version: String): SbtAxis =
     SbtAxis(version, version)
   def apply(version: String, fullVersion: String): SbtAxis =

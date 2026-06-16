@@ -31,17 +31,17 @@ ThisBuild / (pluginCrossBuild / sbtVersion) := {
   }
 }
 
-lazy val `sbt-1.x`    = SbtAxis("1.x", "1.1.5")
-lazy val `sbt-latest` = SbtAxis()
-lazy val `sbt-1.0.0`  = SbtAxis("1.0.0")
-lazy val `sbt-2.x`    = SbtAxis("2.x", "2.0.0")
-lazy val `sbt-2.0`    = SbtAxis("2.0", "2.0.0")
+lazy val `sbt-1.x`      = SbtAxis("1.x", "1.1.5")
+lazy val `sbt-1.latest` = SbtAxis()
+lazy val `sbt-1.0.0`    = SbtAxis("1.0.0")
+lazy val `sbt-2.x`      = SbtAxis("2.x", "2.0.0")
+lazy val `sbt-2.0`      = SbtAxis("2.0", "2.0.0")
 
 lazy val `sbt-updates` = (projectMatrix in file("."))
   .settings(libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.20" % "test")
   .sbtPluginRow(`sbt-1.x`)
   .sbtScriptedRow(`sbt-1.0.0`, `sbt-1.x`)
-  .sbtScriptedRow(`sbt-latest`, `sbt-1.x`)
+  .sbtScriptedRow(`sbt-1.latest`, `sbt-1.x`)
   .sbtPluginRow(`sbt-2.x`)
   .sbtScriptedRow(`sbt-2.0`, `sbt-2.x`)
   .settings(
