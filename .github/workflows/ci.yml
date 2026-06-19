@@ -15,7 +15,7 @@ jobs:
           - { sbt: 1_x, java: 8 }
           - { sbt: 2_x, java: 17 }
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - uses: actions/cache@v5
@@ -51,7 +51,7 @@ jobs:
       fail-fast: false
     name: test (java ${{ matrix.java }}, sbt ${{ matrix.sbt }})
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - uses: actions/cache@v5
@@ -89,7 +89,7 @@ jobs:
           - { sbt: 1_x, java: 8 }
           - { sbt: 2_x, java: 17 }
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - uses: actions/cache@v5
@@ -122,7 +122,7 @@ jobs:
     needs: publish
     if: github.repository == 'rtimush/sbt-updates' && startsWith(github.ref, 'refs/tags/')
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - uses: actions/download-artifact@v8
