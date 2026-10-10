@@ -28,7 +28,8 @@ object DependencyPositions {
           .groupBy(_._1)
           .map { case (k, v) => k -> v.map(_._2).toSet }
       } catch {
-        case NonFatal(_) =>
+        case NonFatal(e) =>
+          streams.value.log.debug(s"[sbt-updates] Falling back to built-in dependencyPositions: $e")
           dependencyPositions.value
             .map { case (k, v) => k -> Set(v) }
       }

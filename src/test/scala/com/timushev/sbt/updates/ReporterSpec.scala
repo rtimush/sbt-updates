@@ -86,6 +86,23 @@ class ReporterSpec extends AnyFreeSpec with Matchers {
         }
       }
     }
+
+    "finding the dependencies of a build" - {
+      "should keep dependencies declared in build sources under project/src" in
+        IO.withTemporaryDirectory { root =>
+          IO.touch(root / "project" / "Flat.scala")
+          IO.touch(root / "project" / "src" / "main" / "scala" / "deps" / "Nested.scala")
+          val flat      = "org.example" % "flat"   % "1.0.0"
+          val nested    = "org.example" % "nested" % "1.0.0"
+          val plugin    = "org.example" % "plugin" % "1.0.0"
+          val positions = Map[ModuleID, Set[SourcePosition]](
+            flat   -> Set(sbt.internal.util.LinePosition("(Flat.deps) Flat.scala", 3)),
+            nested -> Set(sbt.internal.util.LinePosition("(deps.Nested.deps) Nested.scala", 3)),
+            plugin -> Set(sbt.internal.util.LinePosition("(some.Plugin.projectSettings) Plugin.scala", 3))
+          )
+          Reporter.excludeDependenciesFromPlugins(Seq(flat, nested, plugin), positions, root) shouldBe Seq(flat, nested)
+        }
+    }
   }
   "Reporter" - {
     "on CSV" - {
@@ -98,6 +115,12 @@ class ReporterSpec extends AnyFreeSpec with Matchers {
           """test:five;6.0.0;6.0.7;6.3.0
             |test:three;4.0.0;4.0.1;4.2.0;5.4.8""".stripMargin
         Reporter.dependencyUpdatesCsvReport(input) shouldEqual expectation
+      }
+    }
+    "on a project opted out of cross-building" - {
+      "should still check its dependencies for its own Scala version" in {
+        Reporter.scalaVersionsToCheck("3.3.4", Nil) shouldBe Seq("3.3.4")
+        Reporter.scalaVersionsToCheck("3.3.4", Seq("2.13.15", "3.3.4")) shouldBe Seq("2.13.15", "3.3.4")
       }
     }
   }

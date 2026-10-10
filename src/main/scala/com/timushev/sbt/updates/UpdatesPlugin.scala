@@ -31,7 +31,7 @@ object UpdatesPlugin extends AutoPlugin {
         fullResolvers.value,
         credentials.value,
         dependencyUpdatesCsrConfiguration.value,
-        crossScalaVersions.value,
+        Reporter.scalaVersionsToCheck(scalaVersion.value, crossScalaVersions.value),
         dependencyUpdatesExclusions.value,
         dependencyUpdatesFilter.value,
         dependencyAllowPreRelease.value,
