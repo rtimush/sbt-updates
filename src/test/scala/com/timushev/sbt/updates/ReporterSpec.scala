@@ -6,8 +6,20 @@ import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.should.Matchers
 
 import scala.collection.immutable.SortedSet
+import scala.collection.mutable
 
 class ReporterSpec extends AnyFreeSpec with Matchers {
+  private class RecordingLogger extends Logger {
+    val messages = mutable.Buffer.empty[(Level.Value, String)]
+
+    def warnings: Seq[String] = messages.collect { case (Level.Warn, message) => message }.toSeq
+    def debugs: Seq[String]   = messages.collect { case (Level.Debug, message) => message }.toSeq
+
+    override def trace(t: => Throwable): Unit                      = ()
+    override def success(message: => String): Unit                 = ()
+    override def log(level: Level.Value, message: => String): Unit = messages += ((level, message))
+  }
+
   "A Reporter object" - {
     "overriding dependencies" - {
       "with one dependency" - {
@@ -121,6 +133,13 @@ class ReporterSpec extends AnyFreeSpec with Matchers {
       "should still check its dependencies for its own Scala version" in {
         Reporter.scalaVersionsToCheck("3.3.4", Nil) shouldBe Seq("3.3.4")
         Reporter.scalaVersionsToCheck("3.3.4", Seq("2.13.15", "3.3.4")) shouldBe Seq("2.13.15", "3.3.4")
+      }
+    }
+    "on a Coursier configuration it cannot read" - {
+      "should continue without its credentials" in {
+        val log = new RecordingLogger
+        Reporter.coursierAuthentications(new Object, log) shouldBe empty
+        log.debugs should have size 1
       }
     }
   }

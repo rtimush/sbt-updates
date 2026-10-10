@@ -6,7 +6,7 @@ import sbt._
 import sbt.librarymanagement.DependencyFilter
 import sbt.librarymanagement.ModuleFilter
 import com.timushev.sbt.updates.DependencyPositions.dependencyPositionsTask
-import com.timushev.sbt.updates.authentication.Coursier.{dependencyUpdatesCsrConfigurationTask, CoursierConfiguration}
+import com.timushev.sbt.updates.authentication.Coursier.dependencyUpdatesCsrConfigurationTask
 import com.timushev.sbt.updates.model.{Csv, SbtOutput}
 
 object UpdatesPlugin extends AutoPlugin {
@@ -14,7 +14,8 @@ object UpdatesPlugin extends AutoPlugin {
 
   override val trigger: PluginTrigger = allRequirements
 
-  private val dependencyUpdatesCsrConfiguration = taskKey[Option[CoursierConfiguration]]("")
+  private val dependencyUpdatesCsrConfiguration =
+    taskKey[Option[AnyRef]]("Coursier configuration, read for repository credentials")
 
   override val projectSettings = Seq(
     dependencyUpdatesReportFile       := target.value / "dependency-updates.txt",

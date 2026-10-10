@@ -1,6 +1,6 @@
 package com.timushev.sbt.updates
 
-import com.timushev.sbt.updates.authentication.{Coursier, RepositoryAuthentication}
+import com.timushev.sbt.updates.authentication.RepositoryAuthentication
 import com.timushev.sbt.updates.metadata.MetadataLoaderFactory
 import com.timushev.sbt.updates.model.{Csv, ReportType, SbtOutput}
 import com.timushev.sbt.updates.versions.Version
@@ -12,6 +12,7 @@ import scala.collection.immutable.SortedSet
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 import scala.concurrent.{Await, Future}
+import scala.util.control.NonFatal
 import scala.util.matching.Regex
 
 object Reporter {
@@ -23,7 +24,7 @@ object Reporter {
       dependencyPositions: Map[ModuleID, Set[SourcePosition]],
       resolvers: Seq[Resolver],
       credentials: Seq[Credentials],
-      csrConfiguration: Option[Coursier.CoursierConfiguration],
+      csrConfiguration: Option[AnyRef],
       scalaVersions: Seq[String],
       excluded: ModuleFilter,
       included: ModuleFilter,
@@ -34,7 +35,7 @@ object Reporter {
     val buildDependencies = excludeDependenciesFromPlugins(dependencies, dependencyPositions, buildRoot)
     val authentications   =
       credentials.flatMap(RepositoryAuthentication.fromCredentials) ++
-        csrConfiguration.toSeq.flatMap(RepositoryAuthentication.fromCoursier)
+        csrConfiguration.toSeq.flatMap(coursierAuthentications(_, out.log))
     val loaders       = resolvers.collect(MetadataLoaderFactory.loader(out.log, authentications))
     val updatesFuture = Future
       .sequence {
@@ -56,6 +57,15 @@ object Reporter {
   // crossScalaVersions := Nil is how builds keep a project out of `+`; its dependencies still need checking.
   def scalaVersionsToCheck(scalaVersion: String, crossScalaVersions: Seq[String]): Seq[String] =
     if (crossScalaVersions.isEmpty) Seq(scalaVersion) else crossScalaVersions
+
+  // lm-coursier is read reflectively; a changed shape must cost only its credentials, not fail the task.
+  private[updates] def coursierAuthentications(configuration: AnyRef, log: Logger): Seq[RepositoryAuthentication] =
+    try RepositoryAuthentication.fromCoursier(configuration)
+    catch {
+      case NonFatal(e) =>
+        log.debug(s"Could not read repository credentials from the Coursier configuration: $e")
+        Nil
+    }
 
   def overrideDependencies(dependencies: Seq[ModuleID], overrides: Iterable[ModuleID]): Seq[ModuleID] = {
     def key(id: ModuleID) = (id.organization, id.name)
