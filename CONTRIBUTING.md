@@ -9,5 +9,5 @@ Thank you for your willingness to contribute!
  * When creating a pull request please make your commits meaningful in isolation. Don't hesitate to amend commits on your pull request branches.
  * A good commit message for this repository starts with a capital letter and can be appended to the statement "If applied, this commit will..."
  
-The code is built with JDK 8, and will also be tested on the newer JDK versions. 
+The sbt 1.x plugin is built with JDK 8 and the sbt 2.x plugin with JDK 17; both are also tested on newer JDK versions.
 To format the code use `sbt scalafmtAll scalafmtSbt`. To run the tests use `sbt test scripted`.

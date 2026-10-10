@@ -6,6 +6,9 @@ on:
     tags: ["*.*.*"]
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -41,13 +44,14 @@ jobs:
     strategy:
       matrix:
         include:
-          - { sbt: 1_0_0, java: 8 }
           - { sbt: 1_latest, java: 8 }
-          - { sbt: 1_0_0, java: 11 }
           - { sbt: 1_latest, java: 11 }
-          - { sbt: 1_latest, java: 14 }
           - { sbt: 1_latest, java: 17 }
+          - { sbt: 1_latest, java: 21 }
           - { sbt: 2_0, java: 17 }
+          - { sbt: 2_0, java: 21 }
+          - { sbt: 2_0, java: 25 }
+          - { sbt: 2_latest, java: 21 }
       fail-fast: false
     name: test (java ${{ matrix.java }}, sbt ${{ matrix.sbt }})
     steps:
