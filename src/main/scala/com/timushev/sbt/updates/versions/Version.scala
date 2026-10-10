@@ -1,7 +1,6 @@
 package com.timushev.sbt.updates.versions
 
 import scala.util.matching.Regex
-import scala.util.parsing.combinator.RegexParsers
 
 sealed trait Version {
   def major: Long
@@ -71,35 +70,106 @@ object BuildVersion {
 
 object Version {
   def apply(text: String): Version =
-    synchronized {
-      VersionParser
-        .parse(text)
-        .map { case (a, b, c) => ValidVersion(text, a, b, c) }
-        .getOrElse {
-          InvalidVersion(text)
-        }
+    VersionParser.parse(text) match {
+      case Some((release, preRelease, build)) => ValidVersion(text, release, preRelease, build)
+      case None                               => InvalidVersion(text)
     }
 
   implicit def versionOrdering: Ordering[Version] = new VersionOrdering
 }
 
-object VersionParser extends RegexParsers {
-  private val token        = """[^-+.]+""".r
-  private val number       = """\d{1,18}(?=[-+.]|$)""".r ^^ (_.toLong)
-  private val plusAsNumber = """\+""".r ^^ (_ => Long.MaxValue)
+/** Splits `[v]1.2.3[.+][(.|-)pre.release][+build.meta]`; numbers have at most 18 digits, leftover text is invalid. */
+object VersionParser {
+  private val MaxDigits = 18
 
-  private val numericPart: Parser[List[Long]] =
-    number ~ ("." ~> (plusAsNumber ^^ (List(_)) | numericPart)).? ^^ {
-      case h ~ Some(t) => h :: t
-      case h ~ None    => List(h)
+  def parse(text: String): Option[(List[Long], List[String], List[String])] = {
+    val input = new Input(text.trim)
+    input.release().flatMap { release =>
+      val preRelease = input.part('.', '-')
+      val build      = input.part('+')
+      if (input.atEnd) Some((release, preRelease, build)) else None
+    }
+  }
+
+  final private class Input(s: String) {
+    private var i = 0
+
+    def atEnd: Boolean = i == s.length
+
+    private def peek(c: Char): Boolean = i < s.length && s.charAt(i) == c
+
+    private def isSeparator(c: Char): Boolean = c == '.' || c == '-' || c == '+'
+
+    // Digits up to a separator or the end; anything else, like `3m`, is a token rather than a number.
+    private def number(): Option[Long] = {
+      var j = i
+      while (j < s.length && s.charAt(j) >= '0' && s.charAt(j) <= '9') j += 1
+      val digits = j - i
+      if (digits == 0 || digits > MaxDigits || (j < s.length && !isSeparator(s.charAt(j)))) None
+      else {
+        val n = s.substring(i, j).toLong
+        i = j
+        Some(n)
+      }
     }
 
-  private val part: Parser[List[String]] = token ~ (("." | "-") ~> token).* ^^ { case h ~ t => h :: t }
-
-  private val version: Parser[(List[Long], List[String], List[String])] =
-    "v".? ~> numericPart ~ (("." | "-") ~> part).? ~ ("+" ~> part).? ^^ { case a ~ b ~ c =>
-      (a, b.getOrElse(Nil), c.getOrElse(Nil))
+    private def token(): Option[String] = {
+      var j = i
+      while (j < s.length && !isSeparator(s.charAt(j))) j += 1
+      if (j == i) None
+      else {
+        val t = s.substring(i, j)
+        i = j
+        Some(t)
+      }
     }
 
-  def parse(text: String): VersionParser.ParseResult[(List[Long], List[String], List[String])] = parseAll(version, text)
+    /** `[v]number(.number)*` where a final `.+` stands for the highest number. */
+    def release(): Option[List[Long]] = {
+      if (peek('v')) i += 1
+      number().map { first =>
+        val numbers = List.newBuilder[Long]
+        numbers += first
+        var more = true
+        while (more && peek('.')) {
+          val dot = i
+          i += 1
+          if (peek('+')) {
+            i += 1
+            numbers += Long.MaxValue
+            more = false
+          } else
+            number() match {
+              case Some(n) => numbers += n
+              case None    => i = dot; more = false
+            }
+        }
+        numbers.result()
+      }
+    }
+
+    /** `separator token((.|-)token)*`, consuming nothing when the separator isn't followed by a token. */
+    def part(separators: Char*): List[String] =
+      if (!separators.exists(peek)) Nil
+      else {
+        val start = i
+        i += 1
+        token() match {
+          case None        => i = start; Nil
+          case Some(first) =>
+            val tokens = List.newBuilder[String]
+            tokens += first
+            var more = true
+            while (more && (peek('.') || peek('-'))) {
+              val separator = i
+              i += 1
+              token() match {
+                case Some(t) => tokens += t
+                case None    => i = separator; more = false
+              }
+            }
+            tokens.result()
+        }
+      }
+  }
 }
