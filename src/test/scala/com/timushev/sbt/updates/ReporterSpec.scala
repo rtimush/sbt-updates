@@ -1,10 +1,12 @@
 package com.timushev.sbt.updates
 
 import sbt.{globFilter => _, _}
+import com.timushev.sbt.updates.UpdatesFinder.LookupFailure
 import com.timushev.sbt.updates.versions.Version
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.should.Matchers
 
+import java.io.IOException
 import scala.collection.immutable.SortedSet
 import scala.collection.mutable
 
@@ -127,6 +129,29 @@ class ReporterSpec extends AnyFreeSpec with Matchers {
           """test:five;6.0.0;6.0.7;6.3.0
             |test:three;4.0.0;4.0.1;4.2.0;5.4.8""".stripMargin
         Reporter.dependencyUpdatesCsvReport(input) shouldEqual expectation
+      }
+    }
+    "on lookup failures" - {
+      "should warn once per repository" in {
+        val log    = new RecordingLogger
+        val module = "org.example" % "lib" % "1.0.0"
+        Reporter.reportFailures(
+          "org.example" % "project" % "0.1.0",
+          Seq(
+            LookupFailure("private", module, new IOException("HTTP 401 for https://repo.example/lib")),
+            LookupFailure(
+              "private",
+              module.withName("other"),
+              new IOException("HTTP 401 for https://repo.example/other")
+            ),
+            LookupFailure("mirror", module, new IOException("HTTP 503 for https://mirror.example/lib"))
+          ),
+          log
+        )
+        log.warnings shouldBe Seq(
+          "project: could not check 1 module in repository mirror (HTTP 503 for https://mirror.example/lib); updates may be missing",
+          "project: could not check 2 modules in repository private (HTTP 401 for https://repo.example/lib); updates may be missing"
+        )
       }
     }
     "on a project opted out of cross-building" - {
