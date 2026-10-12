@@ -29,7 +29,6 @@ object Reporter {
       credentials: Seq[Credentials],
       csrConfiguration: Option[AnyRef],
       scalaVersions: Seq[String],
-      excluded: ModuleFilter,
       included: ModuleFilter,
       allowPreRelease: Boolean,
       buildRoot: File,
@@ -54,7 +53,6 @@ object Reporter {
       .zip(crossUpdates.transpose.map(_.map(_.versions).reduce(_.intersect(_))))
       .toMap
       .transform(include(included))
-      .transform(exclude(excluded))
       .filterNot(_._2.isEmpty)
   }
 
@@ -157,9 +155,10 @@ object Reporter {
     }
   }
 
+  // Columns: module;current;patch;minor;major. Missing updates stay as empty cells so the columns keep their meaning.
   def dependencyUpdatesCsvReport(dependencyUpdates: Map[ModuleID, SortedSet[Version]]): String =
     latestSemVerRevisions(dependencyUpdates)
-      .map(_.filterNot(_.isEmpty).map(_.getOrElse("")).mkString(";"))
+      .map(_.map(_.getOrElse("")).mkString(";"))
       .mkString("\n")
 
   def displayDependencyUpdates(
@@ -204,9 +203,6 @@ object Reporter {
 
   def include(included: ModuleFilter)(module: ModuleID, versions: SortedSet[Version]): SortedSet[Version] =
     versions.filter(version => included.apply(module.withRevision(version.text)))
-
-  def exclude(excluded: ModuleFilter)(module: ModuleID, versions: SortedSet[Version]): SortedSet[Version] =
-    versions.filterNot(version => excluded.apply(module.withRevision(version.text)))
 
   def excludeDependenciesFromPlugins(
       dependencies: Seq[ModuleID],

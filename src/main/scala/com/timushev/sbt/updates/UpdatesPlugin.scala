@@ -24,7 +24,7 @@ object UpdatesPlugin extends AutoPlugin {
 
   override val projectSettings = Seq(
     dependencyUpdatesReportFile       := target.value / "dependency-updates.txt",
-    dependencyUpdatesExclusions       := DependencyFilter.fnToModuleFilter(_ => false),
+    dependencyUpdatesCsvReportFile    := target.value / "dependency-updates.csv",
     dependencyUpdatesFilter           := DependencyFilter.fnToModuleFilter(_ => true),
     dependencyUpdatesFailBuild        := false,
     dependencyAllowPreRelease         := false,
@@ -39,7 +39,6 @@ object UpdatesPlugin extends AutoPlugin {
         credentials.value,
         dependencyUpdatesCsrConfiguration.value,
         Reporter.scalaVersionsToCheck(scalaVersion.value, crossScalaVersions.value),
-        dependencyUpdatesExclusions.value,
         dependencyUpdatesFilter.value,
         dependencyAllowPreRelease.value,
         (ThisBuild / baseDirectory).value,
@@ -68,7 +67,7 @@ object UpdatesPlugin extends AutoPlugin {
       Reporter.writeDependencyUpdatesReport(
         projectID.value,
         dependencyUpdatesData.value,
-        dependencyUpdatesReportFile.value,
+        dependencyUpdatesCsvReportFile.value,
         Csv,
         streams.value.log
       )
