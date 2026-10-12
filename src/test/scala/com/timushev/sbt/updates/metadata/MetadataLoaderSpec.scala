@@ -9,6 +9,7 @@ import com.timushev.sbt.updates.{Downloader, HttpStatusException, LookupSession}
 import com.timushev.sbt.updates.versions.Version
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.should.Matchers
+import org.xml.sax.SAXParseException
 import sbt.{ConsoleLogger, ModuleID, Patterns, Resolver, URLRepository}
 
 import scala.concurrent.Await
@@ -92,6 +93,15 @@ class MetadataLoaderSpec extends AnyFreeSpec with Matchers {
       )
       for (loader <- loaders) versions(loader) shouldBe empty
       downloader.downloads.get shouldBe 0
+    }
+    "reject Maven metadata that declares a DOCTYPE" in {
+      val downloader = new FakeDownloader(
+        Map(
+          metadataUrl -> ("<!DOCTYPE metadata [<!ENTITY xxe SYSTEM \"file:///etc/hostname\">]>" +
+            "<metadata><versioning><versions><version>&xxe;</version></versions></versioning></metadata>")
+        )
+      )
+      a[SAXParseException] should be thrownBy versions(maven(downloader))
     }
     "report a module the repository doesn't have as not found" in {
       a[FileNotFoundException] should be thrownBy versions(maven(new FakeDownloader(Map.empty)))
