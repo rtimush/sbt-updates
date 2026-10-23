@@ -4,6 +4,10 @@ import sbt.Keys._
 import sbt._
 
 object Compat {
+
+  /** Whether build sources are written in Scala 3, i.e. the plugin runs in sbt 2. */
+  val scala3Sources: Boolean = false
+
   def setSetting[T](
       data: sbt.internal.util.Settings[sbt.Scope],
       scopedKey: ScopedKey[T],
