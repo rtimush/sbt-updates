@@ -37,7 +37,8 @@ Note, that snapshots are not updated automatically.
 Tasks
 =====
 * `dependencyUpdates`: show a list of project dependencies that can be updated,
-* `dependencyUpdatesReport`: writes a list of project dependencies to a file.
+* `dependencyUpdatesReport`: writes a list of project dependencies to a file,
+* `dependencyUpdatesUpgrade`: upgrades project dependencies to their latest release versions by changing the build sources (see [Upgrading dependencies](#upgrading-dependencies)).
 
 Settings
 ========
@@ -55,6 +56,41 @@ You can exclude some modules from update checking:
 ```
 dependencyUpdatesFilter -= moduleFilter(organization = "org.scala-lang")
 ```
+
+Upgrading dependencies
+======================
+`dependencyUpdatesUpgrade` changes the build sources so that the dependencies of the current project and of the projects
+it aggregates are upgraded to their latest release versions. Pre-release and snapshot versions are never selected, and
+`dependencyUpdatesFilter` is respected, so you can, for example, limit upgrades to some modules or versions.
+```
+> dependencyUpdatesUpgrade
+[info] Upgraded ch.qos.reload4j:reload4j 1.2.19 -> 1.2.27 (build.sbt:17)
+[info] Upgraded org.slf4j:slf4j-api 1.7.30 -> 2.0.20 (build.sbt:2)
+[info] Upgraded com.google.code.gson:gson 2.8.0 -> 2.14.0 (project/Dependencies.scala:7)
+[warn] Skipped org.example:example at build.sbt:21: the version is not a string literal or a reference
+[info] Upgraded 3 dependencies in 2 files, reload the build to apply the changes
+> reload
+```
+Versions are changed where they are declared, which can be:
+* inline: `"ch.qos.reload4j" % "reload4j" % "1.2.19"`,
+* a `val` or `def` in the same file: `"org.slf4j" % "slf4j-api" % slf4jVersion`,
+* a `val` or `def` in another file, e.g. in `project/Dependencies.scala`: `"com.google.code.gson" % "gson" % Dependencies.gsonVersion`,
+* a chain of references, e.g. `val logging = Versions.reload4j`.
+
+Build sources are parsed with [Scalameta](https://scalameta.org) rather than matched with regular expressions, so
+declarations split across lines or containing comments are handled, while commented-out code and string contents are
+ignored. Both Scala 2 and Scala 3 syntax (including significant indentation) are supported. If a build source cannot be
+parsed, nothing is changed. A version is only changed when the outcome is certain; otherwise the dependency is skipped
+with a warning, and must be upgraded manually:
+* the version is computed (e.g. `"1." + minor` or `s"1.$minor"`),
+* a reference is ambiguous, e.g. there are several definitions with the same name in different files,
+* the declared version is not the one sbt resolves, e.g. because of `dependencyOverrides`,
+* a version is shared by several dependencies (e.g. `val akkaVersion = "..."`), and they cannot all be upgraded to
+  the same version.
+
+The changes are made in the `.sbt` files of the build and of its projects, and in the `project/` directory. Review them
+with your version control system before committing. Plugins can be upgraded the same way, by running
+`reload plugins` first.
 
 sbt plugin updates
 =============
