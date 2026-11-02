@@ -9,14 +9,20 @@ If your project uses `crossScalaVersions` you will be presented only with update
 
 Requirements
 ==============
-sbt 0.13.9 and later.
-sbt 1.x is supported since version 0.3.1.
-sbt 2.x is supported since version 0.7.0.
+| Your sbt                    | Use sbt-updates |
+|-----------------------------|-----------------|
+| 1.9 or later, including 2.x | latest release  |
+| 0.13.9 – 1.8                | 0.6.4           |
+| 0.13.0 – 0.13.8             | 0.1.7           |
+| 0.11.2 – 0.12.4             | 0.1.0           |
+
+0.7.0 and later are published only in the Maven-compatible layout that sbt 1.9 introduced, so older sbt versions can't
+resolve them.
 
 Installation
 ============
 ### Stable version
-Create a `~/.sbt/1.0/plugins/sbt-updates.sbt` file (for sbt 1.x series), or `~/.sbt/0.13/plugins/sbt-updates.sbt` (for sbt 0.13.x series) with the following content:
+Create a `~/.config/sbt/2/plugins/sbt-updates.sbt` file (for sbt 2.x series), `~/.sbt/1.0/plugins/sbt-updates.sbt` (for sbt 1.x series), or `~/.sbt/0.13/plugins/sbt-updates.sbt` (for sbt 0.13.x series) with the following content:
 
 ```
 addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "x.x.x")
