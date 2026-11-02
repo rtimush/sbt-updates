@@ -28,7 +28,12 @@ Create a `~/.config/sbt/2/plugins/sbt-updates.sbt` file (for sbt 2.x series), `~
 addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "x.x.x")
 ```
 
-The latest version is [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.timushev.sbt/sbt-updates/badge.svg?subject=sbt-updates)](https://maven-badges.herokuapp.com/maven-central/com.timushev.sbt/sbt-updates/)
+The latest release for each sbt series. Maven Central lists a release first; Scaladex can take a while to catch up.
+
+| sbt | Maven Central | Scaladex |
+|-----|---------------|----------|
+| 2.x | [![sbt-updates for sbt 2.x on Maven Central](https://img.shields.io/maven-central/v/com.timushev.sbt/sbt-updates_sbt2_3?label=sbt-updates)](https://central.sonatype.com/artifact/com.timushev.sbt/sbt-updates_sbt2_3) | [![sbt-updates for sbt 2.x on Scaladex](https://index.scala-lang.org/rtimush/sbt-updates/sbt-updates/latest-by-scala-version.svg?platform=sbt2)](https://index.scala-lang.org/rtimush/sbt-updates/artifacts/sbt-updates?stableOnly=true&binary-version=_sbt2_3) |
+| 1.x | [![sbt-updates for sbt 1.x on Maven Central](https://img.shields.io/maven-central/v/com.timushev.sbt/sbt-updates_2.12_1.0?label=sbt-updates)](https://central.sonatype.com/artifact/com.timushev.sbt/sbt-updates_2.12_1.0) | [![sbt-updates for sbt 1.x on Scaladex](https://index.scala-lang.org/rtimush/sbt-updates/sbt-updates/latest-by-scala-version.svg?platform=sbt1)](https://index.scala-lang.org/rtimush/sbt-updates/artifacts/sbt-updates?stableOnly=true&binary-version=_2.12_1.0) |
 
 ### Snapshot version
 Choose one of the versions listed in the [snapshot repository](https://central.sonatype.com/repository/maven-snapshots/com/timushev/sbt/sbt-updates_2.12_1.0/maven-metadata.xml). Then create the same file with the following content:
