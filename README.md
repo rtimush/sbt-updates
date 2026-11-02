@@ -2,8 +2,8 @@ sbt-updates
 ==================
 Display your sbt project's dependency updates.
 
-Update information is obtained from the maven metadata.
-There is also a limited support for Ivy repositories hosted on BinTray.
+Update information is obtained from the Maven metadata of your resolvers and, where a repository serves them, from its
+directory listings, which also cover Ivy repositories.
 
 If your project uses `crossScalaVersions` you will be presented only with updates available for all scala versions.
 
@@ -31,11 +31,11 @@ addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "x.x.x")
 The latest version is [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.timushev.sbt/sbt-updates/badge.svg?subject=sbt-updates)](https://maven-badges.herokuapp.com/maven-central/com.timushev.sbt/sbt-updates/)
 
 ### Snapshot version
-Choose one of versions available on [Sonatype](https://oss.sonatype.org/content/repositories/snapshots/com/timushev/sbt/sbt-updates_2.12_1.0/). Then create a `~/.sbt/1.0/plugins/sbt-updates.sbt` file (for sbt 1.x series), or `~/.sbt/0.13/plugins/sbt-updates.sbt` (for sbt 0.13.x series) with the following content:
+Choose one of the versions listed in the [snapshot repository](https://central.sonatype.com/repository/maven-snapshots/com/timushev/sbt/sbt-updates_2.12_1.0/maven-metadata.xml). Then create the same file with the following content:
 
 ```
-resolvers += Resolver.sonatypeRepo("snapshots")
-addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "x.x.x-y+gzzzzzzz-SNAPSHOT")
+resolvers += "Central Snapshots" at "https://central.sonatype.com/repository/maven-snapshots/"
+addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "x.x.x-n-hash-SNAPSHOT")
 ```
 
 Note, that snapshots are not updated automatically.
