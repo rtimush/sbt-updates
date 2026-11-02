@@ -1,11 +1,9 @@
 package com.timushev.sbt.updates.authentication
 
 import com.timushev.sbt.updates.Compat
-import com.timushev.sbt.updates.authentication.Coursier.CoursierConfiguration
 import sbt._
 
-import scala.language.reflectiveCalls
-import scala.util.control.Exception.allCatch
+import scala.util.control.Exception.nonFatalCatch
 
 case class RepositoryAuthentication(
     repositoryId: Option[String],
@@ -23,7 +21,7 @@ case class RepositoryAuthentication(
 object RepositoryAuthentication {
 
   def fromCredentials(c: Credentials): Option[RepositoryAuthentication] =
-    allCatch.opt(Compat.toDirectCredentials(c)).map { d =>
+    nonFatalCatch.opt(Compat.toDirectCredentials(c)).map { d =>
       RepositoryAuthentication(
         repositoryId = None,
         realm = Some(d.realm),
@@ -34,18 +32,18 @@ object RepositoryAuthentication {
       )
     }
 
-  def fromCoursier(c: CoursierConfiguration): Seq[RepositoryAuthentication] =
-    c.authenticationByRepositoryId.flatMap { case (repositoryId, auth) =>
-      allCatch.opt {
+  /** Reads `authenticationByRepositoryId` of an lm-coursier `CoursierConfiguration`; fails if its shape changed. */
+  def fromCoursier(configuration: AnyRef): Seq[RepositoryAuthentication] =
+    Coursier.get[Seq[(String, AnyRef)]](configuration, "authenticationByRepositoryId").map {
+      case (repositoryId, auth) =>
         RepositoryAuthentication(
           repositoryId = Some(repositoryId),
-          realm = auth.realmOpt,
+          realm = Coursier.get[Option[String]](auth, "realmOpt"),
           host = None,
-          user = auth.user,
-          password = auth.password,
-          headers = auth.headers
+          user = Coursier.get[String](auth, "user"),
+          password = Coursier.get[String](auth, "password"),
+          headers = Coursier.get[Seq[(String, String)]](auth, "headers")
         )
-      }
     }
 
   def find(

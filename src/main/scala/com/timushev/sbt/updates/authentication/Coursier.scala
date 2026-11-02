@@ -5,18 +5,11 @@ import sbt._
 
 object Coursier {
 
-  type Authentication = {
-    def user: String
-    def password: String
-    def realmOpt: Option[String]
-    def headers: Seq[(String, String)]
-  }
+  // lm-coursier isn't on the compile classpath of the sbt 1.x plugin, so its configuration is read reflectively.
+  def dependencyUpdatesCsrConfigurationTask: Def.Initialize[Task[Option[AnyRef]]] =
+    CompatUtils.optionalTask[AnyRef]("csrConfiguration")
 
-  type CoursierConfiguration = {
-    def authenticationByRepositoryId: Vector[(String, Authentication)]
-  }
-
-  def dependencyUpdatesCsrConfigurationTask: Def.Initialize[Task[Option[CoursierConfiguration]]] =
-    CompatUtils.optionalTask[CoursierConfiguration]("csrConfiguration")
+  private[authentication] def get[T](target: AnyRef, member: String): T =
+    target.getClass.getMethod(member).invoke(target).asInstanceOf[T]
 
 }

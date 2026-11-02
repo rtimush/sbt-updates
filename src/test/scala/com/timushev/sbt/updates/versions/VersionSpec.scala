@@ -59,6 +59,8 @@ class VersionSpec extends AnyFreeSpec with Matchers {
       )
       checkPairwise(v)
     }
+    "qualifiers with leading zeros are ordered consistently" in
+      checkPairwise(List("1.0-1", "1.0-1a", "1.0-01b"))
     "snapshot versions are correctly ordered" in {
       val versions = List(
         "3.0.8",
@@ -76,38 +78,34 @@ class VersionSpec extends AnyFreeSpec with Matchers {
     }
     "parser" - {
       "should parse versions like 1.0.M3" in {
-        VersionParser.parse("1.0.M3") match {
-          case VersionParser.Success((1 :: 0 :: Nil, "M3" :: Nil, Nil), _) =>
-          case other                                                       => fail(other.toString)
-        }
+        VersionParser.parse("1.0.M3") shouldBe Some((List(1L, 0L), List("M3"), Nil))
       }
       "should parse versions like 1.0.+" in {
-        VersionParser.parse("1.0.+") match {
-          case VersionParser.Success((1 :: 0 :: Long.MaxValue :: Nil, Nil, Nil), _) =>
-          case other                                                                => fail(other.toString)
-        }
+        VersionParser.parse("1.0.+") shouldBe Some((List(1L, 0L, Long.MaxValue), Nil, Nil))
       }
       "should parse versions like 1.0.3m" in {
-        VersionParser.parse("1.0.3m") match {
-          case VersionParser.Success((1 :: 0 :: Nil, "3m" :: Nil, Nil), _) =>
-          case other                                                       => fail(other.toString)
-        }
-        VersionParser.parse("1.0.3m.4") match {
-          case VersionParser.Success((1 :: 0 :: Nil, "3m" :: "4" :: Nil, Nil), _) =>
-          case other                                                              => fail(other.toString)
-        }
+        VersionParser.parse("1.0.3m") shouldBe Some((List(1L, 0L), List("3m"), Nil))
+        VersionParser.parse("1.0.3m.4") shouldBe Some((List(1L, 0L), List("3m", "4"), Nil))
       }
       "should parse versions like 9.1-901-1.jdbc4" in {
-        VersionParser.parse("9.1-901-1.jdbc4") match {
-          case VersionParser.Success((9 :: 1 :: Nil, "901" :: "1" :: "jdbc4" :: Nil, Nil), _) =>
-          case other                                                                          => fail(other.toString)
-        }
+        VersionParser.parse("9.1-901-1.jdbc4") shouldBe Some((List(9L, 1L), List("901", "1", "jdbc4"), Nil))
       }
       "should parse versions like v3-rev411-1.25.0" in {
-        VersionParser.parse("v3-rev411-1.25.0") match {
-          case VersionParser.Success((3 :: Nil, "rev411" :: "1" :: "25" :: "0" :: Nil, Nil), _) =>
-          case other                                                                            => fail(other.toString)
-        }
+        VersionParser.parse("v3-rev411-1.25.0") shouldBe Some((List(3L), List("rev411", "1", "25", "0"), Nil))
+      }
+      "should separate pre-release and build parts" in {
+        VersionParser.parse("1.0.0-alpha.1+build.10") shouldBe
+          Some((List(1L, 0L, 0L), List("alpha", "1"), List("build", "10")))
+        VersionParser.parse("2.0.2+9-4e5b95f4-SNAPSHOT") shouldBe
+          Some((List(2L, 0L, 2L), Nil, List("9", "4e5b95f4", "SNAPSHOT")))
+        VersionParser.parse("1.+.2") shouldBe Some((List(1L, Long.MaxValue), List("2"), Nil))
+      }
+      "should ignore surrounding whitespace" in {
+        VersionParser.parse(" 1.0 ") shouldBe Some((List(1L, 0L), Nil, Nil))
+      }
+      "should reject text that isn't a version" in {
+        for (text <- Seq("", "v", "invalid", "1.", "1.0-", "1.0+", "1..0", "1 .0", "1234567890123456789"))
+          withClue(text)(VersionParser.parse(text) shouldBe None)
       }
     }
   }

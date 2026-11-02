@@ -1,41 +1,45 @@
 package com.timushev.sbt.updates
 
-import com.timushev.sbt.updates.authentication.{Coursier, RepositoryAuthentication}
+import com.timushev.sbt.updates.LookupSession.executionContext
+import com.timushev.sbt.updates.authentication.RepositoryAuthentication
 import com.timushev.sbt.updates.metadata.MetadataLoaderFactory
 import com.timushev.sbt.updates.model.{Csv, ReportType, SbtOutput}
 import com.timushev.sbt.updates.versions.Version
 import sbt._
 import sbt.librarymanagement.ModuleFilter
-import sbt.std.TaskStreams
 
 import scala.collection.immutable.SortedSet
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 import scala.concurrent.{Await, Future}
+import scala.util.control.NonFatal
 import scala.util.matching.Regex
 
 object Reporter {
   import com.timushev.sbt.updates.UpdatesFinder._
 
+  // Projects are checked in parallel, and sbt would otherwise interleave the lines of their reports.
+  private val outputLock = new Object
+
   def dependencyUpdatesData(
+      project: ModuleID,
       dependencies: Seq[ModuleID],
       dependenciesOverrides: Iterable[ModuleID],
       dependencyPositions: Map[ModuleID, Set[SourcePosition]],
       resolvers: Seq[Resolver],
       credentials: Seq[Credentials],
-      csrConfiguration: Option[Coursier.CoursierConfiguration],
+      csrConfiguration: Option[AnyRef],
       scalaVersions: Seq[String],
-      excluded: ModuleFilter,
       included: ModuleFilter,
       allowPreRelease: Boolean,
       buildRoot: File,
-      out: TaskStreams[_]
+      session: LookupSession,
+      log: Logger
   ): Map[ModuleID, SortedSet[Version]] = {
     val buildDependencies = excludeDependenciesFromPlugins(dependencies, dependencyPositions, buildRoot)
     val authentications   =
       credentials.flatMap(RepositoryAuthentication.fromCredentials) ++
-        csrConfiguration.toSeq.flatMap(RepositoryAuthentication.fromCoursier)
-    val loaders       = resolvers.collect(MetadataLoaderFactory.loader(out.log, authentications))
+        csrConfiguration.toSeq.flatMap(coursierAuthentications(_, log))
+    val loaders       = resolvers.collect(MetadataLoaderFactory.loader(session, log, authentications))
     val updatesFuture = Future
       .sequence {
         scalaVersions
@@ -43,15 +47,42 @@ object Reporter {
           .map(_.map(findUpdates(loaders, allowPreRelease)))
           .map(Future.sequence(_))
       }
-      .map(crossUpdates => crossUpdates.transpose.map(updates => updates.reduce(_.intersect(_))))
-    val updates = Await.result(updatesFuture, 1.hour)
+    val crossUpdates = Await.result(updatesFuture, 1.hour)
+    reportFailures(project, crossUpdates.flatten.flatMap(_.failures), log)
     buildDependencies
-      .zip(updates)
+      .zip(crossUpdates.transpose.map(_.map(_.versions).reduce(_.intersect(_))))
       .toMap
       .transform(include(included))
-      .transform(exclude(excluded))
       .filterNot(_._2.isEmpty)
   }
+
+  def reportFailures(project: ModuleID, failures: Seq[LookupFailure], log: Logger): Unit =
+    if (failures.nonEmpty) outputLock.synchronized {
+      failures.foreach { f =>
+        log.debug(s"${project.name}: could not check ${f.module} in repository ${f.repository}: ${f.cause}")
+      }
+      failures.groupBy(_.repository).toSeq.sortBy(_._1).foreach { case (repository, failed) =>
+        val modules = failed.map(f => (f.module.organization, f.module.name)).distinct.size
+        val cause   = failed.head.cause
+        log.warn(
+          s"${project.name}: could not check $modules module${if (modules == 1) "" else "s"} in repository $repository " +
+            s"(${Option(cause.getMessage).getOrElse(cause.getClass.getName)}); updates may be missing"
+        )
+      }
+    }
+
+  // crossScalaVersions := Nil is how builds keep a project out of `+`; its dependencies still need checking.
+  def scalaVersionsToCheck(scalaVersion: String, crossScalaVersions: Seq[String]): Seq[String] =
+    if (crossScalaVersions.isEmpty) Seq(scalaVersion) else crossScalaVersions
+
+  // lm-coursier is read reflectively; a changed shape must cost only its credentials, not fail the task.
+  private[updates] def coursierAuthentications(configuration: AnyRef, log: Logger): Seq[RepositoryAuthentication] =
+    try RepositoryAuthentication.fromCoursier(configuration)
+    catch {
+      case NonFatal(e) =>
+        log.debug(s"Could not read repository credentials from the Coursier configuration: $e")
+        Nil
+    }
 
   def overrideDependencies(dependencies: Seq[ModuleID], overrides: Iterable[ModuleID]): Seq[ModuleID] = {
     def key(id: ModuleID) = (id.organization, id.name)
@@ -112,7 +143,7 @@ object Reporter {
     val updates = gatherDependencyUpdates(dependencyUpdates)
     if (updates.isEmpty) "No dependency updates found for %s".format(project.name)
     else {
-      val info = StringBuilder.newBuilder
+      val info = new StringBuilder
       info.append(
         "Found %s dependency update%s for %s".format(updates.size, if (updates.size > 1) "s" else "", project.name)
       )
@@ -124,18 +155,19 @@ object Reporter {
     }
   }
 
+  // Columns: module;current;patch;minor;major. Missing updates stay as empty cells so the columns keep their meaning.
   def dependencyUpdatesCsvReport(dependencyUpdates: Map[ModuleID, SortedSet[Version]]): String =
     latestSemVerRevisions(dependencyUpdates)
-      .map(_.filterNot(_.isEmpty).map(_.getOrElse("")).mkString(";"))
+      .map(_.map(_.getOrElse("")).mkString(";"))
       .mkString("\n")
 
   def displayDependencyUpdates(
       project: ModuleID,
       dependencyUpdates: Map[ModuleID, SortedSet[Version]],
       failBuild: Boolean,
-      out: TaskStreams[_]
+      log: Logger
   ): Unit = {
-    out.log.info(dependencyUpdatesReport(project, dependencyUpdates))
+    outputLock.synchronized(log.info(dependencyUpdatesReport(project, dependencyUpdates)))
     if (failBuild && dependencyUpdates.nonEmpty) sys.error("Dependency updates found")
   }
 
@@ -144,14 +176,14 @@ object Reporter {
       dependencyUpdates: Map[ModuleID, SortedSet[Version]],
       file: File,
       `type`: ReportType,
-      out: TaskStreams[_]
+      log: Logger
   ): File = {
     val reportContent = `type` match {
       case SbtOutput => dependencyUpdatesReport(project, dependencyUpdates) + "\n"
       case Csv       => dependencyUpdatesCsvReport(dependencyUpdates)
     }
     IO.write(file, reportContent)
-    out.log.info("Dependency update report written to %s".format(file))
+    log.info("Dependency update report written to %s".format(file))
     file
   }
 
@@ -171,9 +203,6 @@ object Reporter {
 
   def include(included: ModuleFilter)(module: ModuleID, versions: SortedSet[Version]): SortedSet[Version] =
     versions.filter(version => included.apply(module.withRevision(version.text)))
-
-  def exclude(excluded: ModuleFilter)(module: ModuleID, versions: SortedSet[Version]): SortedSet[Version] =
-    versions.filterNot(version => excluded.apply(module.withRevision(version.text)))
 
   def excludeDependenciesFromPlugins(
       dependencies: Seq[ModuleID],
@@ -205,6 +234,12 @@ object Reporter {
       case _                         => None
     }
 
-  def fileExists(buildRoot: File, file: String): Boolean =
-    (buildRoot / "project" / file).exists()
+  // sbt records only the file name, and build sources can also live under project/src, e.g. project/src/main/scala.
+  def fileExists(buildRoot: File, file: String): Boolean = {
+    val project = buildRoot / "project"
+    (project / file).exists() || containsFile(project / "src", file)
+  }
+
+  private def containsFile(directory: File, name: String): Boolean =
+    Option(directory.listFiles()).exists(_.exists(f => if (f.isDirectory) containsFile(f, name) else f.getName == name))
 }
