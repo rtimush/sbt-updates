@@ -1,9 +1,11 @@
 package com.timushev.sbt.updates
 
-import com.timushev.sbt.updates.metadata.FixedMetadataLoader
+import com.timushev.sbt.updates.metadata.{FixedMetadataLoader, MetadataLoader}
+import com.timushev.sbt.updates.versions.Version
 import sbt.{globFilter => _, _}
 
-import scala.concurrent.Await
+import java.io.{FileNotFoundException, IOException}
+import scala.concurrent.{Await, Future}
 import scala.concurrent.duration._
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.should.Matchers
@@ -16,7 +18,14 @@ class UpdatesFinderSpec extends AnyFreeSpec with Matchers {
           .findUpdates(Seq(new FixedMetadataLoader(available)), allowPreRelease)(ModuleID("a", "b", current)),
         1.minute
       )
+      .versions
       .map(_.text)
+
+  def failing(name: String, cause: Throwable): MetadataLoader =
+    new MetadataLoader {
+      val repository: String                                  = name
+      def getVersions(module: ModuleID): Future[Seq[Version]] = Future.failed(cause)
+    }
 
   val available = Seq(
     "0.9.9-SNAPSHOT",
@@ -148,6 +157,28 @@ class UpdatesFinderSpec extends AnyFreeSpec with Matchers {
       "should not show patch updates when using plus patch version" in {
         uPlus should not(contain("1.0.0"))
         uPlus should not(contain("1.0.1"))
+      }
+    }
+    "for repositories that cannot be asked" - {
+      val module                         = ModuleID("a", "b", "1.0.0")
+      def find(loaders: MetadataLoader*) =
+        Await.result(UpdatesFinder.findUpdates(loaders, allowPreRelease = false)(module), 1.minute)
+      "should report the failure and keep the updates found elsewhere" in {
+        val cause  = new IOException("HTTP 503")
+        val result = find(new FixedMetadataLoader(Seq("1.0.1")), failing("broken", cause))
+        result.versions.map(_.text) shouldBe Set("1.0.1")
+        result.failures shouldBe Seq(UpdatesFinder.LookupFailure("broken", module, cause))
+      }
+      "should not report a repository that doesn't have the module" in {
+        find(failing("elsewhere", new FileNotFoundException("missing"))).failures shouldBe empty
+      }
+      "should report a repository whose lookup fails before it even starts" in {
+        val cause  = new IllegalArgumentException("bad pattern")
+        val broken = new MetadataLoader {
+          val repository: String                                  = "broken"
+          def getVersions(module: ModuleID): Future[Seq[Version]] = throw cause
+        }
+        find(broken).failures shouldBe Seq(UpdatesFinder.LookupFailure("broken", module, cause))
       }
     }
   }

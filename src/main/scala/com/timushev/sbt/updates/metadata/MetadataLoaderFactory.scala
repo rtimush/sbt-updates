@@ -1,13 +1,10 @@
 package com.timushev.sbt.updates.metadata
 
 import java.net.URI
-import com.timushev.sbt.updates.Downloader
+import com.timushev.sbt.updates.{Downloader, LookupSession}
 import com.timushev.sbt.updates.authentication.RepositoryAuthentication
-import com.timushev.sbt.updates.versions.Version
 import sbt._
 
-import scala.collection.mutable
-import scala.concurrent.Future
 import scala.util.matching.Regex
 
 object MetadataLoaderFactory {
@@ -15,40 +12,38 @@ object MetadataLoaderFactory {
   val KnownProtocolUrl: Regex = "(?i)^https?://".r
 
   def loader(
+      session: LookupSession,
       logger: Logger,
       authentications: Seq[RepositoryAuthentication]
   ): PartialFunction[Resolver, MetadataLoader] =
-    Function.unlift { resolver =>
-      loaderCache.synchronized {
-        loaderCache.getOrElseUpdate(resolver, newLoader(logger, authentications, resolver).map(cached))
-      }
-    }
+    Function.unlift((resolver: Resolver) => newLoader(session, logger, authentications, resolver))
 
-  private def newLoader(logger: Logger, authentications: Seq[RepositoryAuthentication], resolver: Resolver) =
+  private def newLoader(
+      session: LookupSession,
+      logger: Logger,
+      authentications: Seq[RepositoryAuthentication],
+      resolver: Resolver
+  ): Option[MetadataLoader] =
     resolver match {
       case repo: MavenRepository =>
-        val downloader = new Downloader(repo.name, authentications, logger)
-        val url        = new URI(repo.root).toURL
+        val url = new URI(repo.root).toURL
         url.getProtocol match {
           case KnownProtocol() =>
-            val resolver    = Resolver.url(repo.name, url)(Resolver.mavenStylePatterns)
-            val mavenLoader = new MavenMetadataLoader(resolver, downloader)
-            val ivyLoader   = new IvyMetadataLoader(resolver, downloader)
-            Some(new CompoundMetadataLoader(Seq(mavenLoader, ivyLoader)))
+            implicit val patterns: Patterns = Resolver.mavenStylePatterns
+            val repository                  = Resolver.url(repo.name, url)
+            val downloader                  = new Downloader(repo.name, authentications, logger, session)
+            val metadata                    = new MavenMetadataLoader(repository, downloader, session)
+            val listing                     = new IvyMetadataLoader(repository, downloader, session)
+            Some(new CompoundMetadataLoader(repo.name, metadata, listing))
           case _ => None
         }
       case repo: URLRepository =>
         if (repo.patterns.artifactPatterns.forall(KnownProtocolUrl.findFirstIn(_).nonEmpty)) {
-          val downloader = new Downloader(repo.name, authentications, logger)
-          Some(new IvyMetadataLoader(repo, downloader))
+          val downloader = new Downloader(repo.name, authentications, logger, session)
+          Some(new IvyMetadataLoader(repo, downloader, session))
         } else
           None
       case _ =>
         None
     }
-
-  private val loaderCache = mutable.Map[Resolver, Option[MetadataLoader]]()
-  private val cache       = mutable.Map[(MetadataLoader, ModuleID), Future[Seq[Version]]]()
-
-  private def cached(loader: MetadataLoader) = new CachingMetadataLoader(loader, cache)
 }

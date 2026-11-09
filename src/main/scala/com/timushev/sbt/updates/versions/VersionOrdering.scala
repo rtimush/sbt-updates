@@ -23,9 +23,9 @@ class VersionOrdering extends Ordering[Version] {
 
   private def comparePart(a: String, b: String) =
     if (a == b) None
-    else
-      parsePart(a)
-        .zip(parsePart(b))
+    else {
+      val (pa, pb) = (parsePart(a), parsePart(b))
+      pa.zip(pb)
         .map {
           case (Left(x), Left(y))   => x.compare(y)
           case (Left(_), Right(_))  => -1
@@ -33,7 +33,10 @@ class VersionOrdering extends Ordering[Version] {
           case (Right(x), Right(y)) => compareIdentifiers(x, y)
         }
         .find(0 != _)
+        // A shorter prefix is older (1 < 1a) whatever its spelling, which keeps the order transitive for 01b.
+        .orElse(toOpt(pa.length.compare(pb.length)))
         .orElse(Some(a.compareTo(b)))
+    }
 
   private def compareIdentifiers(a: String, b: String): Int = {
     def order(s: String): Int =
@@ -66,7 +69,8 @@ class VersionOrdering extends Ordering[Version] {
     }
 
   def compare(x: Version, y: Version): Int =
-    (x, y) match {
+    // The extractors below classify every pair of versions, which the compiler cannot prove.
+    ((x, y): @unchecked) match {
       case (InvalidVersion(a), InvalidVersion(b))                 => a.compareTo(b)
       case (InvalidVersion(_), _)                                 => -1
       case (_, InvalidVersion(_))                                 => 1
