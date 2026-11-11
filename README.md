@@ -8,10 +8,8 @@ There is also a limited support for Ivy repositories hosted on BinTray.
 If your project uses `crossScalaVersions` you will be presented only with updates available for all scala versions.
 
 Requirements
-==============
-sbt 0.13.9 and later.
-sbt 1.x is supported since version 0.3.1.
-sbt 2.x is supported since version 0.7.0.
+=============
+sbt 1.9 or later, or sbt 2.x.
 
 Installation
 ============
@@ -23,6 +21,32 @@ addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "x.x.x")
 ```
 
 The latest version is [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.timushev.sbt/sbt-updates/badge.svg?subject=sbt-updates)](https://maven-badges.herokuapp.com/maven-central/com.timushev.sbt/sbt-updates/)
+
+<details>
+<summary>Global configuration that also works on sbt older than 1.9</summary>
+
+Since version 0.7.0, sbt-updates is published in a layout that only sbt 1.9 and later can resolve from Maven Central.
+If you need one global plugin configuration that works on older sbt 1.x versions as well, replace the `addSbtPlugin` line above with the following in `~/.sbt/1.0/plugins/sbt-updates.sbt`:
+
+```scala
+import sbt.Defaults.sbtPluginExtra
+
+libraryDependencies += {
+  val sbtUpdatesVersion =
+    CrossVersion.partialVersion(sbtVersion.value) match {
+      case Some((1, minor)) if minor < 9 => "0.6.4"
+      case _                             => "x.x.x"
+    }
+  sbtPluginExtra(
+    "com.timushev.sbt" % "sbt-updates" % sbtUpdatesVersion,
+    (pluginCrossBuild / sbtBinaryVersion).value,
+    scalaBinaryVersion.value
+  )
+}
+```
+
+This selects the latest 0.6.x version on sbt older than 1.9 and the latest version otherwise.
+</details>
 
 ### Snapshot version
 Choose one of versions available on [Sonatype](https://oss.sonatype.org/content/repositories/snapshots/com/timushev/sbt/sbt-updates_2.12_1.0/). Then create a `~/.sbt/1.0/plugins/sbt-updates.sbt` file (for sbt 1.x series), or `~/.sbt/0.13/plugins/sbt-updates.sbt` (for sbt 0.13.x series) with the following content:
