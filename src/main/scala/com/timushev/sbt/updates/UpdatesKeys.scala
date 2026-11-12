@@ -23,6 +23,11 @@ trait UpdatesKeys {
     taskKey[File]("Writes a list of project dependencies that can be updated to a file.")
   lazy val dependencyUpdatesCsvReport =
     taskKey[File]("Writes a list of project dependencies that can be updated to a CSV file.")
+  lazy val dependencyUpdatesUpgrade =
+    taskKey[Seq[File]](
+      "Upgrades project dependencies to their latest release versions by changing the build sources. " +
+        "Returns the changed files."
+    )
 }
 
 object UpdatesKeys extends UpdatesKeys
