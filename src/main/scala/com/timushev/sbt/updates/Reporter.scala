@@ -205,6 +205,12 @@ object Reporter {
       case _                         => None
     }
 
-  def fileExists(buildRoot: File, file: String): Boolean =
-    (buildRoot / "project" / file).exists()
+  // sbt records only the file name, and build sources can also live under project/src, e.g. project/src/main/scala.
+  def fileExists(buildRoot: File, file: String): Boolean = {
+    val project = buildRoot / "project"
+    (project / file).exists() || containsFile(project / "src", file)
+  }
+
+  private def containsFile(directory: File, name: String): Boolean =
+    Option(directory.listFiles()).exists(_.exists(f => if (f.isDirectory) containsFile(f, name) else f.getName == name))
 }
