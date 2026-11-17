@@ -1,3 +1,5 @@
+ThisBuild / scalaVersion := "2.12.21"
+
 import SbtAxis.RichProjectMatrix
 
 ThisBuild / organization := "com.timushev.sbt"
@@ -27,15 +29,15 @@ ThisBuild / publishTo                        := {
 ThisBuild / (pluginCrossBuild / sbtVersion) := {
   scalaBinaryVersion.value match {
     case "2.12" => "1.11.7"
-    case _      => "2.0.0"
+    case _      => "2.1.0"
   }
 }
 
 lazy val `sbt-1.x`      = SbtAxis("1.x", "1.1.5")
-lazy val `sbt-1.latest` = SbtAxis()
+lazy val `sbt-1.latest` = SbtAxis("1.latest", "1.13.1")
 lazy val `sbt-1.9.0`    = SbtAxis("1.9.0")
-lazy val `sbt-2.x`      = SbtAxis("2.x", "2.0.0")
-lazy val `sbt-2.0.0`    = SbtAxis("2.0.0")
+lazy val `sbt-2.x`      = SbtAxis("2.x", "2.1.0")
+lazy val `sbt-2.1.0`    = SbtAxis("2.1.0")
 
 lazy val `sbt-updates` = (projectMatrix in file("."))
   .settings(libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.20" % "test")
@@ -43,12 +45,12 @@ lazy val `sbt-updates` = (projectMatrix in file("."))
   .sbtScriptedRow(`sbt-1.latest`, `sbt-1.x`)
   .sbtScriptedRow(`sbt-1.9.0`, `sbt-1.x`)
   .sbtPluginRow(`sbt-2.x`)
-  .sbtScriptedRow(`sbt-2.0.0`, `sbt-2.x`)
+  .sbtScriptedRow(`sbt-2.1.0`, `sbt-2.x`)
   .settings(
     scalacOptions ++= {
       val base = Seq("-deprecation", "-unchecked", "-feature")
       CrossVersion.partialVersion(scalaVersion.value) match {
-        case Some((2, minor)) if minor >= 12 => base ++ Seq("-Xsource:3")
+        case Some((2, minor)) if minor >= 12 => base ++ Seq("-Xsource:3", "-release:8")
         case _                               => base
       }
     }

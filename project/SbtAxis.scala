@@ -9,7 +9,7 @@ case class SbtAxis(fullVersion: Option[String], idSuffix: String, directorySuffi
   val scalaVersion: String =
     fullVersion.map(VersionNumber(_)) match {
       case Some(VersionNumber(Seq(1, _*), _, _)) | None => "2.12.21"
-      case Some(VersionNumber(Seq(2, _*), _, _)) | None => "3.8.4"
+      case Some(VersionNumber(Seq(2, _*), _, _)) | None => "3.9.0"
       case _                                            => sys.error(s"Unsupported sbt version: $fullVersion")
     }
 }
@@ -34,7 +34,7 @@ object SbtAxis {
           sbtPlugin                     := true,
           scalaVersion                  := axis.scalaVersion,
           crossPaths                    := true,
-          pluginCrossBuild / sbtVersion := axis.fullVersion.getOrElse(sbtVersion.value)
+          pluginCrossBuild / sbtVersion := axis.fullVersion.getOrElse("1.13.1")
         ).settings(ss: _*)
       )
     def sbtScriptedRow(axis: SbtAxis, buildAxis: SbtAxis): ProjectMatrix =
@@ -45,7 +45,7 @@ object SbtAxis {
           sbtPlugin                     := true,
           scalaVersion                  := axis.scalaVersion,
           crossPaths                    := true,
-          pluginCrossBuild / sbtVersion := axis.fullVersion.getOrElse(sbtVersion.value),
+          pluginCrossBuild / sbtVersion := axis.fullVersion.getOrElse("1.13.1"),
           publish / skip                := true,
           compile / skip                := true,
           scriptedDependencies          := Def.taskDyn {

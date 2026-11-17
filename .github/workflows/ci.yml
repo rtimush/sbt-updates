@@ -50,9 +50,9 @@ jobs:
           - { sbt: 1_latest, java: 17 }
           - { sbt: 1_latest, java: 21 }
           - { sbt: 1_latest, java: 25 }
-          - { sbt: 2_0_0, java: 17 }
-          - { sbt: 2_0_0, java: 21 }
-          - { sbt: 2_0_0, java: 25 }
+          - { sbt: 2_1_0, java: 17 }
+          - { sbt: 2_1_0, java: 21 }
+          - { sbt: 2_1_0, java: 25 }
       fail-fast: false
     name: test (java ${{ matrix.java }}, sbt ${{ matrix.sbt }})
     steps:
@@ -91,7 +91,7 @@ jobs:
     strategy:
       matrix:
         include:
-          - { sbt: 1_x, java: 8 }
+          - { sbt: 1_x, java: 17 }
           - { sbt: 2_x, java: 17 }
     steps:
       - uses: actions/checkout@v7
@@ -137,7 +137,7 @@ jobs:
           path: target/sona-staging
       - uses: actions/setup-java@v6
         with:
-          java-version: "8"
+          java-version: "17"
           distribution: zulu
       - uses: sbt/setup-sbt@v1.5.14
       - run: sbt sonaRelease
