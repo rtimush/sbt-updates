@@ -53,6 +53,10 @@ object Reporter {
       .filterNot(_._2.isEmpty)
   }
 
+  // crossScalaVersions := Nil keeps a project out of `+`, but its own dependencies still need checking.
+  def scalaVersionsToCheck(scalaVersion: String, crossScalaVersions: Seq[String]): Seq[String] =
+    if (crossScalaVersions.isEmpty) Seq(scalaVersion) else crossScalaVersions
+
   def overrideDependencies(dependencies: Seq[ModuleID], overrides: Iterable[ModuleID]): Seq[ModuleID] = {
     def key(id: ModuleID) = (id.organization, id.name)
     val overridden        = overrides.map(id => (key(id), id.revision)).toMap
