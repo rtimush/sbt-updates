@@ -100,5 +100,11 @@ class ReporterSpec extends AnyFreeSpec with Matchers {
         Reporter.dependencyUpdatesCsvReport(input) shouldEqual expectation
       }
     }
+    "on a project opted out of cross-building" - {
+      "should still check its dependencies for its own Scala version" in {
+        Reporter.scalaVersionsToCheck("3.3.4", Nil) shouldBe Seq("3.3.4")
+        Reporter.scalaVersionsToCheck("3.3.4", Seq("2.13.15", "3.3.4")) shouldBe Seq("2.13.15", "3.3.4")
+      }
+    }
   }
 }
