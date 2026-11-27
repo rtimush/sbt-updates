@@ -16,7 +16,7 @@ object UpdatesFinder {
   ): Future[SortedSet[Version]] = {
     val current     = Version(module.revision)
     val versionSets = loaders.map(_.getVersions(module).recover(withEmpty))
-    val versions    = Future.sequence(versionSets).map(v => SortedSet(v.flatten: _*))
+    val versions    = Future.sequence(versionSets).map(v => SortedSet(v.flatten *))
     versions.map(_.filter(isUpdate(current)).filterNot(lessStable(current, allowPreRelease)))
   }
 

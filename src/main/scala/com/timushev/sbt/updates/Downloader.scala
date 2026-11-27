@@ -20,7 +20,7 @@ class Downloader(repositoryId: String, authentications: Seq[RepositoryAuthentica
           val auth = Base64.encodeToString(s"${c.user}:${c.password}".getBytes)
           connection.setRequestProperty("Authorization", s"Basic $auth")
         }
-        c.headers.foreach((connection.addRequestProperty _).tupled)
+        c.headers.foreach { case (name, value) => connection.addRequestProperty(name, value) }
       case None =>
         logger.debug(s"Downloading $url anonymously")
     }

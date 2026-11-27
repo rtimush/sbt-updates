@@ -29,7 +29,7 @@ object Reporter {
       included: ModuleFilter,
       allowPreRelease: Boolean,
       buildRoot: File,
-      out: TaskStreams[_]
+      out: TaskStreams[?]
   ): Map[ModuleID, SortedSet[Version]] = {
     val buildDependencies = excludeDependenciesFromPlugins(dependencies, dependencyPositions, buildRoot)
     val authentications   =
@@ -133,7 +133,7 @@ object Reporter {
       project: ModuleID,
       dependencyUpdates: Map[ModuleID, SortedSet[Version]],
       failBuild: Boolean,
-      out: TaskStreams[_]
+      out: TaskStreams[?]
   ): Unit = {
     out.log.info(dependencyUpdatesReport(project, dependencyUpdates))
     if (failBuild && dependencyUpdates.nonEmpty) sys.error("Dependency updates found")
@@ -144,7 +144,7 @@ object Reporter {
       dependencyUpdates: Map[ModuleID, SortedSet[Version]],
       file: File,
       `type`: ReportType,
-      out: TaskStreams[_]
+      out: TaskStreams[?]
   ): File = {
     val reportContent = `type` match {
       case SbtOutput => dependencyUpdatesReport(project, dependencyUpdates) + "\n"

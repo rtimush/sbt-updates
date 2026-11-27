@@ -10,8 +10,7 @@ object Compat {
   }
 
   def toDirectCredentials(c: sbt.Credentials) = {
-    import sbt.internal.librarymanagement.ivy.IvyCredentials
-    IvyCredentials.toDirect(c)
+    sbt.librarymanagement.CredentialUtils.toDirect(c)
   }
 
   inline def uncached[T](value: T): T = Uncached(value)
