@@ -20,7 +20,7 @@ Create a `~/.sbt/1.0/plugins/sbt-updates.sbt` file (for sbt 1.x series), or `~/.
 addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "x.x.x")
 ```
 
-The latest version is [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.timushev.sbt/sbt-updates/badge.svg?subject=sbt-updates)](https://maven-badges.herokuapp.com/maven-central/com.timushev.sbt/sbt-updates/)
+The latest version is [![sbt-updates Scala version support](https://index.scala-lang.org/rtimush/sbt-updates/sbt-updates/latest-by-scala-version.svg?targetType=Sbt)](https://index.scala-lang.org/rtimush/sbt-updates/sbt-updates)
 
 <details>
 <summary>Global configuration that also works on sbt older than 1.9</summary>
